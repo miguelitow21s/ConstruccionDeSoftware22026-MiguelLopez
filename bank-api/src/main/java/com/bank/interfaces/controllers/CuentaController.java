@@ -13,6 +13,7 @@ import com.bank.interfaces.dtos.SaldoResponse;
 import com.bank.interfaces.dtos.TransferenciaRequest;
 import com.bank.interfaces.dtos.TransaccionResponse;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,6 +50,7 @@ public class CuentaController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('ANALISTA','VENTANILLA','COMERCIAL')")
     public CrearCuentaResponse crear(@Valid @RequestBody CrearCuentaRequest request) {
         var cuenta = crearCuentaUseCase.execute(
                 request.numeroCuenta(),
@@ -68,6 +70,7 @@ public class CuentaController {
     }
 
     @GetMapping("/{id}/saldo")
+    @PreAuthorize("hasAnyRole('ANALISTA','VENTANILLA','COMERCIAL','SUPERVISOR_EMPRESA','EMPLEADO_EMPRESA','CLIENTE_NATURAL','CLIENTE_EMPRESA')")
     public SaldoResponse consultarSaldo(@PathVariable String id) {
         var saldo = consultarSaldoUseCase.execute(id);
         return new SaldoResponse(id, saldo.value());
@@ -75,17 +78,20 @@ public class CuentaController {
 
     @PostMapping("/depositar")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('VENTANILLA')")
     public void depositar(@Valid @RequestBody MovimientoRequest request) {
         depositarDineroUseCase.execute(request.cuentaId(), request.monto());
     }
 
     @PostMapping("/retirar")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('VENTANILLA')")
     public void retirar(@Valid @RequestBody MovimientoRequest request) {
         retirarDineroUseCase.execute(request.cuentaId(), request.monto());
     }
 
     @PostMapping("/transferir")
+    @PreAuthorize("hasAnyRole('EMPLEADO_EMPRESA','SUPERVISOR_EMPRESA','CLIENTE_NATURAL','CLIENTE_EMPRESA')")
     public TransaccionResponse transferir(@Valid @RequestBody TransferenciaRequest request) {
         var transaccion = transferirDineroUseCase.execute(
                 request.cuentaOrigenId(),
@@ -107,12 +113,14 @@ public class CuentaController {
 
     @PostMapping("/transferencias/{id}/aprobar")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyRole('SUPERVISOR_EMPRESA','ANALISTA')")
     public void aprobarTransferencia(@PathVariable String id) {
         aprobarTransferenciaUseCase.aprobar(id);
     }
 
     @PostMapping("/transferencias/{id}/rechazar")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyRole('SUPERVISOR_EMPRESA','ANALISTA')")
     public void rechazarTransferencia(@PathVariable String id) {
         aprobarTransferenciaUseCase.rechazar(id);
     }

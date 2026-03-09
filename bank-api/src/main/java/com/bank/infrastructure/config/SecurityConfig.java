@@ -20,8 +20,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/clientes/**").hasAnyRole("ANALISTA", "VENTANILLA", "COMERCIAL")
-                        .requestMatchers("/cuentas/transferencias/*/aprobar", "/cuentas/transferencias/*/rechazar")
-                        .hasAnyRole("SUPERVISOR_EMPRESA", "ANALISTA")
+                        .requestMatchers("/bitacora/**").hasRole("ANALISTA")
+                        .requestMatchers("/prestamos/**").authenticated()
                         .requestMatchers("/cuentas/**", "/transacciones/**").authenticated()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults());
@@ -52,6 +52,29 @@ public class SecurityConfig {
                 .roles("SUPERVISOR_EMPRESA")
                 .build();
 
-        return new InMemoryUserDetailsManager(analista, ventanilla, comercial, supervisor);
+        UserDetails empleadoEmpresa = User.withUsername("empleado_empresa")
+                .password("{noop}123456")
+                .roles("EMPLEADO_EMPRESA")
+                .build();
+
+        UserDetails clienteNatural = User.withUsername("cliente_natural")
+                .password("{noop}123456")
+                .roles("CLIENTE_NATURAL")
+                .build();
+
+        UserDetails clienteEmpresa = User.withUsername("cliente_empresa")
+                .password("{noop}123456")
+                .roles("CLIENTE_EMPRESA")
+                .build();
+
+        return new InMemoryUserDetailsManager(
+                analista,
+                ventanilla,
+                comercial,
+                supervisor,
+                empleadoEmpresa,
+                clienteNatural,
+                clienteEmpresa
+        );
     }
 }
