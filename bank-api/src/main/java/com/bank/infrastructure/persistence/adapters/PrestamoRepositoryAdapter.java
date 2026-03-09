@@ -7,6 +7,7 @@ import com.bank.infrastructure.persistence.repositories.SpringDataPrestamoReposi
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -21,13 +22,16 @@ public class PrestamoRepositoryAdapter implements PrestamoRepositoryPort {
     }
 
     @Override
+    @SuppressWarnings("null")
     public Prestamo save(Prestamo prestamo) {
-        return mapper.toDomain(repository.save(mapper.toJpa(prestamo)));
+        return mapper.toDomain(
+                Objects.requireNonNull(repository.save(mapper.toJpa(prestamo)))
+        );
     }
 
     @Override
     public Optional<Prestamo> findById(String id) {
-        return repository.findById(id).map(mapper::toDomain);
+        return repository.findById(Objects.requireNonNull(id)).map(mapper::toDomain);
     }
 
     @Override

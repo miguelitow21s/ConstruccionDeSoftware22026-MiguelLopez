@@ -79,7 +79,7 @@ Flujo ejemplo (transferencia):
 
 ## 6) Ejecucion del Proyecto
 Requisitos:
-- Java 17+
+- Java 21+
 - Maven 3.9+
 
 Comandos:
