@@ -3,13 +3,23 @@ package com.bank.infrastructure.persistence.nosql;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "bitacora")
 public class BitacoraDocument {
 
+    @Id
     private String idBitacora;
     private String tipoOperacion;
     private LocalDateTime fechaHoraOperacion;
+
+    @Indexed
     private String idUsuario;
     private String rolUsuario;
+
+    @Indexed
     private String idProductoAfectado;
     private Map<String, Object> datosDetalle;
 

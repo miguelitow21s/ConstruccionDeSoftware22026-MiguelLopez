@@ -20,8 +20,16 @@ spring:
     console:
       enabled: true
       path: /h2-console
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/bankdb
 
 bank:
+  bitacora:
+    storage: memory
+  security:
+    # Formato: usuario:idCliente,usuario2:idCliente2
+    user-client-map: cliente_natural:cliente_natural_id,cliente_empresa:cliente_empresa_id,empleado_empresa:empresa_demo_id,supervisor:empresa_demo_id
   transfer:
     approval-threshold: 10000
     approval-expiration-minutes: 60

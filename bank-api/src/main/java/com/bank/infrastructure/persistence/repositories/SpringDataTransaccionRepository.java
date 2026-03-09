@@ -10,4 +10,6 @@ import java.util.List;
 public interface SpringDataTransaccionRepository extends JpaRepository<TransaccionJpaEntity, String> {
 
     List<TransaccionJpaEntity> findByEstadoAndFechaBefore(EstadoTransaccion estado, LocalDateTime fecha);
+
+    List<TransaccionJpaEntity> findByCuentaOrigenInOrCuentaDestinoIn(List<String> cuentasOrigen, List<String> cuentasDestino);
 }

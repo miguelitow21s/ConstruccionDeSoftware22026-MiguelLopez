@@ -15,5 +15,7 @@ public interface TransaccionRepositoryPort {
 
     List<Transaccion> findAll();
 
+    List<Transaccion> findByCuentaOrigenInOrCuentaDestinoIn(List<String> cuentasOrigen, List<String> cuentasDestino);
+
     List<Transaccion> findByEstadoAndFechaBefore(EstadoTransaccion estado, LocalDateTime fecha);
 }

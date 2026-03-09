@@ -2,6 +2,7 @@ package com.bank.infrastructure.persistence.nosql;
 
 import com.bank.application.ports.BitacoraEntry;
 import com.bank.application.ports.BitacoraRepositoryPort;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@ConditionalOnProperty(prefix = "bank.bitacora", name = "storage", havingValue = "memory", matchIfMissing = true)
 public class InMemoryBitacoraRepositoryAdapter implements BitacoraRepositoryPort {
 
     private final List<BitacoraDocument> store = new ArrayList<>();

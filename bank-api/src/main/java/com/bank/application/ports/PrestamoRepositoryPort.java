@@ -12,4 +12,6 @@ public interface PrestamoRepositoryPort {
     Optional<Prestamo> findById(String id);
 
     List<Prestamo> findAll();
+
+    List<Prestamo> findByClienteSolicitanteId(String clienteSolicitanteId);
 }

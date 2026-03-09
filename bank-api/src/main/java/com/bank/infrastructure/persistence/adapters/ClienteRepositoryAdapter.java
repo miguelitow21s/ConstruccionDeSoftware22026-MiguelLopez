@@ -6,6 +6,7 @@ import com.bank.infrastructure.persistence.mappers.ClienteMapper;
 import com.bank.infrastructure.persistence.repositories.SpringDataClienteRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -20,14 +21,15 @@ public class ClienteRepositoryAdapter implements ClienteRepositoryPort {
     }
 
     @Override
+    @SuppressWarnings("null")
     public Cliente save(Cliente cliente) {
-        var saved = repository.save(mapper.toJpa(cliente));
+        var saved = repository.save(Objects.requireNonNull(mapper.toJpa(cliente)));
         return mapper.toDomain(saved);
     }
 
     @Override
     public Optional<Cliente> findById(String id) {
-        return repository.findById(id).map(mapper::toDomain);
+        return repository.findById(Objects.requireNonNull(id)).map(mapper::toDomain);
     }
 
     @Override

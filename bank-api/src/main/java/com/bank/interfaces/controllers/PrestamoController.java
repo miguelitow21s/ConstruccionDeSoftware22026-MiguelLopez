@@ -60,7 +60,7 @@ public class PrestamoController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ANALISTA','COMERCIAL','SUPERVISOR_EMPRESA')")
+    @PreAuthorize("hasAnyRole('ANALISTA','COMERCIAL','SUPERVISOR_EMPRESA','EMPLEADO_EMPRESA','CLIENTE_NATURAL','CLIENTE_EMPRESA')")
     public List<PrestamoResponse> listar() {
         return listarPrestamosUseCase.execute().stream().map(this::toResponse).toList();
     }

@@ -21,7 +21,7 @@ public class BitacoraController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ANALISTA')")
+    @PreAuthorize("isAuthenticated()")
     public List<BitacoraResponse> listar(@RequestParam(required = false) String idUsuario) {
         return listarBitacoraUseCase.execute(idUsuario).stream()
                 .map(entry -> new BitacoraResponse(

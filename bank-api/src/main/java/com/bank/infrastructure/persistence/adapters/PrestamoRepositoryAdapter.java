@@ -38,4 +38,12 @@ public class PrestamoRepositoryAdapter implements PrestamoRepositoryPort {
     public List<Prestamo> findAll() {
         return repository.findAll().stream().map(mapper::toDomain).toList();
     }
+
+    @Override
+    public List<Prestamo> findByClienteSolicitanteId(String clienteSolicitanteId) {
+        return repository.findByClienteSolicitanteId(Objects.requireNonNull(clienteSolicitanteId))
+                .stream()
+                .map(mapper::toDomain)
+                .toList();
+    }
 }

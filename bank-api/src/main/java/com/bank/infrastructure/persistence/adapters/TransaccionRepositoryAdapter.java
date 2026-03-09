@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -23,19 +24,28 @@ public class TransaccionRepositoryAdapter implements TransaccionRepositoryPort {
     }
 
     @Override
+    @SuppressWarnings("null")
     public Transaccion save(Transaccion transaccion) {
-        var saved = repository.save(mapper.toJpa(transaccion));
+        var saved = repository.save(Objects.requireNonNull(mapper.toJpa(transaccion)));
         return mapper.toDomain(saved);
     }
 
     @Override
     public Optional<Transaccion> findById(String id) {
-        return repository.findById(id).map(mapper::toDomain);
+        return repository.findById(Objects.requireNonNull(id)).map(mapper::toDomain);
     }
 
     @Override
     public List<Transaccion> findAll() {
         return repository.findAll().stream().map(mapper::toDomain).toList();
+    }
+
+    @Override
+    public List<Transaccion> findByCuentaOrigenInOrCuentaDestinoIn(List<String> cuentasOrigen, List<String> cuentasDestino) {
+        return repository.findByCuentaOrigenInOrCuentaDestinoIn(cuentasOrigen, cuentasDestino)
+                .stream()
+                .map(mapper::toDomain)
+                .toList();
     }
 
     @Override

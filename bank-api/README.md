@@ -81,6 +81,7 @@ Flujo ejemplo (transferencia):
 Requisitos:
 - Java 21+
 - Maven 3.9+
+- MongoDB (opcional, solo si `bank.bitacora.storage=mongodb`)
 
 Comandos:
 ```bash
@@ -178,5 +179,10 @@ Content-Type: application/json
 4. Si una transferencia queda en `EN_ESPERA_APROBACION`, usar endpoint de aprobar/rechazar.
 
 ## 10) Nota de Evolucion
-La bitacora se implemento como adapter en memoria para demostrar el puerto NoSQL.
-En fase final puedes reemplazar ese adapter por MongoDB sin tocar la logica de dominio ni casos de uso.
+La bitacora soporta dos adapters sin tocar dominio ni casos de uso:
+- `memory` (por defecto): `InMemoryBitacoraRepositoryAdapter`
+- `mongodb`: `MongoBitacoraRepositoryAdapter`
+
+Configuracion relevante en `src/main/resources/application.yml`:
+- `bank.bitacora.storage=memory|mongodb`
+- `bank.security.user-client-map=usuario:idCliente,...` para filtrar productos por propiedad del cliente.
