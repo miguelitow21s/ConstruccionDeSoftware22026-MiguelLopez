@@ -24,6 +24,16 @@ spring:
     mongodb:
       uri: mongodb://localhost:27017/bankdb
 
+# Configuración OpenAPI/Swagger
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
+    displayRequestDuration: true
+
 bank:
   bitacora:
     storage: memory

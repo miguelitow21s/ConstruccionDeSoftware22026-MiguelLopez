@@ -1,16 +1,22 @@
 package com.bank.interfaces.controllers;
 
-import com.bank.application.usecases.ListarTransaccionesUseCase;
-import com.bank.interfaces.dtos.TransaccionResponse;
+import java.util.List;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.bank.application.usecases.ListarTransaccionesUseCase;
+import com.bank.interfaces.dtos.TransaccionResponse;
+
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/transacciones")
+@Tag(name = "Transacciones", description = "Consulta del historial de transacciones")
+@SecurityRequirement(name = "basicAuth")
 public class TransaccionController {
 
     private final ListarTransaccionesUseCase listarTransaccionesUseCase;

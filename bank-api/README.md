@@ -92,6 +92,8 @@ mvn spring-boot:run
 URLs:
 - API: `http://localhost:8080`
 - H2 Console: `http://localhost:8080/h2-console`
+- **Swagger UI**: `http://localhost:8080/swagger-ui.html`
+- **OpenAPI Docs**: `http://localhost:8080/v3/api-docs`
 
 Credenciales basicas (Spring Security en memoria):
 - `analista / 123456`
@@ -111,6 +113,18 @@ Credenciales basicas (Spring Security en memoria):
 Adicionales para flujo empresarial:
 - `POST /cuentas/transferencias/{id}/aprobar`
 - `POST /cuentas/transferencias/{id}/rechazar`
+
+Endpoints de préstamos:
+- `POST /prestamos` - Solicitar préstamo
+- `GET /prestamos` - Listar préstamos
+- `POST /prestamos/{id}/aprobar` - Aprobar préstamo (solo Analista)
+- `POST /prestamos/{id}/rechazar` - Rechazar préstamo (solo Analista)
+- `POST /prestamos/{id}/desembolsar` - Desembolsar préstamo (solo Analista)
+
+Bitácora de auditoría:
+- `GET /bitacora` - Consultar registros de auditoría
+
+**Nota**: Para documentación completa de todos los endpoints, visita Swagger UI en `http://localhost:8080/swagger-ui.html`
 
 ## 8) Ejemplos HTTP
 Crear cliente:

@@ -1,5 +1,15 @@
 package com.bank.interfaces.controllers;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.bank.application.usecases.AprobarTransferenciaUseCase;
 import com.bank.application.usecases.ConsultarSaldoUseCase;
 import com.bank.application.usecases.CrearCuentaUseCase;
@@ -10,21 +20,17 @@ import com.bank.interfaces.dtos.CrearCuentaRequest;
 import com.bank.interfaces.dtos.CrearCuentaResponse;
 import com.bank.interfaces.dtos.MovimientoRequest;
 import com.bank.interfaces.dtos.SaldoResponse;
-import com.bank.interfaces.dtos.TransferenciaRequest;
 import com.bank.interfaces.dtos.TransaccionResponse;
+import com.bank.interfaces.dtos.TransferenciaRequest;
+
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/cuentas")
+@Tag(name = "Cuentas", description = "Gestión de cuentas bancarias y operaciones transaccionales")
+@SecurityRequirement(name = "basicAuth")
 public class CuentaController {
 
     private final CrearCuentaUseCase crearCuentaUseCase;
