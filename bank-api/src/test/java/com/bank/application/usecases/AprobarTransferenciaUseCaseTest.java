@@ -61,14 +61,17 @@ class AprobarTransferenciaUseCaseTest {
     void supervisorDebePoderRechazarTransferenciaEnEspera() {
         FakeTransaccionRepository transaccionRepo = new FakeTransaccionRepository();
         transaccionRepo.storage.add(transaccionEnEspera("t-2"));
+        FakeCuentaRepository cuentaRepo = new FakeCuentaRepository();
+        cuentaRepo.storage.add(cuenta("c-origen", "10000111", "empresa-1"));
+        cuentaRepo.storage.add(cuenta("c-destino", "10000112", "empresa-destino"));
 
         FakeBitacoraRepository bitacoraRepo = new FakeBitacoraRepository();
         AprobarTransferenciaUseCase useCase = new AprobarTransferenciaUseCase(
                 transaccionRepo,
-                new FakeCuentaRepository(),
+            cuentaRepo,
                 new ServicioTransferencia(),
                 bitacoraRepo,
-                new AuthContextService("")
+            new AuthContextService("supervisor:empresa-1")
         );
 
         SecurityContextHolder.getContext().setAuthentication(
@@ -80,6 +83,30 @@ class AprobarTransferenciaUseCaseTest {
         Transaccion actualizada = transaccionRepo.findById("t-2").orElseThrow();
         assertEquals(EstadoTransaccion.RECHAZADA, actualizada.getEstado());
         assertEquals(1, bitacoraRepo.storage.size());
+    }
+
+    @Test
+    void supervisorNoPuedeAprobarTransferenciaDeOtraEmpresa() {
+        FakeTransaccionRepository transaccionRepo = new FakeTransaccionRepository();
+        transaccionRepo.storage.add(transaccionEnEspera("t-3"));
+        FakeCuentaRepository cuentaRepo = new FakeCuentaRepository();
+        cuentaRepo.storage.add(cuenta("c-origen", "10000111", "empresa-ajena"));
+        cuentaRepo.storage.add(cuenta("c-destino", "10000112", "empresa-destino"));
+
+        AprobarTransferenciaUseCase useCase = new AprobarTransferenciaUseCase(
+                transaccionRepo,
+                cuentaRepo,
+                new ServicioTransferencia(),
+                new FakeBitacoraRepository(),
+                new AuthContextService("supervisor:empresa-1")
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new TestingAuthenticationToken("supervisor", "123456", "ROLE_SUPERVISOR_EMPRESA")
+        );
+
+        SecurityException thrown = assertThrows(SecurityException.class, () -> useCase.aprobar("t-3"));
+        assertEquals("No autorizado para aprobar o rechazar operaciones de otra empresa", thrown.getMessage());
     }
 
     private Transaccion transaccionEnEspera(String id) {
@@ -152,17 +179,17 @@ class AprobarTransferenciaUseCaseTest {
             return storage.stream().filter(c -> c.getClienteId().equals(clienteId)).toList();
         }
 
-        @SuppressWarnings("unused")
-        private Cuenta cuenta(String id, String numero, String clienteId) {
-            return new Cuenta(
-                    id,
-                    new NumeroCuenta(numero),
-                    new Dinero(BigDecimal.valueOf(1000)),
-                    TipoCuenta.AHORROS,
-                    clienteId,
-                    EstadoCuenta.ACTIVA
-            );
-        }
+    }
+
+    private Cuenta cuenta(String id, String numero, String clienteId) {
+        return new Cuenta(
+                id,
+                new NumeroCuenta(numero),
+                new Dinero(BigDecimal.valueOf(1000)),
+                TipoCuenta.AHORROS,
+                clienteId,
+                EstadoCuenta.ACTIVA
+        );
     }
 
     private static final class FakeBitacoraRepository implements BitacoraRepositoryPort {

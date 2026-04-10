@@ -54,6 +54,8 @@ public class AprobarTransferenciaUseCase {
         var destino = cuentaRepository.findByNumeroCuenta(transaccion.getCuentaDestino())
                 .orElseThrow(() -> new IllegalArgumentException("Cuenta destino no encontrada"));
 
+        validarEmpresaSupervisor(origen.getClienteId());
+
         servicioTransferencia.ejecutarTransferenciaPendiente(transaccion, origen, destino);
         cuentaRepository.save(origen);
         cuentaRepository.save(destino);
@@ -85,6 +87,10 @@ public class AprobarTransferenciaUseCase {
         if (transaccion.getEstado() != EstadoTransaccion.EN_ESPERA_APROBACION) {
             throw new IllegalStateException("La transaccion no esta pendiente de aprobacion");
         }
+
+        var origen = cuentaRepository.findByNumeroCuenta(transaccion.getCuentaOrigen())
+            .orElseThrow(() -> new IllegalArgumentException("Cuenta origen no encontrada"));
+        validarEmpresaSupervisor(origen.getClienteId());
 
         transaccion.rechazar();
         transaccionRepository.save(transaccion);
@@ -119,6 +125,13 @@ public class AprobarTransferenciaUseCase {
     private void validarRolAprobador() {
         if (!authContextService.hasRole("SUPERVISOR_EMPRESA")) {
             throw new SecurityException("Solo Supervisor de Empresa puede aprobar o rechazar transferencias");
+        }
+    }
+
+    private void validarEmpresaSupervisor(String clienteEmpresaOrigen) {
+        String empresaSupervisor = authContextService.currentRelatedClientIdOrThrow();
+        if (!empresaSupervisor.equals(clienteEmpresaOrigen)) {
+            throw new SecurityException("No autorizado para aprobar o rechazar operaciones de otra empresa");
         }
     }
 }
