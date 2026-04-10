@@ -1,5 +1,7 @@
 package com.bank.interfaces.controllers;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bank.application.usecases.AprobarTransferenciaUseCase;
 import com.bank.application.usecases.ConsultarSaldoUseCase;
-import com.bank.application.usecases.CrearPagosMasivosUseCase;
 import com.bank.application.usecases.CrearCuentaUseCase;
+import com.bank.application.usecases.CrearPagosMasivosUseCase;
 import com.bank.application.usecases.DepositarDineroUseCase;
 import com.bank.application.usecases.RetirarDineroUseCase;
 import com.bank.application.usecases.TransferirDineroUseCase;
@@ -127,7 +129,7 @@ public class CuentaController {
 
             @PostMapping("/pagos-masivos")
             @PreAuthorize("hasRole('EMPLEADO_EMPRESA')")
-            public java.util.List<TransaccionResponse> pagoMasivo(@Valid @RequestBody PagoMasivoRequest request) {
+                public List<TransaccionResponse> pagoMasivo(@Valid @RequestBody PagoMasivoRequest request) {
             return crearPagosMasivosUseCase.execute(
                     request.cuentaOrigenId(),
                     request.pagos().stream()
