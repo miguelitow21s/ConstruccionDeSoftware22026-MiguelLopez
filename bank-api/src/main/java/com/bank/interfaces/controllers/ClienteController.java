@@ -2,12 +2,15 @@ package com.bank.interfaces.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bank.application.usecases.ConsultarClienteUseCase;
 import com.bank.application.usecases.CrearClienteUseCase;
 import com.bank.interfaces.dtos.CrearClienteRequest;
 import com.bank.interfaces.dtos.CrearClienteResponse;
@@ -24,9 +27,29 @@ import jakarta.validation.Valid;
 public class ClienteController {
 
     private final CrearClienteUseCase crearClienteUseCase;
+    private final ConsultarClienteUseCase consultarClienteUseCase;
 
-    public ClienteController(CrearClienteUseCase crearClienteUseCase) {
+    public ClienteController(CrearClienteUseCase crearClienteUseCase,
+                             ConsultarClienteUseCase consultarClienteUseCase) {
         this.crearClienteUseCase = crearClienteUseCase;
+        this.consultarClienteUseCase = consultarClienteUseCase;
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ANALISTA','COMERCIAL')")
+    @Operation(summary = "Consultar cliente",
+               description = "Permite consultar informacion de cliente para analisis y gestion comercial autorizada.")
+    public CrearClienteResponse consultar(@PathVariable String id) {
+        var cliente = consultarClienteUseCase.execute(id);
+        return new CrearClienteResponse(
+                cliente.getId(),
+                cliente.getIdIdentificacion(),
+                cliente.getNombre(),
+                cliente.getEmail().value(),
+                cliente.getTelefono(),
+                cliente.getTipoCliente().name(),
+                cliente.getRepresentanteLegalId()
+        );
     }
 
     @PostMapping

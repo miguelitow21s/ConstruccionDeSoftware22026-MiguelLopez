@@ -42,6 +42,23 @@ class ListarBitacoraUseCaseTest {
     }
 
     @Test
+    void analistaDebePoderConsultarBitacoraCompleta() {
+        FakeBitacoraRepositoryPort repo = new FakeBitacoraRepositoryPort();
+        repo.storage.add(entry("u1", "b1"));
+        repo.storage.add(entry("u2", "b2"));
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new TestingAuthenticationToken("analista", "123456", "ROLE_ANALISTA")
+        );
+
+        ListarBitacoraUseCase useCase = new ListarBitacoraUseCase(repo, new AuthContextService(""));
+
+        List<BitacoraEntry> resultado = useCase.execute(null);
+
+        assertEquals(2, resultado.size());
+    }
+
+    @Test
     void noAnalistaDebeVerSoloSuBitacora() {
         FakeBitacoraRepositoryPort repo = new FakeBitacoraRepositoryPort();
         repo.storage.add(entry("cliente_natural", "b1"));

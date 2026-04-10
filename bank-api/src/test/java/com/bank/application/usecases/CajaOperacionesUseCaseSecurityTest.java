@@ -71,6 +71,40 @@ class CajaOperacionesUseCaseSecurityTest {
         assertEquals("No autorizado para realizar retiros", ret.getMessage());
     }
 
+        @Test
+        void analistaNoPuedeDepositarNiRetirarDirectamente() {
+        FakeCuentaRepository cuentaRepo = new FakeCuentaRepository();
+        FakeClienteRepository clienteRepo = new FakeClienteRepository();
+        cuentaRepo.storage.add(cuenta("c2", "10000032", "id-2", BigDecimal.valueOf(500)));
+        clienteRepo.storage.add(cliente("id-2", "87654321"));
+
+        DepositarDineroUseCase depositar = new DepositarDineroUseCase(
+            cuentaRepo,
+            clienteRepo,
+            new FakeTransaccionRepository(),
+            new ServicioCuenta(),
+            new AuthContextService("")
+        );
+
+        RetirarDineroUseCase retirar = new RetirarDineroUseCase(
+            cuentaRepo,
+            clienteRepo,
+            new FakeTransaccionRepository(),
+            new ServicioCuenta(),
+            new AuthContextService("")
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(
+            new TestingAuthenticationToken("analista", "123456", "ROLE_ANALISTA")
+        );
+
+        SecurityException dep = assertThrows(SecurityException.class, () -> depositar.execute("c2", "87654321", BigDecimal.valueOf(10)));
+        SecurityException ret = assertThrows(SecurityException.class, () -> retirar.execute("c2", "87654321", BigDecimal.valueOf(10)));
+
+        assertEquals("No autorizado para realizar depositos", dep.getMessage());
+        assertEquals("No autorizado para realizar retiros", ret.getMessage());
+        }
+
     private Cuenta cuenta(String id, String numero, String clienteId, BigDecimal saldo) {
         return new Cuenta(id, new NumeroCuenta(numero), new Dinero(saldo), TipoCuenta.AHORROS, clienteId, EstadoCuenta.ACTIVA);
     }
