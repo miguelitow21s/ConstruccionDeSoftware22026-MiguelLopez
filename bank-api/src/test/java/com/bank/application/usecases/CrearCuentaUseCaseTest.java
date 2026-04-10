@@ -1,27 +1,25 @@
 package com.bank.application.usecases;
 
-import com.bank.application.ports.ClienteRepositoryPort;
-import com.bank.application.ports.CuentaRepositoryPort;
-import com.bank.application.services.AuthContextService;
-import com.bank.domain.entities.Cliente;
-import com.bank.domain.entities.Cuenta;
-import com.bank.domain.entities.EstadoCuenta;
-import com.bank.domain.entities.TipoCliente;
-import com.bank.domain.entities.TipoCuenta;
-import com.bank.domain.valueobjects.Email;
-import com.bank.domain.valueobjects.NumeroCuenta;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.bank.application.ports.ClienteRepositoryPort;
+import com.bank.application.ports.CuentaRepositoryPort;
+import com.bank.application.services.AuthContextService;
+import com.bank.domain.entities.Cliente;
+import com.bank.domain.entities.Cuenta;
+import com.bank.domain.entities.TipoCliente;
+import com.bank.domain.entities.TipoCuenta;
+import com.bank.domain.valueobjects.Email;
 
 class CrearCuentaUseCaseTest {
 

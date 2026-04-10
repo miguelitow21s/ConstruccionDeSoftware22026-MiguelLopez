@@ -1,11 +1,12 @@
 package com.bank.application.usecases;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.bank.application.ports.PrestamoRepositoryPort;
 import com.bank.application.services.AuthContextService;
 import com.bank.domain.entities.Prestamo;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ListarPrestamosUseCase {

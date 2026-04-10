@@ -1,5 +1,9 @@
 package com.bank.application.usecases;
 
+import java.math.BigDecimal;
+
+import org.springframework.stereotype.Service;
+
 import com.bank.application.ports.ClienteRepositoryPort;
 import com.bank.application.ports.CuentaRepositoryPort;
 import com.bank.application.services.AuthContextService;
@@ -7,9 +11,6 @@ import com.bank.domain.entities.Cuenta;
 import com.bank.domain.entities.TipoCuenta;
 import com.bank.domain.valueobjects.Dinero;
 import com.bank.domain.valueobjects.NumeroCuenta;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
 
 @Service
 public class CrearCuentaUseCase {

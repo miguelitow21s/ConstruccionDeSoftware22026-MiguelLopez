@@ -1,17 +1,18 @@
 package com.bank.application.usecases;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.UUID;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.bank.application.ports.BitacoraEntry;
 import com.bank.application.ports.BitacoraRepositoryPort;
 import com.bank.application.ports.PrestamoRepositoryPort;
 import com.bank.application.services.AuthContextService;
 import com.bank.domain.entities.Prestamo;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.UUID;
 
 @Service
 public class AprobarPrestamoUseCase {
