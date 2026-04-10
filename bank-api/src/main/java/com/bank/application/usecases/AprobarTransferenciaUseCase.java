@@ -1,19 +1,21 @@
 package com.bank.application.usecases;
 
-import com.bank.application.ports.BitacoraEntry;
-import com.bank.application.ports.BitacoraRepositoryPort;
-import com.bank.application.ports.CuentaRepositoryPort;
-import com.bank.application.ports.TransaccionRepositoryPort;
-import com.bank.domain.entities.EstadoTransaccion;
-import com.bank.domain.services.ServicioTransferencia;
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.UUID;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.UUID;
+import com.bank.application.ports.BitacoraEntry;
+import com.bank.application.ports.BitacoraRepositoryPort;
+import com.bank.application.ports.CuentaRepositoryPort;
+import com.bank.application.ports.TransaccionRepositoryPort;
+import com.bank.application.services.AuthContextService;
+import com.bank.domain.entities.EstadoTransaccion;
+import com.bank.domain.services.ServicioTransferencia;
 
 @Service
 public class AprobarTransferenciaUseCase {
@@ -22,19 +24,24 @@ public class AprobarTransferenciaUseCase {
     private final CuentaRepositoryPort cuentaRepository;
     private final ServicioTransferencia servicioTransferencia;
     private final BitacoraRepositoryPort bitacoraRepository;
+    private final AuthContextService authContextService;
 
     public AprobarTransferenciaUseCase(TransaccionRepositoryPort transaccionRepository,
                                        CuentaRepositoryPort cuentaRepository,
                                        ServicioTransferencia servicioTransferencia,
-                                       BitacoraRepositoryPort bitacoraRepository) {
+                                       BitacoraRepositoryPort bitacoraRepository,
+                                       AuthContextService authContextService) {
         this.transaccionRepository = transaccionRepository;
         this.cuentaRepository = cuentaRepository;
         this.servicioTransferencia = servicioTransferencia;
         this.bitacoraRepository = bitacoraRepository;
+        this.authContextService = authContextService;
     }
 
     @Transactional
     public void aprobar(String transaccionId) {
+        validarRolAprobador();
+
         var transaccion = transaccionRepository.findById(transaccionId)
                 .orElseThrow(() -> new IllegalArgumentException("Transaccion no encontrada"));
 
@@ -70,6 +77,8 @@ public class AprobarTransferenciaUseCase {
 
     @Transactional
     public void rechazar(String transaccionId) {
+        validarRolAprobador();
+
         var transaccion = transaccionRepository.findById(transaccionId)
                 .orElseThrow(() -> new IllegalArgumentException("Transaccion no encontrada"));
 
@@ -105,5 +114,11 @@ public class AprobarTransferenciaUseCase {
             return "SYSTEM";
         }
         return auth.getAuthorities().iterator().next().getAuthority();
+    }
+
+    private void validarRolAprobador() {
+        if (!authContextService.hasRole("SUPERVISOR_EMPRESA")) {
+            throw new SecurityException("Solo Supervisor de Empresa puede aprobar o rechazar transferencias");
+        }
     }
 }

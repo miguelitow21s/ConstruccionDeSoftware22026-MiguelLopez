@@ -1,23 +1,24 @@
 package com.bank.application.usecases;
 
-import com.bank.application.ports.BitacoraEntry;
-import com.bank.application.ports.BitacoraRepositoryPort;
-import com.bank.application.services.AuthContextService;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.bank.application.ports.BitacoraEntry;
+import com.bank.application.ports.BitacoraRepositoryPort;
+import com.bank.application.services.AuthContextService;
 
 class ListarBitacoraUseCaseTest {
 
     @AfterEach
+    @SuppressWarnings("unused")
     void limpiarContexto() {
         SecurityContextHolder.clearContext();
     }
