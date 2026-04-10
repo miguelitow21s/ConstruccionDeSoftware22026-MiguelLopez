@@ -35,14 +35,23 @@ public class Transaccion {
     }
 
     public void aprobarYEjecutar() {
+        if (this.estado != EstadoTransaccion.EN_ESPERA_APROBACION) {
+            throw new IllegalStateException("Solo se pueden aprobar transferencias en espera de aprobacion");
+        }
         this.estado = EstadoTransaccion.EJECUTADA;
     }
 
     public void rechazar() {
+        if (this.estado != EstadoTransaccion.EN_ESPERA_APROBACION) {
+            throw new IllegalStateException("Solo se pueden rechazar transferencias en espera de aprobacion");
+        }
         this.estado = EstadoTransaccion.RECHAZADA;
     }
 
     public void vencer() {
+        if (this.estado != EstadoTransaccion.EN_ESPERA_APROBACION) {
+            throw new IllegalStateException("Solo se pueden vencer transferencias en espera de aprobacion");
+        }
         this.estado = EstadoTransaccion.VENCIDA;
     }
 

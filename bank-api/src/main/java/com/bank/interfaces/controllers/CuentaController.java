@@ -97,7 +97,7 @@ public class CuentaController {
     }
 
     @PostMapping("/transferir")
-    @PreAuthorize("hasAnyRole('EMPLEADO_EMPRESA','SUPERVISOR_EMPRESA','CLIENTE_NATURAL','CLIENTE_EMPRESA')")
+    @PreAuthorize("hasAnyRole('EMPLEADO_EMPRESA','CLIENTE_NATURAL','CLIENTE_EMPRESA')")
     public TransaccionResponse transferir(@Valid @RequestBody TransferenciaRequest request) {
         var transaccion = transferirDineroUseCase.execute(
                 request.cuentaOrigenId(),
@@ -119,14 +119,14 @@ public class CuentaController {
 
     @PostMapping("/transferencias/{id}/aprobar")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAnyRole('SUPERVISOR_EMPRESA','ANALISTA')")
+    @PreAuthorize("hasRole('SUPERVISOR_EMPRESA')")
     public void aprobarTransferencia(@PathVariable String id) {
         aprobarTransferenciaUseCase.aprobar(id);
     }
 
     @PostMapping("/transferencias/{id}/rechazar")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAnyRole('SUPERVISOR_EMPRESA','ANALISTA')")
+    @PreAuthorize("hasRole('SUPERVISOR_EMPRESA')")
     public void rechazarTransferencia(@PathVariable String id) {
         aprobarTransferenciaUseCase.rechazar(id);
     }
