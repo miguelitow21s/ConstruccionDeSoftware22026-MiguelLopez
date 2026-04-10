@@ -35,9 +35,15 @@ public class ClienteController {
     @Operation(summary = "Crear nuevo cliente", 
                description = "Registra un nuevo cliente en el sistema. Disponible para personal bancario autorizado.")
     public CrearClienteResponse crear(@Valid @RequestBody CrearClienteRequest request) {
-        var cliente = crearClienteUseCase.execute(request.nombre(), request.email(), request.telefono());
+        var cliente = crearClienteUseCase.execute(
+            request.idIdentificacion(),
+            request.nombre(),
+            request.email(),
+            request.telefono()
+        );
         return new CrearClienteResponse(
                 cliente.getId(),
+            cliente.getIdIdentificacion(),
                 cliente.getNombre(),
                 cliente.getEmail().value(),
                 cliente.getTelefono()

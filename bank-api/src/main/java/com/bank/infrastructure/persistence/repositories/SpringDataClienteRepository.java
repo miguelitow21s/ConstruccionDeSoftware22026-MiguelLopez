@@ -1,11 +1,14 @@
 package com.bank.infrastructure.persistence.repositories;
 
-import com.bank.infrastructure.persistence.entities.ClienteJpaEntity;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import com.bank.infrastructure.persistence.entities.ClienteJpaEntity;
 
 public interface SpringDataClienteRepository extends JpaRepository<ClienteJpaEntity, String> {
 
     Optional<ClienteJpaEntity> findByEmail(String email);
+
+    Optional<ClienteJpaEntity> findByIdIdentificacion(String idIdentificacion);
 }

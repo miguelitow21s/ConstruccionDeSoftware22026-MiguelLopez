@@ -11,6 +11,9 @@ La API implementa operaciones nucleares de banca:
 - Transferencias (con flujo de aprobacion para alto monto)
 - Listado de transacciones
 
+Regla vigente en registro de clientes:
+- `idIdentificacion` es obligatorio y unico por cliente.
+
 El diseno separa negocio puro (dominio) de detalles tecnicos (JPA, REST, seguridad), para que el sistema sea mantenible, testeable y escalable.
 
 ## 2) DDD Aplicado
@@ -134,6 +137,7 @@ Authorization: Basic YW5hbGlzdGE6MTIzNDU2
 Content-Type: application/json
 
 {
+  "idIdentificacion": "10101010",
   "nombre": "Miguel Lopez",
   "email": "miguel@bank.com",
   "telefono": "3001234567"

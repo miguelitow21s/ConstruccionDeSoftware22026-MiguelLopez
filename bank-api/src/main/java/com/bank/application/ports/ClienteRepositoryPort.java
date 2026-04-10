@@ -1,8 +1,8 @@
 package com.bank.application.ports;
 
-import com.bank.domain.entities.Cliente;
-
 import java.util.Optional;
+
+import com.bank.domain.entities.Cliente;
 
 public interface ClienteRepositoryPort {
 
@@ -11,4 +11,6 @@ public interface ClienteRepositoryPort {
     Optional<Cliente> findById(String id);
 
     Optional<Cliente> findByEmail(String email);
+
+    Optional<Cliente> findByIdIdentificacion(String idIdentificacion);
 }

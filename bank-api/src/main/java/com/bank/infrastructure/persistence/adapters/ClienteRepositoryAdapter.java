@@ -1,13 +1,14 @@
 package com.bank.infrastructure.persistence.adapters;
 
+import java.util.Objects;
+import java.util.Optional;
+
+import org.springframework.stereotype.Component;
+
 import com.bank.application.ports.ClienteRepositoryPort;
 import com.bank.domain.entities.Cliente;
 import com.bank.infrastructure.persistence.mappers.ClienteMapper;
 import com.bank.infrastructure.persistence.repositories.SpringDataClienteRepository;
-import org.springframework.stereotype.Component;
-
-import java.util.Objects;
-import java.util.Optional;
 
 @Component
 public class ClienteRepositoryAdapter implements ClienteRepositoryPort {
@@ -35,5 +36,10 @@ public class ClienteRepositoryAdapter implements ClienteRepositoryPort {
     @Override
     public Optional<Cliente> findByEmail(String email) {
         return repository.findByEmail(email).map(mapper::toDomain);
+    }
+
+    @Override
+    public Optional<Cliente> findByIdIdentificacion(String idIdentificacion) {
+        return repository.findByIdIdentificacion(idIdentificacion).map(mapper::toDomain);
     }
 }

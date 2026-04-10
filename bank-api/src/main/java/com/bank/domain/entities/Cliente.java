@@ -8,17 +8,21 @@ import com.bank.domain.valueobjects.Email;
 public class Cliente {
 
     private final String id;
+    private final String idIdentificacion;
     private final String nombre;
     private final Email email;
     private final String telefono;
 
-    public Cliente(String nombre, Email email, String telefono) {
-        this(UUID.randomUUID().toString(), nombre, email, telefono);
+    public Cliente(String idIdentificacion, String nombre, Email email, String telefono) {
+        this(UUID.randomUUID().toString(), idIdentificacion, nombre, email, telefono);
     }
 
-    public Cliente(String id, String nombre, Email email, String telefono) {
+    public Cliente(String id, String idIdentificacion, String nombre, Email email, String telefono) {
         if (id == null || id.isBlank()) {
             throw new IllegalArgumentException("Id de cliente invalido");
+        }
+        if (idIdentificacion == null || idIdentificacion.isBlank() || idIdentificacion.length() > 20) {
+            throw new IllegalArgumentException("Identificacion invalida");
         }
         if (nombre == null || nombre.isBlank()) {
             throw new IllegalArgumentException("Nombre de cliente invalido");
@@ -27,6 +31,7 @@ public class Cliente {
             throw new IllegalArgumentException("Telefono invalido");
         }
         this.id = id;
+        this.idIdentificacion = idIdentificacion;
         this.nombre = nombre;
         this.email = email;
         this.telefono = telefono;
@@ -34,6 +39,10 @@ public class Cliente {
 
     public String getId() {
         return id;
+    }
+
+    public String getIdIdentificacion() {
+        return idIdentificacion;
     }
 
     public String getNombre() {

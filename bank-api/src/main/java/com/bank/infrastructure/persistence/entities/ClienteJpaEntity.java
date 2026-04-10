@@ -12,6 +12,9 @@ public class ClienteJpaEntity {
     @Id
     private String id;
 
+    @Column(nullable = false, unique = true, length = 20)
+    private String idIdentificacion;
+
     @Column(nullable = false)
     private String nombre;
 
@@ -31,6 +34,14 @@ public class ClienteJpaEntity {
 
     public String getNombre() {
         return nombre;
+    }
+
+    public String getIdIdentificacion() {
+        return idIdentificacion;
+    }
+
+    public void setIdIdentificacion(String idIdentificacion) {
+        this.idIdentificacion = idIdentificacion;
     }
 
     public void setNombre(String nombre) {
