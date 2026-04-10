@@ -31,6 +31,7 @@ import com.bank.domain.valueobjects.NumeroCuenta;
 class AprobarTransferenciaUseCaseTest {
 
     @AfterEach
+    @SuppressWarnings("unused")
     void limpiarContexto() {
         SecurityContextHolder.clearContext();
     }
@@ -52,7 +53,8 @@ class AprobarTransferenciaUseCaseTest {
                 new TestingAuthenticationToken("analista", "123456", "ROLE_ANALISTA")
         );
 
-        assertThrows(SecurityException.class, () -> useCase.aprobar("t-1"));
+        SecurityException thrown = assertThrows(SecurityException.class, () -> useCase.aprobar("t-1"));
+        assertEquals("Solo Supervisor de Empresa puede aprobar o rechazar transferencias", thrown.getMessage());
     }
 
     @Test

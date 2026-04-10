@@ -24,21 +24,24 @@ class TransaccionTest {
     void debeFallarAprobarYEjecutarSiNoEstaEnEspera() {
         Transaccion transaccion = transaccion(EstadoTransaccion.PENDIENTE);
 
-        assertThrows(IllegalStateException.class, transaccion::aprobarYEjecutar);
+        IllegalStateException thrown = assertThrows(IllegalStateException.class, transaccion::aprobarYEjecutar);
+        assertEquals("Solo se pueden aprobar transferencias en espera de aprobacion", thrown.getMessage());
     }
 
     @Test
     void debeFallarRechazarSiNoEstaEnEspera() {
         Transaccion transaccion = transaccion(EstadoTransaccion.EJECUTADA);
 
-        assertThrows(IllegalStateException.class, transaccion::rechazar);
+        IllegalStateException thrown = assertThrows(IllegalStateException.class, transaccion::rechazar);
+        assertEquals("Solo se pueden rechazar transferencias en espera de aprobacion", thrown.getMessage());
     }
 
     @Test
     void debeFallarVencerSiNoEstaEnEspera() {
         Transaccion transaccion = transaccion(EstadoTransaccion.RECHAZADA);
 
-        assertThrows(IllegalStateException.class, transaccion::vencer);
+        IllegalStateException thrown = assertThrows(IllegalStateException.class, transaccion::vencer);
+        assertEquals("Solo se pueden vencer transferencias en espera de aprobacion", thrown.getMessage());
     }
 
     private Transaccion transaccion(EstadoTransaccion estado) {

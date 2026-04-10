@@ -1,25 +1,26 @@
 package com.bank.application.usecases;
 
-import com.bank.application.ports.PrestamoRepositoryPort;
-import com.bank.application.services.AuthContextService;
-import com.bank.domain.entities.EstadoPrestamo;
-import com.bank.domain.entities.Prestamo;
-import com.bank.domain.entities.TipoPrestamo;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.bank.application.ports.PrestamoRepositoryPort;
+import com.bank.application.services.AuthContextService;
+import com.bank.domain.entities.EstadoPrestamo;
+import com.bank.domain.entities.Prestamo;
+import com.bank.domain.entities.TipoPrestamo;
 
 class ListarPrestamosUseCaseTest {
 
     @AfterEach
+    @SuppressWarnings("unused")
     void limpiarContexto() {
         SecurityContextHolder.clearContext();
     }

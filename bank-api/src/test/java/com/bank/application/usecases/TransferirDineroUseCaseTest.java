@@ -29,6 +29,7 @@ import com.bank.domain.valueobjects.NumeroCuenta;
 class TransferirDineroUseCaseTest {
 
     @AfterEach
+    @SuppressWarnings("unused")
     void limpiarContexto() {
         SecurityContextHolder.clearContext();
     }
@@ -52,7 +53,11 @@ class TransferirDineroUseCaseTest {
                 new TestingAuthenticationToken("analista", "123456", "ROLE_ANALISTA")
         );
 
-        assertThrows(SecurityException.class, () -> useCase.execute("c1", "c2", BigDecimal.valueOf(100), false));
+        SecurityException thrown = assertThrows(
+            SecurityException.class,
+            () -> useCase.execute("c1", "c2", BigDecimal.valueOf(100), false)
+        );
+        assertEquals("No autorizado para crear transferencias", thrown.getMessage());
     }
 
     @Test

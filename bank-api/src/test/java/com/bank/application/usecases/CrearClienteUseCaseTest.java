@@ -32,8 +32,9 @@ class CrearClienteUseCaseTest {
 
         CrearClienteUseCase useCase = new CrearClienteUseCase(repo);
 
-        assertThrows(IllegalArgumentException.class,
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
                 () -> useCase.execute("10101010", "Cliente Dos", "dos@bank.com", "3002222222"));
+        assertEquals("Ya existe un cliente con esa identificacion", thrown.getMessage());
     }
 
     @Test
@@ -43,8 +44,9 @@ class CrearClienteUseCaseTest {
 
         CrearClienteUseCase useCase = new CrearClienteUseCase(repo);
 
-        assertThrows(IllegalArgumentException.class,
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
                 () -> useCase.execute("20202020", "Cliente Dos", "uno@bank.com", "3002222222"));
+        assertEquals("Ya existe un cliente con ese email", thrown.getMessage());
     }
 
     private static final class FakeClienteRepository implements ClienteRepositoryPort {
