@@ -121,6 +121,50 @@ class ConsultarSaldoUseCaseTest {
         assertEquals("Identificacion del cliente no coincide con la cuenta", thrown.getMessage());
         }
 
+        @Test
+        void comercialSoloPuedeConsultarSaldoDeClienteBajoGestion() {
+        FakeCuentaRepository cuentaRepo = new FakeCuentaRepository();
+        cuentaRepo.storage.add(cuenta("c5", "10000015", "cliente-5", BigDecimal.valueOf(2100)));
+        FakeClienteRepository clienteRepo = new FakeClienteRepository();
+        clienteRepo.storage.add(cliente("cliente-5", "50505050"));
+
+        ConsultarSaldoUseCase useCase = new ConsultarSaldoUseCase(
+            cuentaRepo,
+            clienteRepo,
+            new ServicioCuenta(),
+            new AuthContextService("comercial:cliente-5")
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(
+            new TestingAuthenticationToken("comercial", "123456", "ROLE_COMERCIAL")
+        );
+
+        Dinero saldo = useCase.execute("c5", null);
+        assertEquals(BigDecimal.valueOf(2100).setScale(2), saldo.value());
+        }
+
+        @Test
+        void comercialNoPuedeConsultarSaldoDeClienteFueraDeGestion() {
+        FakeCuentaRepository cuentaRepo = new FakeCuentaRepository();
+        cuentaRepo.storage.add(cuenta("c6", "10000016", "cliente-6", BigDecimal.valueOf(1800)));
+        FakeClienteRepository clienteRepo = new FakeClienteRepository();
+        clienteRepo.storage.add(cliente("cliente-6", "60606060"));
+
+        ConsultarSaldoUseCase useCase = new ConsultarSaldoUseCase(
+            cuentaRepo,
+            clienteRepo,
+            new ServicioCuenta(),
+            new AuthContextService("comercial:cliente-otro")
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(
+            new TestingAuthenticationToken("comercial", "123456", "ROLE_COMERCIAL")
+        );
+
+        SecurityException thrown = assertThrows(SecurityException.class, () -> useCase.execute("c6", null));
+        assertEquals("No autorizado para consultar esta cuenta", thrown.getMessage());
+        }
+
     private Cuenta cuenta(String id, String numero, String clienteId, BigDecimal saldo) {
         return new Cuenta(id, new NumeroCuenta(numero), new Dinero(saldo), TipoCuenta.AHORROS, clienteId, EstadoCuenta.ACTIVA);
     }

@@ -40,12 +40,14 @@ public class SolicitarPrestamoUseCase {
                             BigDecimal montoSolicitado,
                             BigDecimal tasaInteres,
                             int plazoMeses) {
-                if (authContextService.hasAnyRole("CLIENTE_NATURAL", "CLIENTE_EMPRESA", "EMPLEADO_EMPRESA", "SUPERVISOR_EMPRESA", "COMERCIAL")) {
-                        String clienteRelacionado = authContextService.currentRelatedClientIdOrThrow();
-                        if (!clienteRelacionado.equals(clienteSolicitanteId)) {
-                                throw new SecurityException("No autorizado para solicitar prestamos para otro cliente");
-                        }
-                }
+        if (!authContextService.hasAnyRole("CLIENTE_NATURAL", "CLIENTE_EMPRESA", "COMERCIAL")) {
+            throw new SecurityException("No autorizado para solicitar prestamos");
+        }
+
+        String clienteRelacionado = authContextService.currentRelatedClientIdOrThrow();
+        if (!clienteRelacionado.equals(clienteSolicitanteId)) {
+            throw new SecurityException("No autorizado para solicitar prestamos para otro cliente");
+        }
 
         clienteRepository.findById(clienteSolicitanteId)
                 .orElseThrow(() -> new IllegalArgumentException("Cliente solicitante no encontrado"));

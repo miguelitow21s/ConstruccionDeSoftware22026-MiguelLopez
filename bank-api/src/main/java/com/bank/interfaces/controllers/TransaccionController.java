@@ -26,7 +26,7 @@ public class TransaccionController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ANALISTA','VENTANILLA','SUPERVISOR_EMPRESA','EMPLEADO_EMPRESA','CLIENTE_NATURAL','CLIENTE_EMPRESA')")
+    @PreAuthorize("hasAnyRole('ANALISTA','VENTANILLA','COMERCIAL','SUPERVISOR_EMPRESA','EMPLEADO_EMPRESA','CLIENTE_NATURAL','CLIENTE_EMPRESA')")
     public List<TransaccionResponse> listar() {
         return listarTransaccionesUseCase.execute().stream()
                 .map(tx -> new TransaccionResponse(

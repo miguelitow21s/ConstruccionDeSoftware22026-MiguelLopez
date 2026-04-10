@@ -100,6 +100,29 @@ class SolicitarPrestamoUseCaseTest {
         assertEquals("No autorizado para solicitar prestamos para otro cliente", thrown.getMessage());
         }
 
+    @Test
+    void empleadoEmpresaNoPuedeSolicitarPrestamos() {
+        FakeClienteRepository clienteRepo = new FakeClienteRepository();
+        clienteRepo.storage.add(new Cliente("id-empresa", "30303030", "Empresa Uno", new Email("empresa@bank.com"), "3003333333"));
+
+        SolicitarPrestamoUseCase useCase = new SolicitarPrestamoUseCase(
+                new FakePrestamoRepository(),
+                clienteRepo,
+                new FakeBitacoraRepository(),
+                new AuthContextService("empleado_empresa:id-empresa")
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new TestingAuthenticationToken("empleado_empresa", "123456", "ROLE_EMPLEADO_EMPRESA")
+        );
+
+        SecurityException thrown = assertThrows(
+                SecurityException.class,
+                () -> useCase.execute(TipoPrestamo.CONSUMO, "id-empresa", BigDecimal.valueOf(1800), BigDecimal.valueOf(1.4), 12)
+        );
+        assertEquals("No autorizado para solicitar prestamos", thrown.getMessage());
+    }
+
     private static final class FakePrestamoRepository implements PrestamoRepositoryPort {
         private final List<Prestamo> storage = new ArrayList<>();
 

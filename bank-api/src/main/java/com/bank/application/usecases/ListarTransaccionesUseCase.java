@@ -29,7 +29,7 @@ public class ListarTransaccionesUseCase {
             return transaccionRepository.findAll();
         }
 
-        if (authContextService.hasAnyRole("CLIENTE_NATURAL", "CLIENTE_EMPRESA", "EMPLEADO_EMPRESA", "SUPERVISOR_EMPRESA")) {
+        if (authContextService.hasAnyRole("CLIENTE_NATURAL", "CLIENTE_EMPRESA", "EMPLEADO_EMPRESA", "SUPERVISOR_EMPRESA", "COMERCIAL")) {
             String clienteId = authContextService.currentRelatedClientIdOrThrow();
             List<String> cuentasCliente = cuentaRepository.findByClienteId(clienteId).stream()
                     .map(c -> c.getNumeroCuenta().value())
@@ -40,6 +40,6 @@ public class ListarTransaccionesUseCase {
             return transaccionRepository.findByCuentaOrigenInOrCuentaDestinoIn(cuentasCliente, cuentasCliente);
         }
 
-        return List.of();
+        throw new SecurityException("No autorizado para consultar transacciones");
     }
 }

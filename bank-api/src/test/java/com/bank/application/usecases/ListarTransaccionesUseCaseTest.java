@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -56,6 +57,47 @@ class ListarTransaccionesUseCaseTest {
         assertEquals(1, resultado.size());
         assertEquals("t1", resultado.getFirst().getId());
     }
+
+        @Test
+        void comercialSoloVeTransaccionesDeClientesBajoGestion() {
+        FakeCuentaRepository cuentaRepo = new FakeCuentaRepository();
+        cuentaRepo.storage.add(cuenta("c1", "10000123", "cliente-1"));
+
+        FakeTransaccionRepository transaccionRepo = new FakeTransaccionRepository();
+        transaccionRepo.storage.add(transaccion("t1", "10000123", "10000999"));
+        transaccionRepo.storage.add(transaccion("t2", "10000888", "10000777"));
+
+        ListarTransaccionesUseCase useCase = new ListarTransaccionesUseCase(
+            transaccionRepo,
+            cuentaRepo,
+            new AuthContextService("comercial:cliente-1")
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(
+            new TestingAuthenticationToken("comercial", "123456", "ROLE_COMERCIAL")
+        );
+
+        List<Transaccion> resultado = useCase.execute();
+
+        assertEquals(1, resultado.size());
+        assertEquals("t1", resultado.getFirst().getId());
+        }
+
+        @Test
+        void debeFallarParaRolNoAutorizado() {
+        ListarTransaccionesUseCase useCase = new ListarTransaccionesUseCase(
+            new FakeTransaccionRepository(),
+            new FakeCuentaRepository(),
+            new AuthContextService("")
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(
+            new TestingAuthenticationToken("invitado", "123456", "ROLE_INVITADO")
+        );
+
+        SecurityException thrown = assertThrows(SecurityException.class, useCase::execute);
+        assertEquals("No autorizado para consultar transacciones", thrown.getMessage());
+        }
 
     private Cuenta cuenta(String id, String numeroCuenta, String clienteId) {
         return new Cuenta(id, new NumeroCuenta(numeroCuenta), new Dinero(BigDecimal.valueOf(1000)), TipoCuenta.AHORROS, clienteId, EstadoCuenta.ACTIVA);

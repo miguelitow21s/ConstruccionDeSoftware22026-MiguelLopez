@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bank.application.usecases.AprobarTransferenciaUseCase;
 import com.bank.application.usecases.ConsultarSaldoUseCase;
+import com.bank.application.usecases.CrearPagosMasivosUseCase;
 import com.bank.application.usecases.CrearCuentaUseCase;
 import com.bank.application.usecases.DepositarDineroUseCase;
 import com.bank.application.usecases.RetirarDineroUseCase;
@@ -20,6 +21,7 @@ import com.bank.application.usecases.TransferirDineroUseCase;
 import com.bank.interfaces.dtos.CrearCuentaRequest;
 import com.bank.interfaces.dtos.CrearCuentaResponse;
 import com.bank.interfaces.dtos.MovimientoRequest;
+import com.bank.interfaces.dtos.PagoMasivoRequest;
 import com.bank.interfaces.dtos.SaldoResponse;
 import com.bank.interfaces.dtos.TransaccionResponse;
 import com.bank.interfaces.dtos.TransferenciaRequest;
@@ -39,6 +41,7 @@ public class CuentaController {
     private final DepositarDineroUseCase depositarDineroUseCase;
     private final RetirarDineroUseCase retirarDineroUseCase;
     private final TransferirDineroUseCase transferirDineroUseCase;
+    private final CrearPagosMasivosUseCase crearPagosMasivosUseCase;
     private final AprobarTransferenciaUseCase aprobarTransferenciaUseCase;
 
     public CuentaController(CrearCuentaUseCase crearCuentaUseCase,
@@ -46,12 +49,14 @@ public class CuentaController {
                            DepositarDineroUseCase depositarDineroUseCase,
                            RetirarDineroUseCase retirarDineroUseCase,
                            TransferirDineroUseCase transferirDineroUseCase,
+                           CrearPagosMasivosUseCase crearPagosMasivosUseCase,
                            AprobarTransferenciaUseCase aprobarTransferenciaUseCase) {
         this.crearCuentaUseCase = crearCuentaUseCase;
         this.consultarSaldoUseCase = consultarSaldoUseCase;
         this.depositarDineroUseCase = depositarDineroUseCase;
         this.retirarDineroUseCase = retirarDineroUseCase;
         this.transferirDineroUseCase = transferirDineroUseCase;
+        this.crearPagosMasivosUseCase = crearPagosMasivosUseCase;
         this.aprobarTransferenciaUseCase = aprobarTransferenciaUseCase;
     }
 
@@ -119,6 +124,26 @@ public class CuentaController {
                 transaccion.getEstado()
         );
     }
+
+            @PostMapping("/pagos-masivos")
+            @PreAuthorize("hasRole('EMPLEADO_EMPRESA')")
+            public java.util.List<TransaccionResponse> pagoMasivo(@Valid @RequestBody PagoMasivoRequest request) {
+            return crearPagosMasivosUseCase.execute(
+                    request.cuentaOrigenId(),
+                    request.pagos().stream()
+                        .map(p -> new CrearPagosMasivosUseCase.PagoMasivoItem(p.cuentaDestinoId(), p.monto()))
+                        .toList())
+                .stream()
+                .map(transaccion -> new TransaccionResponse(
+                    transaccion.getId(),
+                    transaccion.getTipoTransaccion(),
+                    transaccion.getMonto().value(),
+                    transaccion.getFecha(),
+                    transaccion.getCuentaOrigen(),
+                    transaccion.getCuentaDestino(),
+                    transaccion.getEstado()))
+                .toList();
+            }
 
     @PostMapping("/transferencias/{id}/aprobar")
     @ResponseStatus(HttpStatus.NO_CONTENT)

@@ -114,6 +114,32 @@ class TransferirDineroUseCaseTest {
         assertEquals("No autorizado para operar la cuenta origen", thrown.getMessage());
         }
 
+    @Test
+    void empleadoEmpresaDebeDejarPendienteTransferenciaSobreUmbral() {
+        FakeCuentaRepository cuentaRepo = new FakeCuentaRepository();
+        cuentaRepo.storage.add(cuenta("c1", "10000007", "empresa-1", BigDecimal.valueOf(10000)));
+        cuentaRepo.storage.add(cuenta("c2", "10000008", "proveedor-1", BigDecimal.valueOf(500)));
+
+        FakeTransaccionRepository transaccionRepo = new FakeTransaccionRepository();
+        TransferirDineroUseCase useCase = new TransferirDineroUseCase(
+                cuentaRepo,
+                transaccionRepo,
+                new ServicioTransferencia(),
+                new FakeBitacoraRepository(),
+                new AuthContextService("empleado_empresa:empresa-1"),
+                BigDecimal.valueOf(2_000)
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new TestingAuthenticationToken("empleado_empresa", "123456", "ROLE_EMPLEADO_EMPRESA")
+        );
+
+        Transaccion transaccion = useCase.execute("c1", "c2", BigDecimal.valueOf(5_000), true);
+
+        assertEquals(EstadoTransaccion.EN_ESPERA_APROBACION, transaccion.getEstado());
+        assertEquals(1, transaccionRepo.storage.size());
+    }
+
     private Cuenta cuenta(String id, String numero, String clienteId, BigDecimal saldo) {
         return new Cuenta(
                 id,

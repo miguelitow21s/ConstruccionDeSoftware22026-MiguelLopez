@@ -57,7 +57,7 @@ public class ConsultarSaldoUseCase {
             return;
         }
 
-        if (authContextService.hasAnyRole("CLIENTE_NATURAL", "CLIENTE_EMPRESA", "EMPLEADO_EMPRESA", "SUPERVISOR_EMPRESA")) {
+        if (authContextService.hasAnyRole("CLIENTE_NATURAL", "CLIENTE_EMPRESA", "EMPLEADO_EMPRESA", "SUPERVISOR_EMPRESA", "COMERCIAL")) {
             String clienteRelacionado = authContextService.currentRelatedClientIdOrThrow();
             if (!clienteRelacionado.equals(clienteIdCuenta)) {
                 throw new SecurityException("No autorizado para consultar esta cuenta");
