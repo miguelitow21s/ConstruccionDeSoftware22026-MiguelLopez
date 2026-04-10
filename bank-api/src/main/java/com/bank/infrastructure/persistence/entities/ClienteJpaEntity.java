@@ -24,6 +24,12 @@ public class ClienteJpaEntity {
     @Column(nullable = false)
     private String telefono;
 
+    @Column(nullable = false, length = 40)
+    private String tipoCliente;
+
+    @Column(length = 50)
+    private String representanteLegalId;
+
     public String getId() {
         return id;
     }
@@ -62,5 +68,21 @@ public class ClienteJpaEntity {
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
+    }
+
+    public String getTipoCliente() {
+        return tipoCliente;
+    }
+
+    public void setTipoCliente(String tipoCliente) {
+        this.tipoCliente = tipoCliente;
+    }
+
+    public String getRepresentanteLegalId() {
+        return representanteLegalId;
+    }
+
+    public void setRepresentanteLegalId(String representanteLegalId) {
+        this.representanteLegalId = representanteLegalId;
     }
 }

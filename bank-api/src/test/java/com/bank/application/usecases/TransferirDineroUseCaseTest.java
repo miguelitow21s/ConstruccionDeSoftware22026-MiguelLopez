@@ -45,7 +45,7 @@ class TransferirDineroUseCaseTest {
                 new FakeTransaccionRepository(),
                 new ServicioTransferencia(),
                 new FakeBitacoraRepository(),
-                new AuthContextService(""),
+            new AuthContextService("cliente_natural:cliente-1"),
                 BigDecimal.valueOf(10_000)
         );
 
@@ -72,7 +72,7 @@ class TransferirDineroUseCaseTest {
                 transaccionRepo,
                 new ServicioTransferencia(),
                 new FakeBitacoraRepository(),
-                new AuthContextService(""),
+            new AuthContextService("cliente_natural:cliente-1"),
                 BigDecimal.valueOf(10_000)
         );
 
@@ -87,6 +87,32 @@ class TransferirDineroUseCaseTest {
         assertEquals(BigDecimal.valueOf(900).setScale(2), cuentaRepo.findById("c1").orElseThrow().getSaldo().value());
         assertEquals(BigDecimal.valueOf(1100).setScale(2), cuentaRepo.findById("c2").orElseThrow().getSaldo().value());
     }
+
+        @Test
+        void debeFallarSiCuentaOrigenNoPerteneceAlClienteAutenticado() {
+        FakeCuentaRepository cuentaRepo = new FakeCuentaRepository();
+        cuentaRepo.storage.add(cuenta("c1", "10000005", "cliente-ajeno", BigDecimal.valueOf(1000)));
+        cuentaRepo.storage.add(cuenta("c2", "10000006", "cliente-2", BigDecimal.valueOf(1000)));
+
+        TransferirDineroUseCase useCase = new TransferirDineroUseCase(
+            cuentaRepo,
+            new FakeTransaccionRepository(),
+            new ServicioTransferencia(),
+            new FakeBitacoraRepository(),
+            new AuthContextService("cliente_natural:cliente-1"),
+            BigDecimal.valueOf(10_000)
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(
+            new TestingAuthenticationToken("cliente_natural", "123456", "ROLE_CLIENTE_NATURAL")
+        );
+
+        SecurityException thrown = assertThrows(
+            SecurityException.class,
+            () -> useCase.execute("c1", "c2", BigDecimal.valueOf(100), false)
+        );
+        assertEquals("No autorizado para operar la cuenta origen", thrown.getMessage());
+        }
 
     private Cuenta cuenta(String id, String numero, String clienteId, BigDecimal saldo) {
         return new Cuenta(

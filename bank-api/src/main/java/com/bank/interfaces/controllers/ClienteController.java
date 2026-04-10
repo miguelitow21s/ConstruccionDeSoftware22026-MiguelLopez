@@ -36,17 +36,21 @@ public class ClienteController {
                description = "Registra un nuevo cliente en el sistema. Disponible para personal bancario autorizado.")
     public CrearClienteResponse crear(@Valid @RequestBody CrearClienteRequest request) {
         var cliente = crearClienteUseCase.execute(
-            request.idIdentificacion(),
-            request.nombre(),
-            request.email(),
-            request.telefono()
+                request.idIdentificacion(),
+                request.nombre(),
+                request.email(),
+                request.telefono(),
+                request.tipoCliente(),
+                request.representanteLegalId()
         );
         return new CrearClienteResponse(
                 cliente.getId(),
-            cliente.getIdIdentificacion(),
+                cliente.getIdIdentificacion(),
                 cliente.getNombre(),
                 cliente.getEmail().value(),
-                cliente.getTelefono()
+                cliente.getTelefono(),
+                cliente.getTipoCliente().name(),
+                cliente.getRepresentanteLegalId()
         );
     }
 }

@@ -32,7 +32,7 @@ public class ListarTransaccionesUseCase {
         if (authContextService.hasAnyRole("CLIENTE_NATURAL", "CLIENTE_EMPRESA", "EMPLEADO_EMPRESA", "SUPERVISOR_EMPRESA")) {
             String clienteId = authContextService.currentRelatedClientIdOrThrow();
             List<String> cuentasCliente = cuentaRepository.findByClienteId(clienteId).stream()
-                    .map(c -> c.getId())
+                    .map(c -> c.getNumeroCuenta().value())
                     .toList();
             if (cuentasCliente.isEmpty()) {
                 return List.of();

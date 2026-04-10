@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -77,23 +78,25 @@ public class CuentaController {
 
     @GetMapping("/{id}/saldo")
     @PreAuthorize("hasAnyRole('ANALISTA','VENTANILLA','COMERCIAL','SUPERVISOR_EMPRESA','EMPLEADO_EMPRESA','CLIENTE_NATURAL','CLIENTE_EMPRESA')")
-    public SaldoResponse consultarSaldo(@PathVariable String id) {
-        var saldo = consultarSaldoUseCase.execute(id);
-        return new SaldoResponse(id, saldo.value());
+    public SaldoResponse consultarSaldo(@PathVariable String id,
+                                        @RequestParam(required = false) String idIdentificacionCliente) {
+        var cuenta = consultarSaldoUseCase.obtenerCuenta(id);
+        var saldo = consultarSaldoUseCase.execute(id, idIdentificacionCliente);
+        return new SaldoResponse(id, saldo.value(), cuenta.getEstado());
     }
 
     @PostMapping("/depositar")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('VENTANILLA')")
     public void depositar(@Valid @RequestBody MovimientoRequest request) {
-        depositarDineroUseCase.execute(request.cuentaId(), request.monto());
+        depositarDineroUseCase.execute(request.cuentaId(), request.idIdentificacionCliente(), request.monto());
     }
 
     @PostMapping("/retirar")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('VENTANILLA')")
     public void retirar(@Valid @RequestBody MovimientoRequest request) {
-        retirarDineroUseCase.execute(request.cuentaId(), request.monto());
+        retirarDineroUseCase.execute(request.cuentaId(), request.idIdentificacionCliente(), request.monto());
     }
 
     @PostMapping("/transferir")

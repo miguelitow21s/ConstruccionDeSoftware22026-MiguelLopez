@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -58,6 +59,39 @@ class ListarPrestamosUseCaseTest {
 
         assertEquals(1, resultado.size());
         assertEquals("cliente-1", resultado.getFirst().getClienteSolicitanteId());
+    }
+
+    @Test
+    void comercialDebeListarSoloPrestamosDeClientesBajoGestion() {
+        FakePrestamoRepositoryPort repo = new FakePrestamoRepositoryPort();
+        repo.storage.add(prestamo("p1", "cliente-1"));
+        repo.storage.add(prestamo("p2", "cliente-2"));
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new TestingAuthenticationToken("comercial", "123456", "ROLE_COMERCIAL")
+        );
+
+        ListarPrestamosUseCase useCase = new ListarPrestamosUseCase(repo, new AuthContextService("comercial:cliente-1"));
+
+        List<Prestamo> resultado = useCase.execute();
+
+        assertEquals(1, resultado.size());
+        assertEquals("cliente-1", resultado.getFirst().getClienteSolicitanteId());
+    }
+
+    @Test
+    void ventanillaNoDebePoderConsultarPrestamos() {
+        FakePrestamoRepositoryPort repo = new FakePrestamoRepositoryPort();
+        repo.storage.add(prestamo("p1", "cliente-1"));
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new TestingAuthenticationToken("ventanilla", "123456", "ROLE_VENTANILLA")
+        );
+
+        ListarPrestamosUseCase useCase = new ListarPrestamosUseCase(repo, new AuthContextService(""));
+
+        SecurityException thrown = assertThrows(SecurityException.class, useCase::execute);
+        assertEquals("No autorizado para consultar prestamos", thrown.getMessage());
     }
 
     private Prestamo prestamo(String id, String clienteId) {

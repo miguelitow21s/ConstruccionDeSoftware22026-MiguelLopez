@@ -5,6 +5,8 @@ public record CrearClienteResponse(
         String idIdentificacion,
         String nombre,
         String email,
-        String telefono
+        String telefono,
+        String tipoCliente,
+        String representanteLegalId
 ) {
 }

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import com.bank.application.ports.ClienteRepositoryPort;
 import com.bank.domain.entities.Cliente;
+import com.bank.domain.entities.TipoCliente;
 import com.bank.domain.valueobjects.Email;
 
 class CrearClienteUseCaseTest {
@@ -19,7 +20,7 @@ class CrearClienteUseCaseTest {
         FakeClienteRepository repo = new FakeClienteRepository();
         CrearClienteUseCase useCase = new CrearClienteUseCase(repo);
 
-        Cliente creado = useCase.execute("10101010", "Miguel Lopez", "miguel@bank.com", "3001234567");
+        Cliente creado = useCase.execute("10101010", "Miguel Lopez", "miguel@bank.com", "3001234567", null, null);
 
         assertEquals("10101010", creado.getIdIdentificacion());
         assertEquals(1, repo.storage.size());
@@ -33,7 +34,7 @@ class CrearClienteUseCaseTest {
         CrearClienteUseCase useCase = new CrearClienteUseCase(repo);
 
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
-                () -> useCase.execute("10101010", "Cliente Dos", "dos@bank.com", "3002222222"));
+                () -> useCase.execute("10101010", "Cliente Dos", "dos@bank.com", "3002222222", null, null));
         assertEquals("Ya existe un cliente con esa identificacion", thrown.getMessage());
     }
 
@@ -45,8 +46,47 @@ class CrearClienteUseCaseTest {
         CrearClienteUseCase useCase = new CrearClienteUseCase(repo);
 
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
-                () -> useCase.execute("20202020", "Cliente Dos", "uno@bank.com", "3002222222"));
+                () -> useCase.execute("20202020", "Cliente Dos", "uno@bank.com", "3002222222", null, null));
         assertEquals("Ya existe un cliente con ese email", thrown.getMessage());
+    }
+
+    @Test
+    void debeCrearClienteEmpresaCuandoRepresentanteEsPersonaNatural() {
+        FakeClienteRepository repo = new FakeClienteRepository();
+        repo.storage.add(new Cliente("rep-1", "11111111", "Representante", new Email("rep@bank.com"), "3001111111", TipoCliente.CLIENTE_PERSONA_NATURAL, null));
+
+        CrearClienteUseCase useCase = new CrearClienteUseCase(repo);
+
+        Cliente empresa = useCase.execute("900999888", "Empresa S.A.S", "empresa@bank.com", "6011234567", "CLIENTE_EMPRESA", "rep-1");
+
+        assertEquals(TipoCliente.CLIENTE_EMPRESA, empresa.getTipoCliente());
+        assertEquals("rep-1", empresa.getRepresentanteLegalId());
+    }
+
+    @Test
+    void debeFallarClienteEmpresaSinRepresentanteLegal() {
+        FakeClienteRepository repo = new FakeClienteRepository();
+        CrearClienteUseCase useCase = new CrearClienteUseCase(repo);
+
+        IllegalArgumentException thrown = assertThrows(
+                IllegalArgumentException.class,
+                () -> useCase.execute("900999888", "Empresa S.A.S", "empresa@bank.com", "6011234567", "CLIENTE_EMPRESA", null)
+        );
+        assertEquals("Representante legal obligatorio para cliente empresa", thrown.getMessage());
+    }
+
+    @Test
+    void debeFallarClienteEmpresaSiRepresentanteNoEsPersonaNatural() {
+        FakeClienteRepository repo = new FakeClienteRepository();
+        repo.storage.add(new Cliente("rep-2", "900111222", "Otra Empresa", new Email("otra@bank.com"), "6019999999", TipoCliente.CLIENTE_EMPRESA, "rep-x"));
+
+        CrearClienteUseCase useCase = new CrearClienteUseCase(repo);
+
+        IllegalArgumentException thrown = assertThrows(
+                IllegalArgumentException.class,
+                () -> useCase.execute("900999888", "Empresa S.A.S", "empresa@bank.com", "6011234567", "CLIENTE_EMPRESA", "rep-2")
+        );
+        assertEquals("El representante legal debe ser un cliente persona natural", thrown.getMessage());
     }
 
     private static final class FakeClienteRepository implements ClienteRepositoryPort {

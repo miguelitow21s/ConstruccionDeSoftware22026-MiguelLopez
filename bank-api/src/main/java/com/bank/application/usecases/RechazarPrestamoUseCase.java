@@ -29,6 +29,10 @@ public class RechazarPrestamoUseCase {
 
     @Transactional
     public Prestamo execute(String prestamoId) {
+                if (!authContextService.hasRole("ANALISTA")) {
+                        throw new SecurityException("No autorizado para rechazar prestamos");
+                }
+
         Prestamo prestamo = prestamoRepository.findById(prestamoId)
                 .orElseThrow(() -> new IllegalArgumentException("Prestamo no encontrado"));
 

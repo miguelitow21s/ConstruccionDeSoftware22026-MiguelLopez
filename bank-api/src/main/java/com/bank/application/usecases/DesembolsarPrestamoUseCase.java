@@ -35,6 +35,10 @@ public class DesembolsarPrestamoUseCase {
 
     @Transactional
     public Prestamo execute(String prestamoId, String numeroCuentaDestino) {
+                if (!authContextService.hasRole("ANALISTA")) {
+                        throw new SecurityException("No autorizado para desembolsar prestamos");
+                }
+
         Prestamo prestamo = prestamoRepository.findById(prestamoId)
                 .orElseThrow(() -> new IllegalArgumentException("Prestamo no encontrado"));
 

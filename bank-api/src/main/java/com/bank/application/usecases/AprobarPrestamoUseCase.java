@@ -30,6 +30,10 @@ public class AprobarPrestamoUseCase {
 
     @Transactional
     public Prestamo execute(String prestamoId, BigDecimal montoAprobado) {
+                if (!authContextService.hasRole("ANALISTA")) {
+                        throw new SecurityException("No autorizado para aprobar prestamos");
+                }
+
         Prestamo prestamo = prestamoRepository.findById(prestamoId)
                 .orElseThrow(() -> new IllegalArgumentException("Prestamo no encontrado"));
 

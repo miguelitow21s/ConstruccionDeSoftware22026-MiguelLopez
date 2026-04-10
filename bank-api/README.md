@@ -13,6 +13,7 @@ La API implementa operaciones nucleares de banca:
 
 Regla vigente en registro de clientes:
 - `idIdentificacion` es obligatorio y unico por cliente.
+- Para cliente empresa (`tipoCliente=CLIENTE_EMPRESA`) el `representanteLegalId` es obligatorio y debe referenciar un cliente persona natural.
 
 El diseno separa negocio puro (dominio) de detalles tecnicos (JPA, REST, seguridad), para que el sistema sea mantenible, testeable y escalable.
 
@@ -140,7 +141,9 @@ Content-Type: application/json
   "idIdentificacion": "10101010",
   "nombre": "Miguel Lopez",
   "email": "miguel@bank.com",
-  "telefono": "3001234567"
+  "telefono": "3001234567",
+  "tipoCliente": "CLIENTE_PERSONA_NATURAL",
+  "representanteLegalId": null
 }
 ```
 

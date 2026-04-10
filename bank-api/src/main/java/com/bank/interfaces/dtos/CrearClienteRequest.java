@@ -8,6 +8,8 @@ public record CrearClienteRequest(
         @NotBlank @Size(max = 20) String idIdentificacion,
         @NotBlank String nombre,
         @NotBlank @Email String email,
-        @NotBlank @Size(min = 7, max = 15) String telefono
+        @NotBlank @Size(min = 7, max = 15) String telefono,
+        String tipoCliente,
+        String representanteLegalId
 ) {
 }

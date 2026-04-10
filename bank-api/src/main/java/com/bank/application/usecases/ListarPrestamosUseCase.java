@@ -20,14 +20,18 @@ public class ListarPrestamosUseCase {
     }
 
     public List<Prestamo> execute() {
-        if (authContextService.hasRole("ANALISTA") || authContextService.hasRole("COMERCIAL")) {
+        if (authContextService.hasRole("ANALISTA")) {
             return prestamoRepository.findAll();
+        }
+
+        if (authContextService.hasRole("COMERCIAL")) {
+            return prestamoRepository.findByClienteSolicitanteId(authContextService.currentRelatedClientIdOrThrow());
         }
 
         if (authContextService.hasAnyRole("CLIENTE_NATURAL", "CLIENTE_EMPRESA", "EMPLEADO_EMPRESA", "SUPERVISOR_EMPRESA")) {
             return prestamoRepository.findByClienteSolicitanteId(authContextService.currentRelatedClientIdOrThrow());
         }
 
-        return prestamoRepository.findAll();
+        throw new SecurityException("No autorizado para consultar prestamos");
     }
 }

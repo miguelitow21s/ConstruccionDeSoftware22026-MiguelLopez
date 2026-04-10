@@ -3,6 +3,7 @@ package com.bank.infrastructure.persistence.mappers;
 import org.springframework.stereotype.Component;
 
 import com.bank.domain.entities.Cliente;
+import com.bank.domain.entities.TipoCliente;
 import com.bank.domain.valueobjects.Email;
 import com.bank.infrastructure.persistence.entities.ClienteJpaEntity;
 
@@ -16,16 +17,20 @@ public class ClienteMapper {
         entity.setNombre(domain.getNombre());
         entity.setEmail(domain.getEmail().value());
         entity.setTelefono(domain.getTelefono());
+        entity.setTipoCliente(domain.getTipoCliente().name());
+        entity.setRepresentanteLegalId(domain.getRepresentanteLegalId());
         return entity;
     }
 
     public Cliente toDomain(ClienteJpaEntity entity) {
         return new Cliente(
                 entity.getId(),
-            entity.getIdIdentificacion(),
+                entity.getIdIdentificacion(),
                 entity.getNombre(),
                 new Email(entity.getEmail()),
-                entity.getTelefono()
+                entity.getTelefono(),
+                TipoCliente.valueOf(entity.getTipoCliente()),
+                entity.getRepresentanteLegalId()
         );
     }
 }

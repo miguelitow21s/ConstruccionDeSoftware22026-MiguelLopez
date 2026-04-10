@@ -55,6 +55,11 @@ public class TransferirDineroUseCase {
         var destino = cuentaRepository.findById(cuentaDestinoId)
                 .orElseThrow(() -> new IllegalArgumentException("Cuenta destino no encontrada"));
 
+        String clienteRelacionado = authContextService.currentRelatedClientIdOrThrow();
+        if (!clienteRelacionado.equals(origen.getClienteId())) {
+            throw new SecurityException("No autorizado para operar la cuenta origen");
+        }
+
         Dinero dinero = Dinero.positivo(monto);
         boolean requiereAprobacion = esOperacionEmpresarial && monto.compareTo(approvalThreshold) > 0;
 
