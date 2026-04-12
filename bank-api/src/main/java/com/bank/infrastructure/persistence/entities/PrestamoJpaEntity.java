@@ -1,16 +1,17 @@
 package com.bank.infrastructure.persistence.entities;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 import com.bank.domain.entities.EstadoPrestamo;
 import com.bank.domain.entities.TipoPrestamo;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "prestamos")
@@ -25,6 +26,9 @@ public class PrestamoJpaEntity {
 
     @Column(nullable = false)
     private String clienteSolicitanteId;
+
+    @Column(nullable = false, length = 20)
+    private String clienteSolicitanteIdentificacion;
 
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal montoSolicitado;
@@ -71,6 +75,14 @@ public class PrestamoJpaEntity {
 
     public void setClienteSolicitanteId(String clienteSolicitanteId) {
         this.clienteSolicitanteId = clienteSolicitanteId;
+    }
+
+    public String getClienteSolicitanteIdentificacion() {
+        return clienteSolicitanteIdentificacion;
+    }
+
+    public void setClienteSolicitanteIdentificacion(String clienteSolicitanteIdentificacion) {
+        this.clienteSolicitanteIdentificacion = clienteSolicitanteIdentificacion;
     }
 
     public BigDecimal getMontoSolicitado() {

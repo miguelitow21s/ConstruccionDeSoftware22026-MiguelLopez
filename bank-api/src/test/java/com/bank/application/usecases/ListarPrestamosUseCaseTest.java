@@ -21,7 +21,6 @@ import com.bank.domain.entities.TipoPrestamo;
 class ListarPrestamosUseCaseTest {
 
     @AfterEach
-    @SuppressWarnings("unused")
     void limpiarContexto() {
         SecurityContextHolder.clearContext();
     }

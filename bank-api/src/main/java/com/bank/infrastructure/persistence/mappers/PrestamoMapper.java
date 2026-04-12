@@ -1,8 +1,9 @@
 package com.bank.infrastructure.persistence.mappers;
 
+import org.springframework.stereotype.Component;
+
 import com.bank.domain.entities.Prestamo;
 import com.bank.infrastructure.persistence.entities.PrestamoJpaEntity;
-import org.springframework.stereotype.Component;
 
 @Component
 public class PrestamoMapper {
@@ -12,6 +13,7 @@ public class PrestamoMapper {
         entity.setId(domain.getId());
         entity.setTipoPrestamo(domain.getTipoPrestamo());
         entity.setClienteSolicitanteId(domain.getClienteSolicitanteId());
+        entity.setClienteSolicitanteIdentificacion(domain.getClienteSolicitanteIdentificacion());
         entity.setMontoSolicitado(domain.getMontoSolicitado());
         entity.setMontoAprobado(domain.getMontoAprobado());
         entity.setTasaInteres(domain.getTasaInteres());
@@ -28,6 +30,7 @@ public class PrestamoMapper {
                 entity.getId(),
                 entity.getTipoPrestamo(),
                 entity.getClienteSolicitanteId(),
+                entity.getClienteSolicitanteIdentificacion(),
                 entity.getMontoSolicitado(),
                 entity.getMontoAprobado(),
                 entity.getTasaInteres(),

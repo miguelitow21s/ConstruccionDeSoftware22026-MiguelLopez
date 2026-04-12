@@ -28,7 +28,6 @@ import com.bank.domain.valueobjects.NumeroCuenta;
 class ConsultarSaldoUseCaseTest {
 
     @AfterEach
-    @SuppressWarnings("unused")
     void limpiarContexto() {
         SecurityContextHolder.clearContext();
     }

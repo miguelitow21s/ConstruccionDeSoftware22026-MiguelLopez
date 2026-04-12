@@ -12,7 +12,9 @@ import com.bank.application.ports.BitacoraEntry;
 import com.bank.application.ports.BitacoraRepositoryPort;
 import com.bank.application.ports.ClienteRepositoryPort;
 import com.bank.application.ports.PrestamoRepositoryPort;
+import com.bank.application.ports.UsuarioSistemaRepositoryPort;
 import com.bank.application.services.AuthContextService;
+import com.bank.domain.entities.EstadoUsuario;
 import com.bank.domain.entities.Prestamo;
 import com.bank.domain.entities.TipoPrestamo;
 
@@ -21,15 +23,18 @@ public class SolicitarPrestamoUseCase {
 
     private final PrestamoRepositoryPort prestamoRepository;
     private final ClienteRepositoryPort clienteRepository;
+    private final UsuarioSistemaRepositoryPort usuarioSistemaRepository;
     private final BitacoraRepositoryPort bitacoraRepository;
     private final AuthContextService authContextService;
 
     public SolicitarPrestamoUseCase(PrestamoRepositoryPort prestamoRepository,
                                     ClienteRepositoryPort clienteRepository,
+                                    UsuarioSistemaRepositoryPort usuarioSistemaRepository,
                                     BitacoraRepositoryPort bitacoraRepository,
                                     AuthContextService authContextService) {
         this.prestamoRepository = prestamoRepository;
         this.clienteRepository = clienteRepository;
+        this.usuarioSistemaRepository = usuarioSistemaRepository;
         this.bitacoraRepository = bitacoraRepository;
         this.authContextService = authContextService;
     }
@@ -49,12 +54,19 @@ public class SolicitarPrestamoUseCase {
             throw new SecurityException("No autorizado para solicitar prestamos para otro cliente");
         }
 
-        clienteRepository.findById(clienteSolicitanteId)
+        var clienteSolicitante = clienteRepository.findById(clienteSolicitanteId)
                 .orElseThrow(() -> new IllegalArgumentException("Cliente solicitante no encontrado"));
+
+        var usuarioSistema = usuarioSistemaRepository.findByIdIdentificacion(clienteSolicitante.getIdIdentificacion())
+            .orElseThrow(() -> new IllegalStateException("No existe usuario del sistema asociado al cliente solicitante"));
+        if (usuarioSistema.getEstadoUsuario() != EstadoUsuario.ACTIVO) {
+            throw new IllegalStateException("El cliente solicitante debe estar activo");
+        }
 
         Prestamo prestamo = new Prestamo(
                 tipoPrestamo,
                 clienteSolicitanteId,
+            clienteSolicitante.getIdIdentificacion(),
                 montoSolicitado,
                 tasaInteres,
                 plazoMeses
@@ -70,6 +82,10 @@ public class SolicitarPrestamoUseCase {
                 authContextService.currentRole(),
                 saved.getId(),
                 Map.of(
+                    "idUsuarioCreador", authContextService.currentUserId(),
+                    "fechaCreacion", LocalDateTime.now().toString(),
+                    "idClienteSolicitante", saved.getClienteSolicitanteId(),
+                    "idClienteSolicitanteIdentificacion", saved.getClienteSolicitanteIdentificacion(),
                         "estado", saved.getEstado().name(),
                         "montoSolicitado", saved.getMontoSolicitado(),
                         "tipoPrestamo", saved.getTipoPrestamo().name()

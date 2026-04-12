@@ -32,8 +32,9 @@ public class BitacoraController {
     @Operation(summary = "Consultar bitácora de operaciones", 
                description = "Lista los registros de auditoría. Los analistas pueden filtrar por usuario, " +
                            "otros roles solo ven sus propias operaciones.")
-    public List<BitacoraResponse> listar(@RequestParam(required = false) String idUsuario) {
-        return listarBitacoraUseCase.execute(idUsuario).stream()
+    public List<BitacoraResponse> listar(@RequestParam(required = false) String idUsuario,
+                                         @RequestParam(required = false) String idProductoAfectado) {
+        return listarBitacoraUseCase.execute(idUsuario, idProductoAfectado).stream()
                 .map(entry -> new BitacoraResponse(
                         entry.idBitacora(),
                         entry.tipoOperacion(),

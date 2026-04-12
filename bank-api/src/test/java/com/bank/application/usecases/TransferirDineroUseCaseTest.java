@@ -29,7 +29,6 @@ import com.bank.domain.valueobjects.NumeroCuenta;
 class TransferirDineroUseCaseTest {
 
     @AfterEach
-    @SuppressWarnings("unused")
     void limpiarContexto() {
         SecurityContextHolder.clearContext();
     }
@@ -226,6 +225,11 @@ class TransferirDineroUseCaseTest {
         @Override
         public List<BitacoraEntry> findByIdUsuario(String idUsuario) {
             return storage.stream().filter(e -> e.idUsuario().equals(idUsuario)).toList();
+        }
+
+        @Override
+        public List<BitacoraEntry> findByIdProductoAfectadoIn(List<String> idsProductoAfectado) {
+            return storage.stream().filter(e -> idsProductoAfectado.contains(e.idProductoAfectado())).toList();
         }
     }
 }

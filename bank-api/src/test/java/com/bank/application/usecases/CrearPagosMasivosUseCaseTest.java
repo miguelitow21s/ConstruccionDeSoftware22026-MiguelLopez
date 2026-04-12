@@ -31,7 +31,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class CrearPagosMasivosUseCaseTest {
 
     @AfterEach
-    @SuppressWarnings("unused")
     void limpiarContexto() {
         SecurityContextHolder.clearContext();
     }
@@ -178,6 +177,11 @@ class CrearPagosMasivosUseCaseTest {
         @Override
         public List<BitacoraEntry> findByIdUsuario(String idUsuario) {
             return List.of();
+        }
+
+        @Override
+        public List<BitacoraEntry> findByIdProductoAfectadoIn(List<String> idsProductoAfectado) {
+            return List.of(); // Placeholder implementation
         }
     }
 }

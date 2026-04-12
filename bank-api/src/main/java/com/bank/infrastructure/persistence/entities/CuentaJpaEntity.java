@@ -1,15 +1,17 @@
 package com.bank.infrastructure.persistence.entities;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 import com.bank.domain.entities.EstadoCuenta;
 import com.bank.domain.entities.TipoCuenta;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
-import java.math.BigDecimal;
 
 @Entity
 @Table(name = "cuentas")
@@ -30,6 +32,15 @@ public class CuentaJpaEntity {
 
     @Column(nullable = false)
     private String clienteId;
+
+    @Column(nullable = false, length = 20)
+    private String idTitular;
+
+    @Column(nullable = false, length = 5)
+    private String moneda;
+
+    @Column(nullable = false)
+    private LocalDate fechaApertura;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -81,5 +92,29 @@ public class CuentaJpaEntity {
 
     public void setEstado(EstadoCuenta estado) {
         this.estado = estado;
+    }
+
+    public String getIdTitular() {
+        return idTitular;
+    }
+
+    public void setIdTitular(String idTitular) {
+        this.idTitular = idTitular;
+    }
+
+    public String getMoneda() {
+        return moneda;
+    }
+
+    public void setMoneda(String moneda) {
+        this.moneda = moneda;
+    }
+
+    public LocalDate getFechaApertura() {
+        return fechaApertura;
+    }
+
+    public void setFechaApertura(LocalDate fechaApertura) {
+        this.fechaApertura = fechaApertura;
     }
 }

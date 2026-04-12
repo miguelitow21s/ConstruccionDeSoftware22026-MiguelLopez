@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class ConsultarClienteUseCaseTest {
 
     @AfterEach
-    @SuppressWarnings("unused")
     void limpiarContexto() {
         SecurityContextHolder.clearContext();
     }

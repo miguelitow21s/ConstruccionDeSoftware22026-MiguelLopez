@@ -8,7 +8,7 @@ public interface UsuarioSistemaRepositoryPort {
 
     UsuarioSistema save(UsuarioSistema usuarioSistema);
 
-    Optional<UsuarioSistema> findByIdUsuario(String idUsuario);
+    Optional<UsuarioSistema> findByIdUsuario(Long idUsuario);
 
     Optional<UsuarioSistema> findByIdIdentificacion(String idIdentificacion);
 }

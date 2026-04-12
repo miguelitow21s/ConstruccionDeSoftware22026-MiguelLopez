@@ -36,6 +36,11 @@ public class MongoBitacoraRepositoryAdapter implements BitacoraRepositoryPort {
         return repository.findByIdUsuario(idUsuario).stream().map(this::toEntry).toList();
     }
 
+    @Override
+    public List<BitacoraEntry> findByIdProductoAfectadoIn(List<String> idsProductoAfectado) {
+        return repository.findByIdProductoAfectadoIn(idsProductoAfectado).stream().map(this::toEntry).toList();
+    }
+
     private BitacoraDocument toDocument(BitacoraEntry entry) {
         BitacoraDocument doc = new BitacoraDocument();
         doc.setIdBitacora(entry.idBitacora());

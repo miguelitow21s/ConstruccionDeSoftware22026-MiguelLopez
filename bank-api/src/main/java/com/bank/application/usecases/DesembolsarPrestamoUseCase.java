@@ -65,6 +65,9 @@ public class DesembolsarPrestamoUseCase {
                 authContextService.currentRole(),
                 saved.getId(),
                 Map.of(
+                        "idUsuarioDesembolso", authContextService.currentUserId(),
+                        "fechaAprobacion", saved.getFechaAprobacion() != null ? saved.getFechaAprobacion().toString() : "",
+                        "fechaDesembolso", saved.getFechaDesembolso() != null ? saved.getFechaDesembolso().toString() : LocalDateTime.now().toString(),
                         "numeroCuentaDestino", numeroCuentaDestino,
                         "montoDesembolsado", saved.getMontoAprobado(),
                         "nuevoEstado", saved.getEstado().name()

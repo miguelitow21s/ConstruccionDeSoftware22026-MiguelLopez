@@ -1,9 +1,10 @@
 package com.bank.infrastructure.persistence.mappers;
 
+import org.springframework.stereotype.Component;
+
 import com.bank.domain.entities.Transaccion;
 import com.bank.domain.valueobjects.Dinero;
 import com.bank.infrastructure.persistence.entities.TransaccionJpaEntity;
-import org.springframework.stereotype.Component;
 
 @Component
 public class TransaccionMapper {
@@ -14,8 +15,11 @@ public class TransaccionMapper {
         entity.setTipoTransaccion(domain.getTipoTransaccion());
         entity.setMonto(domain.getMonto().value());
         entity.setFecha(domain.getFecha());
+        entity.setFechaAprobacion(domain.getFechaAprobacion());
         entity.setCuentaOrigen(domain.getCuentaOrigen());
         entity.setCuentaDestino(domain.getCuentaDestino());
+        entity.setIdUsuarioCreador(domain.getIdUsuarioCreador());
+        entity.setIdUsuarioAprobador(domain.getIdUsuarioAprobador());
         entity.setEstado(domain.getEstado());
         return entity;
     }
@@ -26,9 +30,12 @@ public class TransaccionMapper {
                 entity.getTipoTransaccion(),
                 new Dinero(entity.getMonto()),
                 entity.getFecha(),
+                entity.getFechaAprobacion(),
                 entity.getCuentaOrigen(),
                 entity.getCuentaDestino(),
-                entity.getEstado()
+                entity.getEstado(),
+                entity.getIdUsuarioCreador(),
+                entity.getIdUsuarioAprobador()
         );
     }
 }

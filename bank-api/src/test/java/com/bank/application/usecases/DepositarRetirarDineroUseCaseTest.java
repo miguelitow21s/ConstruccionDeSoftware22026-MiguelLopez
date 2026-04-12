@@ -32,7 +32,6 @@ import com.bank.domain.valueobjects.NumeroCuenta;
 class DepositarRetirarDineroUseCaseTest {
 
     @AfterEach
-    @SuppressWarnings("unused")
     void limpiarContexto() {
         SecurityContextHolder.clearContext();
     }

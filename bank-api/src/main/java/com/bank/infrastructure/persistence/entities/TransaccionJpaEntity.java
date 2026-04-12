@@ -1,16 +1,17 @@
 package com.bank.infrastructure.persistence.entities;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 import com.bank.domain.entities.EstadoTransaccion;
 import com.bank.domain.entities.TipoTransaccion;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "transacciones")
@@ -29,11 +30,18 @@ public class TransaccionJpaEntity {
     @Column(nullable = false)
     private LocalDateTime fecha;
 
+    private LocalDateTime fechaAprobacion;
+
     @Column(nullable = false)
     private String cuentaOrigen;
 
     @Column(nullable = false)
     private String cuentaDestino;
+
+    @Column(nullable = false)
+    private Long idUsuarioCreador;
+
+    private Long idUsuarioAprobador;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -71,6 +79,14 @@ public class TransaccionJpaEntity {
         this.fecha = fecha;
     }
 
+    public LocalDateTime getFechaAprobacion() {
+        return fechaAprobacion;
+    }
+
+    public void setFechaAprobacion(LocalDateTime fechaAprobacion) {
+        this.fechaAprobacion = fechaAprobacion;
+    }
+
     public String getCuentaOrigen() {
         return cuentaOrigen;
     }
@@ -85,6 +101,22 @@ public class TransaccionJpaEntity {
 
     public void setCuentaDestino(String cuentaDestino) {
         this.cuentaDestino = cuentaDestino;
+    }
+
+    public Long getIdUsuarioCreador() {
+        return idUsuarioCreador;
+    }
+
+    public void setIdUsuarioCreador(Long idUsuarioCreador) {
+        this.idUsuarioCreador = idUsuarioCreador;
+    }
+
+    public Long getIdUsuarioAprobador() {
+        return idUsuarioAprobador;
+    }
+
+    public void setIdUsuarioAprobador(Long idUsuarioAprobador) {
+        this.idUsuarioAprobador = idUsuarioAprobador;
     }
 
     public EstadoTransaccion getEstado() {
