@@ -21,7 +21,6 @@ public class MongoBitacoraRepositoryAdapter implements BitacoraRepositoryPort {
     }
 
     @Override
-    @SuppressWarnings("null")
     public void save(BitacoraEntry entry) {
         repository.save(Objects.requireNonNull(toDocument(entry)));
     }

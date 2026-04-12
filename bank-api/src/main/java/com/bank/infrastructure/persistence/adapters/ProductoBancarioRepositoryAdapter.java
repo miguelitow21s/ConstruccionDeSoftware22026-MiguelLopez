@@ -24,7 +24,6 @@ public class ProductoBancarioRepositoryAdapter implements ProductoBancarioReposi
     }
 
     @Override
-    @SuppressWarnings("null")
     public ProductoBancario save(ProductoBancario productoBancario) {
         var saved = repository.save(Objects.requireNonNull(mapper.toJpa(productoBancario)));
         return mapper.toDomain(saved);

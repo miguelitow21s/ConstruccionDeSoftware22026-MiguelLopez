@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
@@ -26,11 +25,6 @@ import com.bank.domain.valueobjects.Dinero;
 import com.bank.domain.valueobjects.NumeroCuenta;
 
 class ListarTransaccionesUseCaseTest {
-
-    @AfterEach
-    void limpiarContexto() {
-        SecurityContextHolder.clearContext();
-    }
 
     @Test
     void debeFiltrarPorNumeroCuentaDelClienteAutenticado() {
@@ -173,3 +167,4 @@ class ListarTransaccionesUseCaseTest {
         }
     }
 }
+
