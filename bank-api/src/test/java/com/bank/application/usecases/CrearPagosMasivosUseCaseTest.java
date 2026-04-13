@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,12 +28,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CrearPagosMasivosUseCaseTest {
-
-    @AfterEach
-    @SuppressWarnings("unused")
-    void limpiarContexto() {
-        SecurityContextHolder.clearContext();
-    }
 
     @Test
     void empleadoEmpresaPuedeCrearPagosMasivosYAplicarUmbral() {
@@ -179,5 +172,11 @@ class CrearPagosMasivosUseCaseTest {
         public List<BitacoraEntry> findByIdUsuario(String idUsuario) {
             return List.of();
         }
+
+        @Override
+        public List<BitacoraEntry> findByIdProductoAfectadoIn(List<String> idsProductoAfectado) {
+            return List.of(); // Placeholder implementation
+        }
     }
 }
+

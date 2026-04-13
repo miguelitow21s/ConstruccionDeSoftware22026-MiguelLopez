@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
@@ -27,12 +26,6 @@ import com.bank.domain.valueobjects.Dinero;
 import com.bank.domain.valueobjects.NumeroCuenta;
 
 class TransferirDineroUseCaseTest {
-
-    @AfterEach
-    @SuppressWarnings("unused")
-    void limpiarContexto() {
-        SecurityContextHolder.clearContext();
-    }
 
     @Test
     void debeFallarSiRolNoAutorizadoParaCrearTransferencia() {
@@ -227,5 +220,11 @@ class TransferirDineroUseCaseTest {
         public List<BitacoraEntry> findByIdUsuario(String idUsuario) {
             return storage.stream().filter(e -> e.idUsuario().equals(idUsuario)).toList();
         }
+
+        @Override
+        public List<BitacoraEntry> findByIdProductoAfectadoIn(List<String> idsProductoAfectado) {
+            return storage.stream().filter(e -> idsProductoAfectado.contains(e.idProductoAfectado())).toList();
+        }
     }
 }
+

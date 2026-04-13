@@ -1,5 +1,6 @@
 package com.bank.domain.entities;
 
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -13,24 +14,61 @@ public class Cuenta {
     private Dinero saldo;
     private final TipoCuenta tipoCuenta;
     private final String clienteId;
+    private final String idTitular;
+    private final String moneda;
+    private final LocalDate fechaApertura;
     private EstadoCuenta estado;
 
     public Cuenta(NumeroCuenta numeroCuenta, Dinero saldo, TipoCuenta tipoCuenta, String clienteId) {
-        this(UUID.randomUUID().toString(), numeroCuenta, saldo, tipoCuenta, clienteId, EstadoCuenta.ACTIVA);
+        this(UUID.randomUUID().toString(), numeroCuenta, saldo, tipoCuenta, clienteId, clienteId, "COP", LocalDate.now(), EstadoCuenta.ACTIVA);
     }
 
     public Cuenta(String id, NumeroCuenta numeroCuenta, Dinero saldo, TipoCuenta tipoCuenta, String clienteId, EstadoCuenta estado) {
+        this(id, numeroCuenta, saldo, tipoCuenta, clienteId, clienteId, "COP", LocalDate.now(), estado);
+    }
+
+    public Cuenta(NumeroCuenta numeroCuenta,
+                  Dinero saldo,
+                  TipoCuenta tipoCuenta,
+                  String clienteId,
+                  String idTitular,
+                  String moneda,
+                  LocalDate fechaApertura) {
+        this(UUID.randomUUID().toString(), numeroCuenta, saldo, tipoCuenta, clienteId, idTitular, moneda, fechaApertura, EstadoCuenta.ACTIVA);
+    }
+
+    public Cuenta(String id,
+                  NumeroCuenta numeroCuenta,
+                  Dinero saldo,
+                  TipoCuenta tipoCuenta,
+                  String clienteId,
+                  String idTitular,
+                  String moneda,
+                  LocalDate fechaApertura,
+                  EstadoCuenta estado) {
         if (id == null || id.isBlank()) {
             throw new IllegalArgumentException("Id de cuenta invalido");
         }
         if (clienteId == null || clienteId.isBlank()) {
             throw new IllegalArgumentException("Cliente asociado invalido");
         }
+        if (idTitular == null || idTitular.isBlank() || idTitular.length() > 20) {
+            throw new IllegalArgumentException("ID titular invalido");
+        }
+        if (moneda == null || moneda.isBlank() || moneda.length() > 5) {
+            throw new IllegalArgumentException("Moneda invalida");
+        }
+        if (fechaApertura == null) {
+            throw new IllegalArgumentException("Fecha de apertura obligatoria");
+        }
         this.id = id;
         this.numeroCuenta = numeroCuenta;
         this.saldo = saldo;
         this.tipoCuenta = tipoCuenta;
         this.clienteId = clienteId;
+        this.idTitular = idTitular;
+        this.moneda = moneda;
+        this.fechaApertura = fechaApertura;
         this.estado = estado;
     }
 
@@ -68,6 +106,18 @@ public class Cuenta {
 
     public String getClienteId() {
         return clienteId;
+    }
+
+    public String getIdTitular() {
+        return idTitular;
+    }
+
+    public String getMoneda() {
+        return moneda;
+    }
+
+    public LocalDate getFechaApertura() {
+        return fechaApertura;
     }
 
     public EstadoCuenta getEstado() {

@@ -49,6 +49,8 @@ public class AprobarPrestamoUseCase {
                 authContextService.currentRole(),
                 saved.getId(),
                 Map.of(
+                        "idUsuarioAprobador", authContextService.currentUserId(),
+                        "fechaAprobacion", saved.getFechaAprobacion() != null ? saved.getFechaAprobacion().toString() : LocalDateTime.now().toString(),
                         "estadoAnterior", "EN_ESTUDIO",
                         "nuevoEstado", saved.getEstado().name(),
                         "montoAprobado", saved.getMontoAprobado(),

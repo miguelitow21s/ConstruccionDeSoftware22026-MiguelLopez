@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
@@ -29,12 +28,6 @@ import com.bank.domain.valueobjects.Dinero;
 import com.bank.domain.valueobjects.NumeroCuenta;
 
 class AprobarTransferenciaUseCaseTest {
-
-    @AfterEach
-    @SuppressWarnings("unused")
-    void limpiarContexto() {
-        SecurityContextHolder.clearContext();
-    }
 
     @Test
     void debeFallarAprobacionSiNoEsSupervisorEmpresa() {
@@ -82,7 +75,39 @@ class AprobarTransferenciaUseCaseTest {
 
         Transaccion actualizada = transaccionRepo.findById("t-2").orElseThrow();
         assertEquals(EstadoTransaccion.RECHAZADA, actualizada.getEstado());
+        assertEquals((Long) (long) Math.abs("supervisor".hashCode()), actualizada.getIdUsuarioAprobador());
         assertEquals(1, bitacoraRepo.storage.size());
+        assertEquals("Transferencia_Rechazada", bitacoraRepo.storage.getFirst().tipoOperacion());
+    }
+
+    @Test
+    void supervisorDebePoderAprobarTransferenciaYRegistrarTrazabilidad() {
+        FakeTransaccionRepository transaccionRepo = new FakeTransaccionRepository();
+        transaccionRepo.storage.add(transaccionEnEspera("t-4"));
+        FakeCuentaRepository cuentaRepo = new FakeCuentaRepository();
+        cuentaRepo.storage.add(cuenta("c-origen", "10000111", "empresa-1"));
+        cuentaRepo.storage.add(cuenta("c-destino", "10000112", "empresa-destino"));
+
+        FakeBitacoraRepository bitacoraRepo = new FakeBitacoraRepository();
+        AprobarTransferenciaUseCase useCase = new AprobarTransferenciaUseCase(
+                transaccionRepo,
+                cuentaRepo,
+                new ServicioTransferencia(),
+                bitacoraRepo,
+                new AuthContextService("supervisor:empresa-1")
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new TestingAuthenticationToken("supervisor", "123456", "ROLE_SUPERVISOR_EMPRESA")
+        );
+
+        useCase.aprobar("t-4");
+
+        Transaccion actualizada = transaccionRepo.findById("t-4").orElseThrow();
+        assertEquals(EstadoTransaccion.EJECUTADA, actualizada.getEstado());
+        assertEquals((Long) (long) Math.abs("supervisor".hashCode()), actualizada.getIdUsuarioAprobador());
+        assertEquals(1, bitacoraRepo.storage.size());
+        assertEquals("Transferencia_Aprobada", bitacoraRepo.storage.getFirst().tipoOperacion());
     }
 
     @Test
@@ -209,5 +234,11 @@ class AprobarTransferenciaUseCaseTest {
         public List<BitacoraEntry> findByIdUsuario(String idUsuario) {
             return storage.stream().filter(e -> e.idUsuario().equals(idUsuario)).toList();
         }
+
+        @Override
+        public List<BitacoraEntry> findByIdProductoAfectadoIn(List<String> idsProductoAfectado) {
+            return storage.stream().filter(e -> idsProductoAfectado.contains(e.idProductoAfectado())).toList();
+        }
     }
 }
+

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -37,6 +38,18 @@ public class InMemoryBitacoraRepositoryAdapter implements BitacoraRepositoryPort
     public List<BitacoraEntry> findByIdUsuario(String idUsuario) {
         return store.stream()
                 .filter(doc -> doc.getIdUsuario() != null && doc.getIdUsuario().equals(idUsuario))
+                .map(this::toEntry)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BitacoraEntry> findByIdProductoAfectadoIn(List<String> idsProductoAfectado) {
+        if (idsProductoAfectado == null || idsProductoAfectado.isEmpty()) {
+            return List.of();
+        }
+        Set<String> ids = Set.copyOf(idsProductoAfectado);
+        return store.stream()
+                .filter(doc -> doc.getIdProductoAfectado() != null && ids.contains(doc.getIdProductoAfectado()))
                 .map(this::toEntry)
                 .collect(Collectors.toList());
     }

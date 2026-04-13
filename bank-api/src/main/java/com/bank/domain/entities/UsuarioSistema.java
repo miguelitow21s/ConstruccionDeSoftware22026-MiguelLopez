@@ -3,13 +3,21 @@ package com.bank.domain.entities;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Objects;
-import java.util.UUID;
+import java.util.regex.Pattern;
 
 import com.bank.domain.valueobjects.Email;
 
 public class UsuarioSistema {
 
-    private final String idUsuario;
+    private static final int MAX_NOMBRE = 100;
+    private static final int MAX_IDENTIFICACION = 20;
+    private static final int MAX_CORREO = 100;
+    private static final int MAX_TELEFONO = 15;
+    private static final int MIN_TELEFONO = 7;
+    private static final int MAX_DIRECCION = 200;
+    private static final Pattern TELEFONO_PATTERN = Pattern.compile("^\\d{7,15}$");
+
+    private final Long idUsuario;
     private final String idRelacionado;
     private final String nombreCompleto;
     private final String idIdentificacion;
@@ -20,20 +28,7 @@ public class UsuarioSistema {
     private final RolSistema rolSistema;
     private EstadoUsuario estadoUsuario;
 
-    public UsuarioSistema(String idRelacionado,
-                          String nombreCompleto,
-                          String idIdentificacion,
-                          Email correoElectronico,
-                          String telefono,
-                          LocalDate fechaNacimiento,
-                          String direccion,
-                          RolSistema rolSistema,
-                          EstadoUsuario estadoUsuario) {
-        this(UUID.randomUUID().toString(), idRelacionado, nombreCompleto, idIdentificacion, correoElectronico, telefono,
-                fechaNacimiento, direccion, rolSistema, estadoUsuario);
-    }
-
-    public UsuarioSistema(String idUsuario,
+    public UsuarioSistema(Long idUsuario,
                           String idRelacionado,
                           String nombreCompleto,
                           String idIdentificacion,
@@ -43,7 +38,7 @@ public class UsuarioSistema {
                           String direccion,
                           RolSistema rolSistema,
                           EstadoUsuario estadoUsuario) {
-        validarCampos(idUsuario, idRelacionado, nombreCompleto, idIdentificacion, telefono, fechaNacimiento, direccion, rolSistema, estadoUsuario);
+                validarCampos(idUsuario, idRelacionado, nombreCompleto, idIdentificacion, correoElectronico, telefono, fechaNacimiento, direccion, rolSistema, estadoUsuario);
         this.idUsuario = idUsuario;
         this.idRelacionado = idRelacionado;
         this.nombreCompleto = nombreCompleto;
@@ -68,28 +63,32 @@ public class UsuarioSistema {
         this.estadoUsuario = EstadoUsuario.ACTIVO;
     }
 
-    private void validarCampos(String idUsuario,
+    private void validarCampos(Long idUsuario,
                                String idRelacionado,
                                String nombreCompleto,
                                String idIdentificacion,
+                               Email correoElectronico,
                                String telefono,
                                LocalDate fechaNacimiento,
                                String direccion,
                                RolSistema rolSistema,
                                EstadoUsuario estadoUsuario) {
-        if (idUsuario == null || idUsuario.isBlank()) {
+        if (idUsuario == null || idUsuario <= 0) {
             throw new IllegalArgumentException("ID de usuario invalido");
         }
-        if (nombreCompleto == null || nombreCompleto.isBlank()) {
+        if (nombreCompleto == null || nombreCompleto.isBlank() || nombreCompleto.length() > MAX_NOMBRE) {
             throw new IllegalArgumentException("Nombre completo obligatorio");
         }
-        if (idIdentificacion == null || idIdentificacion.isBlank()) {
+        if (idIdentificacion == null || idIdentificacion.isBlank() || idIdentificacion.length() > MAX_IDENTIFICACION) {
             throw new IllegalArgumentException("Identificacion obligatoria");
         }
-        if (telefono == null || telefono.length() < 7 || telefono.length() > 15) {
+        if (correoElectronico == null || correoElectronico.value().length() > MAX_CORREO) {
+            throw new IllegalArgumentException("Correo electronico obligatorio y valido");
+        }
+        if (telefono == null || telefono.length() < MIN_TELEFONO || telefono.length() > MAX_TELEFONO || !TELEFONO_PATTERN.matcher(telefono).matches()) {
             throw new IllegalArgumentException("Telefono invalido");
         }
-        if (direccion == null || direccion.isBlank()) {
+        if (direccion == null || direccion.isBlank() || direccion.length() > MAX_DIRECCION) {
             throw new IllegalArgumentException("Direccion obligatoria");
         }
         if (rolSistema == null) {
@@ -121,10 +120,11 @@ public class UsuarioSistema {
     private boolean requiereIdRelacionado(RolSistema rolSistema) {
         return rolSistema != RolSistema.ANALISTA_INTERNO
                 && rolSistema != RolSistema.EMPLEADO_VENTANILLA
-                && rolSistema != RolSistema.EMPLEADO_COMERCIAL;
+                && rolSistema != RolSistema.EMPLEADO_COMERCIAL
+                && rolSistema != RolSistema.EMPLEADO_EMPRESA;
     }
 
-    public String getIdUsuario() {
+    public Long getIdUsuario() {
         return idUsuario;
     }
 

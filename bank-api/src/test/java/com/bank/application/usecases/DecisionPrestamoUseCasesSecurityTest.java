@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,12 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class DecisionPrestamoUseCasesSecurityTest {
-
-    @AfterEach
-    @SuppressWarnings("unused")
-    void limpiarContexto() {
-        SecurityContextHolder.clearContext();
-    }
 
     @Test
     void analistaPuedeAprobarYRechazarPrestamos() {
@@ -131,5 +124,11 @@ class DecisionPrestamoUseCasesSecurityTest {
         public List<BitacoraEntry> findByIdUsuario(String idUsuario) {
             return storage.stream().filter(e -> e.idUsuario().equals(idUsuario)).toList();
         }
+
+        @Override
+        public List<BitacoraEntry> findByIdProductoAfectadoIn(List<String> idsProductoAfectado) {
+            return storage.stream().filter(e -> idsProductoAfectado.contains(e.idProductoAfectado())).toList();
+        }
     }
 }
+

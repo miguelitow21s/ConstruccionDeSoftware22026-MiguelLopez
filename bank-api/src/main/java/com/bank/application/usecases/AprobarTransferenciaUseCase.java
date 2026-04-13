@@ -56,7 +56,7 @@ public class AprobarTransferenciaUseCase {
 
         validarEmpresaSupervisor(origen.getClienteId());
 
-        servicioTransferencia.ejecutarTransferenciaPendiente(transaccion, origen, destino);
+        servicioTransferencia.ejecutarTransferenciaPendiente(transaccion, origen, destino, usuarioActualNumerico());
         cuentaRepository.save(origen);
         cuentaRepository.save(destino);
         transaccionRepository.save(transaccion);
@@ -69,6 +69,10 @@ public class AprobarTransferenciaUseCase {
             rolActual(),
             transaccion.getId(),
             Map.of(
+                "idUsuarioCreador", transaccion.getIdUsuarioCreador(),
+                "fechaCreacion", transaccion.getFecha().toString(),
+                "idUsuarioAprobador", transaccion.getIdUsuarioAprobador(),
+                "fechaAprobacion", transaccion.getFechaAprobacion() != null ? transaccion.getFechaAprobacion().toString() : "",
                 "estadoFinal", transaccion.getEstado().name(),
                 "cuentaOrigen", transaccion.getCuentaOrigen(),
                 "cuentaDestino", transaccion.getCuentaDestino(),
@@ -92,7 +96,8 @@ public class AprobarTransferenciaUseCase {
             .orElseThrow(() -> new IllegalArgumentException("Cuenta origen no encontrada"));
         validarEmpresaSupervisor(origen.getClienteId());
 
-        transaccion.rechazar();
+        Long idUsuarioAprobador = usuarioActualNumerico();
+        transaccion.rechazar(idUsuarioAprobador);
         transaccionRepository.save(transaccion);
 
         bitacoraRepository.save(new BitacoraEntry(
@@ -103,6 +108,10 @@ public class AprobarTransferenciaUseCase {
                 rolActual(),
                 transaccion.getId(),
                 Map.of(
+                    "idUsuarioCreador", transaccion.getIdUsuarioCreador(),
+                    "fechaCreacion", transaccion.getFecha().toString(),
+                    "idUsuarioAprobador", idUsuarioAprobador,
+                    "fechaRechazo", LocalDateTime.now().toString(),
                         "estadoFinal", transaccion.getEstado().name(),
                         "motivo", "rechazada por aprobador"
                 )
@@ -120,6 +129,10 @@ public class AprobarTransferenciaUseCase {
             return "SYSTEM";
         }
         return auth.getAuthorities().iterator().next().getAuthority();
+    }
+
+    private Long usuarioActualNumerico() {
+        return (long) Math.abs(usuarioActual().hashCode());
     }
 
     private void validarRolAprobador() {

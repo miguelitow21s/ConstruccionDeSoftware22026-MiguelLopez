@@ -10,6 +10,7 @@ public class Prestamo {
     private final String id;
     private final TipoPrestamo tipoPrestamo;
     private final String clienteSolicitanteId;
+    private final String clienteSolicitanteIdentificacion;
     private final BigDecimal montoSolicitado;
     private BigDecimal montoAprobado;
     private final BigDecimal tasaInteres;
@@ -21,6 +22,7 @@ public class Prestamo {
 
     public Prestamo(TipoPrestamo tipoPrestamo,
                     String clienteSolicitanteId,
+                    String clienteSolicitanteIdentificacion,
                     BigDecimal montoSolicitado,
                     BigDecimal tasaInteres,
                     int plazoMeses) {
@@ -28,6 +30,7 @@ public class Prestamo {
                 UUID.randomUUID().toString(),
                 tipoPrestamo,
                 clienteSolicitanteId,
+                clienteSolicitanteIdentificacion,
                 montoSolicitado,
                 null,
                 tasaInteres,
@@ -39,9 +42,45 @@ public class Prestamo {
         );
     }
 
+    public Prestamo(TipoPrestamo tipoPrestamo,
+                    String clienteSolicitanteId,
+                    BigDecimal montoSolicitado,
+                    BigDecimal tasaInteres,
+                    int plazoMeses) {
+        this(tipoPrestamo, clienteSolicitanteId, clienteSolicitanteId, montoSolicitado, tasaInteres, plazoMeses);
+    }
+
     public Prestamo(String id,
                     TipoPrestamo tipoPrestamo,
                     String clienteSolicitanteId,
+                BigDecimal montoSolicitado,
+                BigDecimal montoAprobado,
+                BigDecimal tasaInteres,
+                int plazoMeses,
+                EstadoPrestamo estado,
+                LocalDateTime fechaAprobacion,
+                LocalDateTime fechaDesembolso,
+                String cuentaDestinoDesembolso) {
+        this(
+            id,
+            tipoPrestamo,
+            clienteSolicitanteId,
+            clienteSolicitanteId,
+            montoSolicitado,
+            montoAprobado,
+            tasaInteres,
+            plazoMeses,
+            estado,
+            fechaAprobacion,
+            fechaDesembolso,
+            cuentaDestinoDesembolso
+        );
+        }
+
+        public Prestamo(String id,
+                TipoPrestamo tipoPrestamo,
+                String clienteSolicitanteId,
+                    String clienteSolicitanteIdentificacion,
                     BigDecimal montoSolicitado,
                     BigDecimal montoAprobado,
                     BigDecimal tasaInteres,
@@ -56,6 +95,11 @@ public class Prestamo {
         if (clienteSolicitanteId == null || clienteSolicitanteId.isBlank()) {
             throw new IllegalArgumentException("Cliente solicitante invalido");
         }
+        if (clienteSolicitanteIdentificacion == null
+                || clienteSolicitanteIdentificacion.isBlank()
+                || clienteSolicitanteIdentificacion.length() > 20) {
+            throw new IllegalArgumentException("Identificacion de cliente solicitante invalida");
+        }
         if (montoSolicitado == null || montoSolicitado.signum() <= 0) {
             throw new IllegalArgumentException("El monto solicitado debe ser mayor a cero");
         }
@@ -68,6 +112,7 @@ public class Prestamo {
         this.id = id;
         this.tipoPrestamo = tipoPrestamo;
         this.clienteSolicitanteId = clienteSolicitanteId;
+        this.clienteSolicitanteIdentificacion = clienteSolicitanteIdentificacion;
         this.montoSolicitado = montoSolicitado;
         this.montoAprobado = montoAprobado;
         this.tasaInteres = tasaInteres;
@@ -76,6 +121,8 @@ public class Prestamo {
         this.fechaAprobacion = fechaAprobacion;
         this.fechaDesembolso = fechaDesembolso;
         this.cuentaDestinoDesembolso = cuentaDestinoDesembolso;
+
+        validarConsistenciaEstado();
     }
 
     public void aprobar(BigDecimal montoAprobado) {
@@ -124,6 +171,10 @@ public class Prestamo {
         return clienteSolicitanteId;
     }
 
+    public String getClienteSolicitanteIdentificacion() {
+        return clienteSolicitanteIdentificacion;
+    }
+
     public BigDecimal getMontoSolicitado() {
         return montoSolicitado;
     }
@@ -154,6 +205,21 @@ public class Prestamo {
 
     public String getCuentaDestinoDesembolso() {
         return cuentaDestinoDesembolso;
+    }
+
+    private void validarConsistenciaEstado() {
+        if ((estado == EstadoPrestamo.APROBADO || estado == EstadoPrestamo.DESEMBOLSADO)
+                && (montoAprobado == null || montoAprobado.signum() <= 0)) {
+            throw new IllegalArgumentException("Monto aprobado obligatorio cuando el prestamo esta aprobado o desembolsado");
+        }
+        if (estado == EstadoPrestamo.DESEMBOLSADO) {
+            if (cuentaDestinoDesembolso == null || cuentaDestinoDesembolso.isBlank()) {
+                throw new IllegalArgumentException("Cuenta destino desembolso obligatoria para prestamo desembolsado");
+            }
+            if (fechaDesembolso == null) {
+                throw new IllegalArgumentException("Fecha de desembolso obligatoria para prestamo desembolsado");
+            }
+        }
     }
 
     @Override

@@ -22,7 +22,6 @@ public class ClienteRepositoryAdapter implements ClienteRepositoryPort {
     }
 
     @Override
-    @SuppressWarnings("null")
     public Cliente save(Cliente cliente) {
         var saved = repository.save(Objects.requireNonNull(mapper.toJpa(cliente)));
         return mapper.toDomain(saved);

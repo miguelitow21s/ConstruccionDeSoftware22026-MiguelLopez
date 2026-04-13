@@ -62,8 +62,9 @@ public class TransferirDineroUseCase {
 
         Dinero dinero = Dinero.positivo(monto);
         boolean requiereAprobacion = esOperacionEmpresarial && monto.compareTo(approvalThreshold) > 0;
+        Long idUsuarioCreador = usuarioActualNumerico();
 
-        Transaccion transaccion = servicioTransferencia.transferir(origen, destino, dinero, requiereAprobacion);
+        Transaccion transaccion = servicioTransferencia.transferir(origen, destino, dinero, requiereAprobacion, idUsuarioCreador);
         cuentaRepository.save(origen);
         cuentaRepository.save(destino);
         Transaccion saved = transaccionRepository.save(transaccion);
@@ -76,6 +77,8 @@ public class TransferirDineroUseCase {
                 rolActual(),
                 saved.getId(),
                 Map.of(
+                    "idUsuarioCreador", idUsuarioCreador,
+                    "fechaCreacion", saved.getFecha().toString(),
                         "cuentaOrigen", saved.getCuentaOrigen(),
                         "cuentaDestino", saved.getCuentaDestino(),
                         "monto", saved.getMonto().value(),
@@ -97,5 +100,9 @@ public class TransferirDineroUseCase {
             return "SYSTEM";
         }
         return auth.getAuthorities().iterator().next().getAuthority();
+    }
+
+    private Long usuarioActualNumerico() {
+        return (long) Math.abs(usuarioActual().hashCode());
     }
 }

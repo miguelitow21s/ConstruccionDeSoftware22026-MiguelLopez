@@ -24,7 +24,6 @@ public class TransaccionRepositoryAdapter implements TransaccionRepositoryPort {
     }
 
     @Override
-    @SuppressWarnings("null")
     public Transaccion save(Transaccion transaccion) {
         var saved = repository.save(Objects.requireNonNull(mapper.toJpa(transaccion)));
         return mapper.toDomain(saved);

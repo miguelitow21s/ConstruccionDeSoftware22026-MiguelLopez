@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
@@ -30,12 +29,6 @@ import com.bank.domain.valueobjects.Email;
 import com.bank.domain.valueobjects.NumeroCuenta;
 
 class DepositarRetirarDineroUseCaseTest {
-
-    @AfterEach
-    @SuppressWarnings("unused")
-    void limpiarContexto() {
-        SecurityContextHolder.clearContext();
-    }
 
     @Test
     void depositarDebeValidarIdentificacionCliente() {
@@ -182,3 +175,4 @@ class DepositarRetirarDineroUseCaseTest {
         }
     }
 }
+

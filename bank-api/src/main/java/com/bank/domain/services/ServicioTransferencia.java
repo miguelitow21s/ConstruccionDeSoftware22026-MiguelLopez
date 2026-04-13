@@ -8,7 +8,7 @@ import com.bank.domain.valueobjects.Dinero;
 
 public class ServicioTransferencia {
 
-    public Transaccion transferir(Cuenta origen, Cuenta destino, Dinero monto, boolean requiereAprobacion) {
+    public Transaccion transferir(Cuenta origen, Cuenta destino, Dinero monto, boolean requiereAprobacion, Long idUsuarioCreador) {
         if (origen.getNumeroCuenta().equals(destino.getNumeroCuenta())) {
             throw new IllegalArgumentException("La cuenta origen y destino no pueden ser iguales");
         }
@@ -27,16 +27,17 @@ public class ServicioTransferencia {
                 monto,
                 origen.getNumeroCuenta().value(),
                 destino.getNumeroCuenta().value(),
-                estadoInicial
+                estadoInicial,
+                idUsuarioCreador
         );
     }
 
-    public void ejecutarTransferenciaPendiente(Transaccion transaccion, Cuenta origen, Cuenta destino) {
+    public void ejecutarTransferenciaPendiente(Transaccion transaccion, Cuenta origen, Cuenta destino, Long idUsuarioAprobador) {
         if (transaccion.getEstado() != EstadoTransaccion.EN_ESPERA_APROBACION) {
             throw new IllegalStateException("Solo se pueden ejecutar transferencias en espera de aprobacion");
         }
         origen.retirar(transaccion.getMonto());
         destino.depositar(transaccion.getMonto());
-        transaccion.aprobarYEjecutar();
+        transaccion.aprobarYEjecutar(idUsuarioAprobador);
     }
 }

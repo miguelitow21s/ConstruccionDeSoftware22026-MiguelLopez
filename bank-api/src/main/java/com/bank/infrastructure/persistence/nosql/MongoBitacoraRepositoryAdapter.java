@@ -21,7 +21,6 @@ public class MongoBitacoraRepositoryAdapter implements BitacoraRepositoryPort {
     }
 
     @Override
-    @SuppressWarnings("null")
     public void save(BitacoraEntry entry) {
         repository.save(Objects.requireNonNull(toDocument(entry)));
     }
@@ -34,6 +33,11 @@ public class MongoBitacoraRepositoryAdapter implements BitacoraRepositoryPort {
     @Override
     public List<BitacoraEntry> findByIdUsuario(String idUsuario) {
         return repository.findByIdUsuario(idUsuario).stream().map(this::toEntry).toList();
+    }
+
+    @Override
+    public List<BitacoraEntry> findByIdProductoAfectadoIn(List<String> idsProductoAfectado) {
+        return repository.findByIdProductoAfectadoIn(idsProductoAfectado).stream().map(this::toEntry).toList();
     }
 
     private BitacoraDocument toDocument(BitacoraEntry entry) {

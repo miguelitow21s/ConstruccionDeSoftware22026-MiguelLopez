@@ -1,10 +1,11 @@
 package com.bank.infrastructure.persistence.mappers;
 
+import org.springframework.stereotype.Component;
+
 import com.bank.domain.entities.Cuenta;
 import com.bank.domain.valueobjects.Dinero;
 import com.bank.domain.valueobjects.NumeroCuenta;
 import com.bank.infrastructure.persistence.entities.CuentaJpaEntity;
-import org.springframework.stereotype.Component;
 
 @Component
 public class CuentaMapper {
@@ -16,6 +17,9 @@ public class CuentaMapper {
         entity.setSaldo(domain.getSaldo().value());
         entity.setTipoCuenta(domain.getTipoCuenta());
         entity.setClienteId(domain.getClienteId());
+        entity.setIdTitular(domain.getIdTitular());
+        entity.setMoneda(domain.getMoneda());
+        entity.setFechaApertura(domain.getFechaApertura());
         entity.setEstado(domain.getEstado());
         return entity;
     }
@@ -27,6 +31,9 @@ public class CuentaMapper {
                 new Dinero(entity.getSaldo()),
                 entity.getTipoCuenta(),
                 entity.getClienteId(),
+                entity.getIdTitular(),
+                entity.getMoneda(),
+                entity.getFechaApertura(),
                 entity.getEstado()
         );
     }

@@ -48,6 +48,8 @@ public class RechazarPrestamoUseCase {
                 authContextService.currentRole(),
                 saved.getId(),
                 Map.of(
+                        "idUsuarioRechazo", authContextService.currentUserId(),
+                        "fechaRechazo", LocalDateTime.now().toString(),
                         "estadoAnterior", "EN_ESTUDIO",
                         "nuevoEstado", saved.getEstado().name()
                 )

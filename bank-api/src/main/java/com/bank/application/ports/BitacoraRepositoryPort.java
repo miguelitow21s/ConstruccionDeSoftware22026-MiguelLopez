@@ -9,4 +9,6 @@ public interface BitacoraRepositoryPort {
     List<BitacoraEntry> findAll();
 
     List<BitacoraEntry> findByIdUsuario(String idUsuario);
+
+    List<BitacoraEntry> findByIdProductoAfectadoIn(List<String> idsProductoAfectado);
 }

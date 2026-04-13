@@ -48,6 +48,8 @@ public class VencerTransferenciasPendientesUseCase {
                     "SYSTEM",
                     transaccion.getId(),
                     Map.of(
+                            "idUsuarioCreador", transaccion.getIdUsuarioCreador(),
+                            "fechaCreacion", transaccion.getFecha().toString(),
                             "motivo", "vencida por falta de aprobacion en el tiempo establecido",
                             "estadoFinal", transaccion.getEstado().name()
                     )

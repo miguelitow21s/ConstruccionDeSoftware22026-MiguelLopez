@@ -22,7 +22,6 @@ public class CuentaRepositoryAdapter implements CuentaRepositoryPort {
     }
 
     @Override
-    @SuppressWarnings("null")
     public Cuenta save(Cuenta cuenta) {
         var saved = repository.save(Objects.requireNonNull(mapper.toJpa(cuenta)));
         return mapper.toDomain(saved);
