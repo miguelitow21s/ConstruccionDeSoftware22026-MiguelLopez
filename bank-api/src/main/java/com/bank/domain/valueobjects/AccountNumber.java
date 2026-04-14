@@ -3,18 +3,17 @@ package com.bank.domain.valueobjects;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-public final class Email {
+public final class AccountNumber {
 
-    private static final Pattern EMAIL_PATTERN =
-            Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
+    private static final Pattern ACCOUNT_PATTERN = Pattern.compile("^[0-9]{8,20}$");
 
     private final String value;
 
-    public Email(String value) {
-        if (value == null || value.isBlank() || !EMAIL_PATTERN.matcher(value).matches()) {
-            throw new IllegalArgumentException("Email invalid");
+    public AccountNumber(String value) {
+        if (value == null || !ACCOUNT_PATTERN.matcher(value).matches()) {
+            throw new IllegalArgumentException("Invalid account number");
         }
-        this.value = value.toLowerCase();
+        this.value = value;
     }
 
     public String value() {
@@ -29,8 +28,8 @@ public final class Email {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Email email = (Email) o;
-        return Objects.equals(value, email.value);
+        AccountNumber that = (AccountNumber) o;
+        return Objects.equals(value, that.value);
     }
 
     @Override

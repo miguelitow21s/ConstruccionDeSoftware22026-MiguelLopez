@@ -20,10 +20,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                        .requestMatchers("/clientes/**").hasAnyRole("ANALISTA", "VENTANILLA", "COMERCIAL")
-                        .requestMatchers("/bitacora/**").hasRole("ANALISTA")
-                        .requestMatchers("/prestamos/**").authenticated()
-                        .requestMatchers("/cuentas/**", "/transacciones/**").authenticated()
+                        .requestMatchers("/clients/**").hasAnyRole("ANALYST", "TELLER", "SALES")
+                        .requestMatchers("/auditLog/**").hasRole("ANALYST")
+                        .requestMatchers("/loans/**").authenticated()
+                        .requestMatchers("/accounts/**", "/transactions/**").authenticated()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults());
 
@@ -33,49 +33,49 @@ public class SecurityConfig {
 
     @Bean
     public InMemoryUserDetailsManager users() {
-        UserDetails analista = User.withUsername("analista")
+        UserDetails analyst = User.withUsername("analyst")
                 .password("{noop}123456")
-                .roles("ANALISTA")
+                .roles("ANALYST")
                 .build();
 
-        UserDetails ventanilla = User.withUsername("ventanilla")
+        UserDetails teller = User.withUsername("teller")
                 .password("{noop}123456")
-                .roles("VENTANILLA")
+                .roles("TELLER")
                 .build();
 
-        UserDetails comercial = User.withUsername("comercial")
+        UserDetails sales = User.withUsername("sales")
                 .password("{noop}123456")
-                .roles("COMERCIAL")
+                .roles("SALES")
                 .build();
 
         UserDetails supervisor = User.withUsername("supervisor")
                 .password("{noop}123456")
-                .roles("SUPERVISOR_EMPRESA")
+                .roles("COMPANY_SUPERVISOR")
                 .build();
 
-        UserDetails empleadoEmpresa = User.withUsername("empleado_empresa")
+        UserDetails companyEmployee = User.withUsername("company_employee")
                 .password("{noop}123456")
-                .roles("EMPLEADO_EMPRESA")
+                .roles("COMPANY_EMPLOYEE")
                 .build();
 
-        UserDetails clienteNatural = User.withUsername("cliente_natural")
+        UserDetails clientNatural = User.withUsername("client_natural")
                 .password("{noop}123456")
-                .roles("CLIENTE_NATURAL")
+                .roles("NATURAL_CLIENT")
                 .build();
 
-        UserDetails clienteEmpresa = User.withUsername("cliente_empresa")
+        UserDetails clientCompany = User.withUsername("client_company")
                 .password("{noop}123456")
-                .roles("CLIENTE_EMPRESA")
+                .roles("BUSINESS_CLIENT")
                 .build();
 
         return new InMemoryUserDetailsManager(
-                analista,
-                ventanilla,
-                comercial,
+                analyst,
+                teller,
+                sales,
                 supervisor,
-                empleadoEmpresa,
-                clienteNatural,
-                clienteEmpresa
+                companyEmployee,
+                clientNatural,
+                clientCompany
         );
     }
 }

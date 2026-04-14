@@ -3,31 +3,31 @@ package com.bank.infrastructure.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.bank.domain.services.ServicioCuenta;
-import com.bank.domain.services.ServicioProductoBancario;
-import com.bank.domain.services.ServicioTransferencia;
-import com.bank.domain.services.ServicioUsuarioSistema;
+import com.bank.domain.services.AccountService;
+import com.bank.domain.services.BankingProductService;
+import com.bank.domain.services.TransferService;
+import com.bank.domain.services.SystemUserService;
 
 @Configuration
 public class DomainConfig {
 
     @Bean
-    public ServicioCuenta servicioCuenta() {
-        return new ServicioCuenta();
+    public AccountService serviceAccount() {
+        return new AccountService();
     }
 
     @Bean
-    public ServicioTransferencia servicioTransferencia() {
-        return new ServicioTransferencia();
+    public TransferService transferService() {
+        return new TransferService();
     }
 
     @Bean
-    public ServicioUsuarioSistema servicioUsuarioSistema() {
-        return new ServicioUsuarioSistema();
+    public SystemUserService serviceSystemUser() {
+        return new SystemUserService();
     }
 
     @Bean
-    public ServicioProductoBancario servicioProductoBancario() {
-        return new ServicioProductoBancario();
+    public BankingProductService serviceBankingProduct() {
+        return new BankingProductService();
     }
 }

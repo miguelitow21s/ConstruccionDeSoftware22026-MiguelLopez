@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleValidation(MethodArgumentNotValidException ex) {
         Map<String, Object> body = new HashMap<>();
         body.put("error", "VALIDATION_ERROR");
-        body.put("message", "Revisa los campos enviados");
+        body.put("message", "Review the submitted fields");
         return ResponseEntity.badRequest().body(body);
     }
 }

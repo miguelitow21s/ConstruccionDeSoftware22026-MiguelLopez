@@ -52,7 +52,7 @@ public class AuthContextService {
     public String currentRelatedClientIdOrThrow() {
         String relatedId = userClientMap.get(currentUserId());
         if (relatedId == null || relatedId.isBlank()) {
-            throw new IllegalStateException("El usuario autenticado no tiene ID de cliente relacionado configurado");
+            throw new IllegalStateException("Authenticated user has no related client ID configured");
         }
         return relatedId;
     }

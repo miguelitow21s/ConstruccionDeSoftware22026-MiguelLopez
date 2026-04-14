@@ -17,12 +17,12 @@ public class OpenApiConfig {
     public OpenAPI bankApiOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Bank API - Sistema de Gestión Bancaria")
-                        .description("API RESTful para gestión de información bancaria con arquitectura DDD y Hexagonal. " +
-                                "Implementa operaciones de cuentas, préstamos, transferencias y bitácora de auditoría.")
+                        .title("Bank API - Banking Management System")
+                        .description("RESTful API for banking management with DDD and Hexagonal Architecture. " +
+                                "Implements account, loan, transfer, and audit log operations.")
                         .version("1.0.0")
                         .contact(new Contact()
-                                .name("Equipo de Desarrollo")
+                                .name("Development Team")
                                 .email("dev@bank.com"))
                         .license(new License()
                                 .name("MIT License")
@@ -33,8 +33,8 @@ public class OpenApiConfig {
                                 new SecurityScheme()
                                         .type(SecurityScheme.Type.HTTP)
                                         .scheme("basic")
-                                        .description("Autenticación básica HTTP. Roles disponibles: " +
-                                                "ANALISTA, VENTANILLA, COMERCIAL, SUPERVISOR_EMPRESA, " +
-                                                "EMPLEADO_EMPRESA, CLIENTE_NATURAL, CLIENTE_EMPRESA")));
+                                        .description("HTTP Basic authentication. Available roles: " +
+                                                "ANALYST, TELLER, SALES, COMPANY_SUPERVISOR, " +
+                                                "COMPANY_EMPLOYEE, NATURAL_CLIENT, BUSINESS_CLIENT")));
     }
 }
