@@ -12,7 +12,7 @@ public class AuditLogDocument {
 
     @Id
     private String idAuditLog;
-    private String typeOperacion;
+    private String operationType;
     private LocalDateTime operationDateTime;
 
     @Indexed
@@ -20,8 +20,8 @@ public class AuditLogDocument {
     private String userRole;
 
     @Indexed
-    private String idProductoAfectado;
-    private Map<String, Object> datosDetalle;
+    private String affectedProductId;
+    private Map<String, Object> detailData;
 
     public String getIdAuditLog() {
         return idAuditLog;
@@ -31,19 +31,19 @@ public class AuditLogDocument {
         this.idAuditLog = idAuditLog;
     }
 
-    public String getTypeOperacion() {
-        return typeOperacion;
+    public String getOperationType() {
+        return operationType;
     }
 
-    public void setTypeOperacion(String typeOperacion) {
-        this.typeOperacion = typeOperacion;
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
     }
 
-    public LocalDateTime getDateHoraOperacion() {
+    public LocalDateTime getOperationDateTime() {
         return operationDateTime;
     }
 
-    public void setDateHoraOperacion(LocalDateTime operationDateTime) {
+    public void setOperationDateTime(LocalDateTime operationDateTime) {
         this.operationDateTime = operationDateTime;
     }
 
@@ -55,27 +55,28 @@ public class AuditLogDocument {
         this.userId = userId;
     }
 
-    public String getRoleUser() {
+    public String getUserRole() {
         return userRole;
     }
 
-    public void setRoleUser(String userRole) {
+    public void setUserRole(String userRole) {
         this.userRole = userRole;
     }
 
-    public String getIdProductoAfectado() {
-        return idProductoAfectado;
+    public String getAffectedProductId() {
+        return affectedProductId;
     }
 
-    public void setIdProductoAfectado(String idProductoAfectado) {
-        this.idProductoAfectado = idProductoAfectado;
+    public void setAffectedProductId(String affectedProductId) {
+        this.affectedProductId = affectedProductId;
     }
 
-    public Map<String, Object> getDatosDetalle() {
-        return datosDetalle;
+    public Map<String, Object> getDetailData() {
+        return detailData;
     }
 
-    public void setDatosDetalle(Map<String, Object> datosDetalle) {
-        this.datosDetalle = datosDetalle;
+    public void setDetailData(Map<String, Object> detailData) {
+        this.detailData = detailData;
     }
 }
+

@@ -10,5 +10,6 @@ public interface AuditLogRepositoryPort {
 
     List<AuditLogEntry> findByUserId(String userId);
 
-    List<AuditLogEntry> findByIdProductoAfectadoIn(List<String> idsProductoAfectado);
+    List<AuditLogEntry> findByAffectedProductIdIn(List<String> affectedProductIds);
 }
+

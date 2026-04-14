@@ -11,18 +11,18 @@ public class BankingProductMapper {
     public BankingProductJpaEntity toJpa(BankingProduct domain) {
         BankingProductJpaEntity entity = new BankingProductJpaEntity();
         entity.setProductCode(domain.getProductCode());
-        entity.setNameProducto(domain.getNameProducto());
-        entity.setCategoria(domain.getCategoria());
-        entity.setRequiereApproval(domain.isRequiereApproval());
+        entity.setProductName(domain.getProductName());
+        entity.setCategory(domain.getCategory());
+        entity.setRequiresApproval(domain.isRequiresApproval());
         return entity;
     }
 
     public BankingProduct toDomain(BankingProductJpaEntity entity) {
         return new BankingProduct(
                 entity.getProductCode(),
-                entity.getNameProducto(),
-                entity.getCategoria(),
-                entity.isRequiereApproval()
+            entity.getProductName(),
+            entity.getCategory(),
+            entity.isRequiresApproval()
         );
     }
 }

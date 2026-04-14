@@ -173,9 +173,10 @@ class CreateBulkPaymentsUseCaseTest {
         }
 
         @Override
-        public List<AuditLogEntry> findByIdProductoAfectadoIn(List<String> idsProductoAfectado) {
+        public List<AuditLogEntry> findByAffectedProductIdIn(List<String> idsProductoAfectado) {
             return List.of(); // Placeholder implementation
         }
     }
 }
+
 

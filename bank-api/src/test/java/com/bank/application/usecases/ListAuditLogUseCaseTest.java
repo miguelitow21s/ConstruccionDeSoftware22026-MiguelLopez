@@ -102,7 +102,7 @@ class ListAuditLogUseCaseTest {
         List<AuditLogEntry> resultado = useCase.execute(null, null);
 
         assertEquals(1, resultado.size());
-        assertEquals("tx-client", resultado.getFirst().idProductoAfectado());
+        assertEquals("tx-client", resultado.getFirst().affectedProductId());
         }
 
         @Test
@@ -187,8 +187,8 @@ class ListAuditLogUseCaseTest {
         }
 
         @Override
-        public List<AuditLogEntry> findByIdProductoAfectadoIn(List<String> idsProductoAfectado) {
-            return storage.stream().filter(e -> idsProductoAfectado.contains(e.idProductoAfectado())).toList();
+        public List<AuditLogEntry> findByAffectedProductIdIn(List<String> idsProductoAfectado) {
+            return storage.stream().filter(e -> idsProductoAfectado.contains(e.affectedProductId())).toList();
         }
     }
 
@@ -277,4 +277,5 @@ class ListAuditLogUseCaseTest {
         }
     }
 }
+
 

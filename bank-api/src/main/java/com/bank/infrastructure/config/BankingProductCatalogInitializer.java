@@ -6,9 +6,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import com.bank.application.ports.BankingProductRepositoryPort;
-import com.bank.domain.entities.ProductCategory;
-import com.bank.domain.entities.BankingProduct;
 import com.bank.domain.entities.AccountType;
+import com.bank.domain.entities.BankingProduct;
+import com.bank.domain.entities.ProductCategory;
 
 @Component
 public class BankingProductCatalogInitializer implements CommandLineRunner {
@@ -23,15 +23,15 @@ public class BankingProductCatalogInitializer implements CommandLineRunner {
     public void run(String... args) {
         List.of(
                 new BankingProduct(AccountType.SAVINGS.name(), "Savings Account", ProductCategory.ACCOUNTS, false),
-                new BankingProduct(AccountType.CHECKING.name(), "Account Corriente", ProductCategory.ACCOUNTS, false),
-                new BankingProduct(AccountType.BUSINESS.name(), "Account Companyrial", ProductCategory.ACCOUNTS, true),
-                new BankingProduct(AccountType.PERSONAL.name(), "Account Personal", ProductCategory.ACCOUNTS, false)
-        ).forEach(this::guardarSiNoExiste);
+                new BankingProduct(AccountType.CHECKING.name(), "Checking Account", ProductCategory.ACCOUNTS, false),
+                new BankingProduct(AccountType.BUSINESS.name(), "Business Account", ProductCategory.ACCOUNTS, true),
+                new BankingProduct(AccountType.PERSONAL.name(), "Personal Account", ProductCategory.ACCOUNTS, false)
+        ).forEach(this::saveIfMissing);
     }
 
-    private void guardarSiNoExiste(BankingProduct producto) {
-        if (bankingProductRepository.findByProductCode(producto.getProductCode()).isEmpty()) {
-            bankingProductRepository.save(producto);
+    private void saveIfMissing(BankingProduct product) {
+        if (bankingProductRepository.findByProductCode(product.getProductCode()).isEmpty()) {
+            bankingProductRepository.save(product);
         }
     }
 }

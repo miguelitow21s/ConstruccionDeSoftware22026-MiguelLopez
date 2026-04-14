@@ -5,11 +5,12 @@ import java.util.Map;
 
 public record AuditLogEntry(
         String idAuditLog,
-        String typeOperacion,
+        String operationType,
         LocalDateTime operationDateTime,
         String userId,
         String userRole,
-        String idProductoAfectado,
-        Map<String, Object> datosDetalle
+        String affectedProductId,
+        Map<String, Object> detailData
 ) {
 }
+

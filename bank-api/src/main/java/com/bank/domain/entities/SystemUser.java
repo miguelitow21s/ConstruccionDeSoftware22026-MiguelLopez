@@ -98,11 +98,11 @@ public class SystemUser {
             throw new IllegalArgumentException("User status is required");
         }
 
-        if (requiereIdRelated(systemRole) && (idRelated == null || idRelated.isBlank())) {
+        if (requiresRelatedId(systemRole) && (idRelated == null || idRelated.isBlank())) {
             throw new IllegalArgumentException("Related ID is required for role " + systemRole);
         }
 
-        if (esPersonaNatural(systemRole)) {
+        if (isNaturalPerson(systemRole)) {
             if (birthDate == null) {
                 throw new IllegalArgumentException("Birth date is required for natural person users");
             }
@@ -113,11 +113,11 @@ public class SystemUser {
         }
     }
 
-    private boolean esPersonaNatural(SystemRole systemRole) {
+    private boolean isNaturalPerson(SystemRole systemRole) {
         return systemRole == SystemRole.NATURAL_PERSON_CLIENT;
     }
 
-    private boolean requiereIdRelated(SystemRole systemRole) {
+    private boolean requiresRelatedId(SystemRole systemRole) {
         return systemRole != SystemRole.INTERNAL_ANALYST
                 && systemRole != SystemRole.TELLER_EMPLOYEE
                 && systemRole != SystemRole.COMMERCIAL_EMPLOYEE
@@ -132,7 +132,7 @@ public class SystemUser {
         return idRelated;
     }
 
-    public String getNameCompleto() {
+    public String getFullName() {
         return fullName;
     }
 
@@ -140,7 +140,7 @@ public class SystemUser {
         return identificationId;
     }
 
-    public Email getEmailElectronico() {
+    public Email getEmail() {
         return emailElectronico;
     }
 

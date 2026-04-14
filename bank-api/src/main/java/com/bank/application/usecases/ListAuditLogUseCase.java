@@ -1,16 +1,17 @@
 package com.bank.application.usecases;
 
-import com.bank.application.ports.AuditLogEntry;
-import com.bank.application.ports.AuditLogRepositoryPort;
-import com.bank.application.ports.AccountRepositoryPort;
-import com.bank.application.ports.LoanRepositoryPort;
-import com.bank.application.ports.TransactionRepositoryPort;
-import com.bank.application.services.AuthContextService;
-import org.springframework.stereotype.Service;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.springframework.stereotype.Service;
+
+import com.bank.application.ports.AccountRepositoryPort;
+import com.bank.application.ports.AuditLogEntry;
+import com.bank.application.ports.AuditLogRepositoryPort;
+import com.bank.application.ports.LoanRepositoryPort;
+import com.bank.application.ports.TransactionRepositoryPort;
+import com.bank.application.services.AuthContextService;
 
 @Service
 public class ListAuditLogUseCase {
@@ -37,25 +38,25 @@ public class ListAuditLogUseCase {
         return execute(userId, null);
     }
 
-    public List<AuditLogEntry> execute(String userId, String idProductoAfectado) {
+    public List<AuditLogEntry> execute(String userId, String affectedProductId) {
         if (!authContextService.hasRole("ANALYST")) {
             if (!authContextService.hasAnyRole("NATURAL_CLIENT", "BUSINESS_CLIENT", "COMPANY_EMPLOYEE", "COMPANY_SUPERVISOR")) {
                 throw new SecurityException("Not authorized to get audit log");
             }
 
-            Set<String> productosPropios = idsProductoPropiosDelClient();
-            if (idProductoAfectado != null && !idProductoAfectado.isBlank() && !productosPropios.contains(idProductoAfectado)) {
+                Set<String> ownProductIds = ownProductIdsForClient();
+                if (affectedProductId != null && !affectedProductId.isBlank() && !ownProductIds.contains(affectedProductId)) {
                 throw new SecurityException("Not authorized to access audit logs for unrelated products");
             }
 
-            List<String> filtroProductos = (idProductoAfectado == null || idProductoAfectado.isBlank())
-                    ? List.copyOf(productosPropios)
-                    : List.of(idProductoAfectado);
-            return auditLogRepository.findByIdProductoAfectadoIn(filtroProductos);
+                List<String> filteredProductIds = (affectedProductId == null || affectedProductId.isBlank())
+                    ? List.copyOf(ownProductIds)
+                    : List.of(affectedProductId);
+                return auditLogRepository.findByAffectedProductIdIn(filteredProductIds);
         }
 
-        if (idProductoAfectado != null && !idProductoAfectado.isBlank()) {
-            return auditLogRepository.findByIdProductoAfectadoIn(List.of(idProductoAfectado));
+        if (affectedProductId != null && !affectedProductId.isBlank()) {
+            return auditLogRepository.findByAffectedProductIdIn(List.of(affectedProductId));
         }
         if (userId == null || userId.isBlank()) {
             return auditLogRepository.findAll();
@@ -63,26 +64,27 @@ public class ListAuditLogUseCase {
         return auditLogRepository.findByUserId(userId);
     }
 
-    private Set<String> idsProductoPropiosDelClient() {
+    private Set<String> ownProductIdsForClient() {
         String clientId = authContextService.currentRelatedClientIdOrThrow();
 
-        Set<String> idsProducto = new HashSet<>();
+        Set<String> ownProductIds = new HashSet<>();
 
-        var accountsClient = accountRepository.findByClientId(clientId);
-        accountsClient.forEach(account -> idsProducto.add(account.getId()));
+        var clientAccounts = accountRepository.findByClientId(clientId);
+        clientAccounts.forEach(account -> ownProductIds.add(account.getId()));
 
         loanRepository.findByClientApplicantId(clientId)
-                .forEach(loan -> idsProducto.add(loan.getId()));
+                .forEach(loan -> ownProductIds.add(loan.getId()));
 
-        List<String> numbersAccountClient = accountsClient.stream()
+        List<String> clientAccountNumbers = clientAccounts.stream()
                 .map(account -> account.getAccountNumber().value())
                 .toList();
 
-        if (!numbersAccountClient.isEmpty()) {
-            transactionRepository.findByAccountSourceInOrAccountDestinationIn(numbersAccountClient, numbersAccountClient)
-                    .forEach(transaction -> idsProducto.add(transaction.getId()));
+        if (!clientAccountNumbers.isEmpty()) {
+            transactionRepository.findByAccountSourceInOrAccountDestinationIn(clientAccountNumbers, clientAccountNumbers)
+                    .forEach(transaction -> ownProductIds.add(transaction.getId()));
         }
 
-        return idsProducto;
+        return ownProductIds;
     }
 }
+

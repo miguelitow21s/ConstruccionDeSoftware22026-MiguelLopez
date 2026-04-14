@@ -47,9 +47,9 @@ class ExpirePendingTransfersUseCaseTest {
         Transaction updated = transactionRepo.findById("tx-v1").orElseThrow();
         assertEquals(TransactionStatus.EXPIRED, updated.getStatus());
         assertEquals(1, auditLogRepo.storage.size());
-        assertEquals("Expired_Transfer", auditLogRepo.storage.getFirst().typeOperacion());
+        assertEquals("Expired_Transfer", auditLogRepo.storage.getFirst().operationType());
         assertEquals("Expired due to missing approval within the allowed time",
-                auditLogRepo.storage.getFirst().datosDetalle().get("reason"));
+                auditLogRepo.storage.getFirst().detailData().get("reason"));
     }
 
     private static final class FakeTransactionRepository implements TransactionRepositoryPort {
@@ -104,8 +104,9 @@ class ExpirePendingTransfersUseCaseTest {
         }
 
         @Override
-        public List<AuditLogEntry> findByIdProductoAfectadoIn(List<String> idsProductoAfectado) {
-            return storage.stream().filter(e -> idsProductoAfectado.contains(e.idProductoAfectado())).toList();
+        public List<AuditLogEntry> findByAffectedProductIdIn(List<String> idsProductoAfectado) {
+            return storage.stream().filter(e -> idsProductoAfectado.contains(e.affectedProductId())).toList();
         }
     }
 }
+

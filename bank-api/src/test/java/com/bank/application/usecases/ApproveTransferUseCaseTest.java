@@ -77,7 +77,7 @@ class ApproveTransferUseCaseTest {
         assertEquals(TransactionStatus.REJECTED, updated.getStatus());
         assertEquals((Long) (long) Math.abs("supervisor".hashCode()), updated.getApproverUserId());
         assertEquals(1, auditLogRepo.storage.size());
-        assertEquals("Transfer_Rechazada", auditLogRepo.storage.getFirst().typeOperacion());
+        assertEquals("Transfer_Rechazada", auditLogRepo.storage.getFirst().operationType());
     }
 
     @Test
@@ -107,7 +107,7 @@ class ApproveTransferUseCaseTest {
         assertEquals(TransactionStatus.EXECUTED, updated.getStatus());
         assertEquals((Long) (long) Math.abs("supervisor".hashCode()), updated.getApproverUserId());
         assertEquals(1, auditLogRepo.storage.size());
-        assertEquals("Transfer_Approved", auditLogRepo.storage.getFirst().typeOperacion());
+        assertEquals("Transfer_Approved", auditLogRepo.storage.getFirst().operationType());
     }
 
     @Test
@@ -236,9 +236,10 @@ class ApproveTransferUseCaseTest {
         }
 
         @Override
-        public List<AuditLogEntry> findByIdProductoAfectadoIn(List<String> idsProductoAfectado) {
-            return storage.stream().filter(e -> idsProductoAfectado.contains(e.idProductoAfectado())).toList();
+        public List<AuditLogEntry> findByAffectedProductIdIn(List<String> idsProductoAfectado) {
+            return storage.stream().filter(e -> idsProductoAfectado.contains(e.affectedProductId())).toList();
         }
     }
 }
+
 

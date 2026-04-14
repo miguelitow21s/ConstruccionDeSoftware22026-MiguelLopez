@@ -5,17 +5,17 @@ import java.time.LocalDate;
 
 import org.springframework.stereotype.Service;
 
-import com.bank.application.ports.ClientRepositoryPort;
 import com.bank.application.ports.AccountRepositoryPort;
 import com.bank.application.ports.BankingProductRepositoryPort;
+import com.bank.application.ports.ClientRepositoryPort;
 import com.bank.application.ports.SystemUserRepositoryPort;
 import com.bank.application.services.AuthContextService;
-import com.bank.domain.entities.ProductCategory;
-import com.bank.domain.entities.UserStatus;
 import com.bank.domain.entities.Account;
 import com.bank.domain.entities.AccountType;
-import com.bank.domain.valueobjects.Money;
+import com.bank.domain.entities.ProductCategory;
+import com.bank.domain.entities.UserStatus;
 import com.bank.domain.valueobjects.AccountNumber;
+import com.bank.domain.valueobjects.Money;
 
 @Service
 public class CreateAccountUseCase {
@@ -61,7 +61,7 @@ public class CreateAccountUseCase {
                 .orElseThrow(() -> new IllegalArgumentException("Client not found"));
 
         validateActiveClient(client.getIdIdentification());
-        validateAccountTypeEnCatalogo(accountType);
+        validateAccountTypeInCatalog(accountType);
 
         accountRepository.findByAccountNumber(accountNumber).ifPresent(existing -> {
             throw new IllegalArgumentException("Account number already exists");
@@ -88,11 +88,11 @@ public class CreateAccountUseCase {
         }
     }
 
-    private void validateAccountTypeEnCatalogo(AccountType accountType) {
-        var productoAccount = bankingProductRepository.findByProductCode(accountType.name())
+    private void validateAccountTypeInCatalog(AccountType accountType) {
+        var productAccount = bankingProductRepository.findByProductCode(accountType.name())
                 .orElseThrow(() -> new IllegalArgumentException("Account type does not exist in the banking catalog"));
 
-        if (productoAccount.getCategoria() != ProductCategory.ACCOUNTS) {
+        if (productAccount.getCategory() != ProductCategory.ACCOUNTS) {
             throw new IllegalArgumentException("Account type does not match the accounts category");
         }
     }

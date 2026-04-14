@@ -1,6 +1,7 @@
 package com.bank.infrastructure.persistence.entities;
 
 import com.bank.domain.entities.ProductCategory;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -17,11 +18,11 @@ public class BankingProductJpaEntity {
     private String productCode;
 
     @Column(nullable = false, length = 100)
-    private String nameProducto;
+    private String productName;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 50)
-    private ProductCategory categoria;
+    private ProductCategory category;
 
     @Column(nullable = false)
     private boolean requiresApproval;
@@ -34,27 +35,27 @@ public class BankingProductJpaEntity {
         this.productCode = productCode;
     }
 
-    public String getNameProducto() {
-        return nameProducto;
+    public String getProductName() {
+        return productName;
     }
 
-    public void setNameProducto(String nameProducto) {
-        this.nameProducto = nameProducto;
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
-    public ProductCategory getCategoria() {
-        return categoria;
+    public ProductCategory getCategory() {
+        return category;
     }
 
-    public void setCategoria(ProductCategory categoria) {
-        this.categoria = categoria;
+    public void setCategory(ProductCategory category) {
+        this.category = category;
     }
 
-    public boolean isRequiereApproval() {
+    public boolean isRequiresApproval() {
         return requiresApproval;
     }
 
-    public void setRequiereApproval(boolean requiresApproval) {
+    public void setRequiresApproval(boolean requiresApproval) {
         this.requiresApproval = requiresApproval;
     }
 }

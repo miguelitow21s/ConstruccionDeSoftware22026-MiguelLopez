@@ -126,9 +126,10 @@ class DecisionLoanUseCasesSecurityTest {
         }
 
         @Override
-        public List<AuditLogEntry> findByIdProductoAfectadoIn(List<String> idsProductoAfectado) {
-            return storage.stream().filter(e -> idsProductoAfectado.contains(e.idProductoAfectado())).toList();
+        public List<AuditLogEntry> findByAffectedProductIdIn(List<String> idsProductoAfectado) {
+            return storage.stream().filter(e -> idsProductoAfectado.contains(e.affectedProductId())).toList();
         }
     }
 }
+
 

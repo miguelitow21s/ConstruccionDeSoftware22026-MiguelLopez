@@ -1,13 +1,14 @@
 package com.bank.infrastructure.persistence.nosql;
 
-import com.bank.application.ports.AuditLogEntry;
-import com.bank.application.ports.AuditLogRepositoryPort;
+import java.util.List;
+import java.util.Objects;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Objects;
+import com.bank.application.ports.AuditLogEntry;
+import com.bank.application.ports.AuditLogRepositoryPort;
 
 @Component
 @Primary
@@ -36,31 +37,32 @@ public class MongoAuditLogRepositoryAdapter implements AuditLogRepositoryPort {
     }
 
     @Override
-    public List<AuditLogEntry> findByIdProductoAfectadoIn(List<String> idsProductoAfectado) {
-        return repository.findByIdProductoAfectadoIn(idsProductoAfectado).stream().map(this::toEntry).toList();
+    public List<AuditLogEntry> findByAffectedProductIdIn(List<String> affectedProductIds) {
+        return repository.findByAffectedProductIdIn(affectedProductIds).stream().map(this::toEntry).toList();
     }
 
     private AuditLogDocument toDocument(AuditLogEntry entry) {
         AuditLogDocument doc = new AuditLogDocument();
         doc.setIdAuditLog(entry.idAuditLog());
-        doc.setTypeOperacion(entry.typeOperacion());
-        doc.setDateHoraOperacion(entry.operationDateTime());
+        doc.setOperationType(entry.operationType());
+        doc.setOperationDateTime(entry.operationDateTime());
         doc.setUserId(entry.userId());
-        doc.setRoleUser(entry.userRole());
-        doc.setIdProductoAfectado(entry.idProductoAfectado());
-        doc.setDatosDetalle(entry.datosDetalle());
+        doc.setUserRole(entry.userRole());
+        doc.setAffectedProductId(entry.affectedProductId());
+        doc.setDetailData(entry.detailData());
         return doc;
     }
 
     private AuditLogEntry toEntry(AuditLogDocument doc) {
         return new AuditLogEntry(
                 doc.getIdAuditLog(),
-                doc.getTypeOperacion(),
-                doc.getDateHoraOperacion(),
+            doc.getOperationType(),
+            doc.getOperationDateTime(),
                 doc.getUserId(),
-                doc.getRoleUser(),
-                doc.getIdProductoAfectado(),
-                doc.getDatosDetalle()
+            doc.getUserRole(),
+            doc.getAffectedProductId(),
+            doc.getDetailData()
         );
     }
 }
+

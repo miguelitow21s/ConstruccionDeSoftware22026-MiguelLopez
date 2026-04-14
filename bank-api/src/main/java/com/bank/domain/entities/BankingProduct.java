@@ -5,27 +5,27 @@ import java.util.Objects;
 public class BankingProduct {
 
     private final String productCode;
-    private final String nameProducto;
-    private final ProductCategory categoria;
+    private final String productName;
+    private final ProductCategory category;
     private final boolean requiresApproval;
 
     public BankingProduct(String productCode,
-                            String nameProducto,
-                            ProductCategory categoria,
+                            String productName,
+                            ProductCategory category,
                             boolean requiresApproval) {
         if (productCode == null || productCode.isBlank() || productCode.length() > 10) {
             throw new IllegalArgumentException("Invalid product code");
         }
-        if (nameProducto == null || nameProducto.isBlank() || nameProducto.length() > 100) {
+        if (productName == null || productName.isBlank() || productName.length() > 100) {
             throw new IllegalArgumentException("Invalid product name");
         }
-        if (categoria == null) {
+        if (category == null) {
             throw new IllegalArgumentException("Product category is required");
         }
 
         this.productCode = productCode;
-        this.nameProducto = nameProducto;
-        this.categoria = categoria;
+        this.productName = productName;
+        this.category = category;
         this.requiresApproval = requiresApproval;
     }
 
@@ -33,15 +33,15 @@ public class BankingProduct {
         return productCode;
     }
 
-    public String getNameProducto() {
-        return nameProducto;
+    public String getProductName() {
+        return productName;
     }
 
-    public ProductCategory getCategoria() {
-        return categoria;
+    public ProductCategory getCategory() {
+        return category;
     }
 
-    public boolean isRequiereApproval() {
+    public boolean isRequiresApproval() {
         return requiresApproval;
     }
 

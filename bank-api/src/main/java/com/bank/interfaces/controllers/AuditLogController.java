@@ -37,13 +37,14 @@ public class AuditLogController {
         return listAuditLogUseCase.execute(userId, affectedProductId).stream()
                 .map(entry -> new AuditLogResponse(
                         entry.idAuditLog(),
-                entry.typeOperacion(),
+                        entry.operationType(),
                         entry.operationDateTime(),
                         entry.userId(),
                         entry.userRole(),
-                entry.idProductoAfectado(),
-                entry.datosDetalle()
+                        entry.affectedProductId(),
+                        entry.detailData()
                 ))
                 .toList();
     }
 }
+
