@@ -18,6 +18,21 @@ import com.bank.domain.valueobjects.Email;
 class GetClientUseCaseTest {
 
     @Test
+    void salesPuedeGetClientBajoSuManagement() {
+        FakeClientRepository repo = new FakeClientRepository();
+        repo.storage.add(new Client("c1", "10101010", "Client Uno", new Email("uno@bank.com"), "3001111111"));
+
+        GetClientUseCase useCase = new GetClientUseCase(repo, new AuthContextService("sales:c1"));
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new TestingAuthenticationToken("sales", "123456", "ROLE_SALES")
+        );
+
+        Client client = useCase.execute("c1");
+        assertEquals("c1", client.getId());
+    }
+
+    @Test
     void analystPuedeGetCualquierClient() {
         FakeClientRepository repo = new FakeClientRepository();
         repo.storage.add(new Client("c1", "10101010", "Client Uno", new Email("uno@bank.com"), "3001111111"));

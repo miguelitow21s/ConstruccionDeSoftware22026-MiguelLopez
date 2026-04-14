@@ -17,14 +17,39 @@ import com.bank.application.ports.TransactionRepositoryPort;
 import com.bank.application.services.AuthContextService;
 import com.bank.domain.entities.Account;
 import com.bank.domain.entities.AccountStatus;
-import com.bank.domain.entities.TransactionStatus;
-import com.bank.domain.entities.AccountType;
-import com.bank.domain.entities.TransactionType;
 import com.bank.domain.entities.Transaction;
+import com.bank.domain.entities.TransactionType;
+import com.bank.domain.entities.TransactionStatusntNumber;
+import com.bank.domain.entities.TransactionType;
 import com.bank.domain.valueobjects.Money;
-import com.bank.domain.valueobjects.AccountNumber;
+import com.bank.domain.valueobjects.Money;
 
 class ListTransactionsUseCaseTest {
+
+    @Test
+    void supervisorSoloVeTransactionsDeSuCompany() {
+        FakeAccountRepository accountRepo = new FakeAccountRepository();
+        accountRepo.storage.add(account("c1", "10000125", "company-1"));
+
+        FakeTransactionRepository transactionRepo = new FakeTransactionRepository();
+        transactionRepo.storage.add(transaction("t1", "10000125", "10000999"));
+        transactionRepo.storage.add(transaction("t2", "10000888", "10000777"));
+
+        ListTransactionsUseCase useCase = new ListTransactionsUseCase(
+                transactionRepo,
+                accountRepo,
+                new AuthContextService("supervisor:company-1")
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new TestingAuthenticationToken("supervisor", "123456", "ROLE_COMPANY_SUPERVISOR")
+        );
+
+        List<Transaction> resultado = useCase.execute();
+
+        assertEquals(1, resultado.size());
+        assertEquals("t1", resultado.getFirst().getId());
+    }
 
     @Test
     void debeFiltrarPorAccountNumberDelClientAutenticado() {

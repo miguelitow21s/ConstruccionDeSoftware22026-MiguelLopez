@@ -12,18 +12,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.bank.application.ports.AuditLogEntry;
-import com.bank.application.ports.AuditLogRepositoryPort;
 import com.bank.application.ports.AccountRepositoryPort;
+import com.bank.application.ports.AccountRepositoryPort;
+import com.bank.application.ports.AuditLogEntry;
 import com.bank.application.ports.TransactionRepositoryPort;
 import com.bank.application.services.AuthContextService;
 import com.bank.domain.entities.Account;
-import com.bank.domain.entities.TransactionStatus;
-import com.bank.domain.entities.AccountType;
 import com.bank.domain.entities.Transaction;
+import com.bank.domain.entities.TransactionStatus;
+import com.bank.domain.entities.TransactionStatus;
 import com.bank.domain.services.TransferService;
 import com.bank.domain.valueobjects.Money;
-import com.bank.domain.valueobjects.AccountNumber;
+import com.bank.domain.valueobjects.Money;
 
 class TransferMoneyUseCaseTest {
 
@@ -131,6 +131,31 @@ class TransferMoneyUseCaseTest {
 
         assertEquals(TransactionStatus.AWAITING_APPROVAL, transaction.getStatus());
         assertEquals(1, transactionRepo.storage.size());
+    }
+
+    @Test
+    void empleadoCompanyNoPuedeEvitarAprobacionConBanderaNoEmpresarial() {
+        FakeAccountRepository accountRepo = new FakeAccountRepository();
+        accountRepo.storage.add(account("c1", "10000009", "company-1", BigDecimal.valueOf(10000)));
+        accountRepo.storage.add(account("c2", "10000010", "proveedor-1", BigDecimal.valueOf(500)));
+
+        FakeTransactionRepository transactionRepo = new FakeTransactionRepository();
+        TransferMoneyUseCase useCase = new TransferMoneyUseCase(
+                accountRepo,
+                transactionRepo,
+                new TransferService(),
+                new FakeAuditLogRepository(),
+                new AuthContextService("empleado_company:company-1"),
+                BigDecimal.valueOf(2_000)
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new TestingAuthenticationToken("empleado_company", "123456", "ROLE_COMPANY_EMPLOYEE")
+        );
+
+        Transaction transaction = useCase.execute("c1", "c2", BigDecimal.valueOf(5_000), false);
+
+        assertEquals(TransactionStatus.AWAITING_APPROVAL, transaction.getStatus());
     }
 
     private Account account(String id, String number, String clientId, BigDecimal balance) {

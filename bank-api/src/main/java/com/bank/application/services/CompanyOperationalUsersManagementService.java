@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class CompanyOperationalUsersManagementService {
 
-    private final Map<String, Map<String, CompanyOperationalUser>> usersPorCompany = new ConcurrentHashMap<>();
+    private final Map<String, Map<String, CompanyOperationalUser>> usersByCompany = new ConcurrentHashMap<>();
 
     public List<CompanyOperationalUser> list(String companyId) {
-        return List.copyOf(usersPorCompany
+        return List.copyOf(usersByCompany
                 .getOrDefault(companyId, Map.of())
                 .values());
     }
@@ -28,7 +28,7 @@ public class CompanyOperationalUsersManagementService {
             throw new IllegalArgumentException("Operational user email is required");
         }
 
-        var usersCompany = usersPorCompany.computeIfAbsent(companyId, key -> new ConcurrentHashMap<>());
+        var usersCompany = usersByCompany.computeIfAbsent(companyId, key -> new ConcurrentHashMap<>());
         if (usersCompany.containsKey(username)) {
             throw new IllegalArgumentException("Operational user already exists for the company");
         }
@@ -39,7 +39,7 @@ public class CompanyOperationalUsersManagementService {
     }
 
     public CompanyOperationalUser changeStatus(String companyId, String username, boolean active) {
-        var usersCompany = usersPorCompany.getOrDefault(companyId, Map.of());
+        var usersCompany = usersByCompany.getOrDefault(companyId, Map.of());
         CompanyOperationalUser current = usersCompany.get(username);
         if (current == null) {
             throw new IllegalArgumentException("Operational user not found for the company");
@@ -52,7 +52,7 @@ public class CompanyOperationalUsersManagementService {
                 active
         );
 
-        usersPorCompany.get(companyId).put(username, updated);
+        usersByCompany.get(companyId).put(username, updated);
         return updated;
     }
 

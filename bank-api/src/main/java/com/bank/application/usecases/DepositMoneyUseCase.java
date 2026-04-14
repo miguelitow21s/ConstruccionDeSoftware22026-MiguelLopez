@@ -5,13 +5,13 @@ import java.math.BigDecimal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bank.application.ports.ClientRepositoryPort;
 import com.bank.application.ports.AccountRepositoryPort;
+import com.bank.application.ports.ClientRepositoryPort;
 import com.bank.application.ports.TransactionRepositoryPort;
 import com.bank.application.services.AuthContextService;
+import com.bank.domain.entities.Transaction;
 import com.bank.domain.entities.TransactionStatus;
 import com.bank.domain.entities.TransactionType;
-import com.bank.domain.entities.Transaction;
 import com.bank.domain.services.AccountService;
 import com.bank.domain.valueobjects.Money;
 
@@ -39,7 +39,7 @@ public class DepositMoneyUseCase {
     @Transactional
     public void execute(String accountId, String identificationIdClient, BigDecimal amount) {
         if (!authContextService.hasRole("TELLER")) {
-            throw new SecurityException("Not authorized to realizar deposits");
+            throw new SecurityException("Not authorized to perform deposits");
         }
 
         var account = accountRepository.findById(accountId)

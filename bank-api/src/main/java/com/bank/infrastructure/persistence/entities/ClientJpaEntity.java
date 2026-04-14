@@ -1,5 +1,7 @@
 package com.bank.infrastructure.persistence.entities;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -23,6 +25,12 @@ public class ClientJpaEntity {
 
     @Column(nullable = false)
     private String phone;
+
+    @Column(nullable = false)
+    private LocalDate birthDate;
+
+    @Column(nullable = false, length = 200)
+    private String address;
 
     @Column(nullable = false, length = 40)
     private String typeClient;
@@ -68,6 +76,22 @@ public class ClientJpaEntity {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getClientType() {

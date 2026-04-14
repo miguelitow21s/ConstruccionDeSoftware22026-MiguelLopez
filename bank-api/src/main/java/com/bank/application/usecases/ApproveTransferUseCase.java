@@ -102,7 +102,7 @@ public class ApproveTransferUseCase {
 
         auditLogRepository.save(new AuditLogEntry(
                 UUID.randomUUID().toString(),
-                "Transfer_Rechazada",
+            "Transfer_Rejected",
                 LocalDateTime.now(),
                 currentUser(),
                 currentRole(),
@@ -113,7 +113,7 @@ public class ApproveTransferUseCase {
                     "approverUserId", approverUserId,
                     "rejectionDate", LocalDateTime.now().toString(),
                         "finalStatus", transaction.getStatus().name(),
-                        "reason", "rechazada por aprobador"
+                "reason", "Rejected by approver"
                 )
         ));
     }

@@ -51,6 +51,30 @@ class ApproveTransferUseCaseTest {
     }
 
     @Test
+    void empleadoCompanyNoTieneCapacidadDeAprobarNiRechazar() {
+        FakeTransactionRepository transactionRepo = new FakeTransactionRepository();
+        transactionRepo.storage.add(transactionEnEspera("t-1b"));
+
+        ApproveTransferUseCase useCase = new ApproveTransferUseCase(
+                transactionRepo,
+                new FakeAccountRepository(),
+                new TransferService(),
+                new FakeAuditLogRepository(),
+                new AuthContextService("empleado_company:company-1")
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new TestingAuthenticationToken("empleado_company", "123456", "ROLE_COMPANY_EMPLOYEE")
+        );
+
+        SecurityException approveThrown = assertThrows(SecurityException.class, () -> useCase.approve("t-1b"));
+        SecurityException rejectThrown = assertThrows(SecurityException.class, () -> useCase.reject("t-1b"));
+
+        assertEquals("Only Company Supervisor can approve or reject transfers", approveThrown.getMessage());
+        assertEquals("Only Company Supervisor can approve or reject transfers", rejectThrown.getMessage());
+    }
+
+    @Test
     void supervisorDebePoderRechazarTransferEnEspera() {
         FakeTransactionRepository transactionRepo = new FakeTransactionRepository();
         transactionRepo.storage.add(transactionEnEspera("t-2"));
@@ -77,7 +101,7 @@ class ApproveTransferUseCaseTest {
         assertEquals(TransactionStatus.REJECTED, updated.getStatus());
         assertEquals((Long) (long) Math.abs("supervisor".hashCode()), updated.getApproverUserId());
         assertEquals(1, auditLogRepo.storage.size());
-        assertEquals("Transfer_Rechazada", auditLogRepo.storage.getFirst().operationType());
+        assertEquals("Transfer_Rejected", auditLogRepo.storage.getFirst().operationType());
     }
 
     @Test

@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bank.application.usecases.GetClientUseCase;
 import com.bank.application.usecases.CreateClientUseCase;
+import com.bank.application.usecases.GetClientUseCase;
 import com.bank.interfaces.dtos.CreateClientRequest;
 import com.bank.interfaces.dtos.CreateClientResponse;
 
@@ -47,6 +47,8 @@ public class ClientController {
                 client.getName(),
                 client.getEmail().value(),
                 client.getPhone(),
+            client.getBirthDate(),
+            client.getAddress(),
                 client.getClientType().name(),
                 client.getLegalRepresentativeId()
         );
@@ -63,6 +65,8 @@ public class ClientController {
                 request.name(),
                 request.email(),
                 request.phone(),
+                request.birthDate(),
+                request.address(),
                 request.typeClient(),
                 request.legalRepresentativeId()
         );
@@ -72,6 +76,8 @@ public class ClientController {
                 client.getName(),
                 client.getEmail().value(),
                 client.getPhone(),
+                client.getBirthDate(),
+                client.getAddress(),
                 client.getClientType().name(),
                 client.getLegalRepresentativeId()
         );

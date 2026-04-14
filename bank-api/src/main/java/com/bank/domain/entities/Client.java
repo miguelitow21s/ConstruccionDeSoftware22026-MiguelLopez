@@ -1,5 +1,6 @@
 package com.bank.domain.entities;
 
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -12,11 +13,13 @@ public class Client {
     private final String name;
     private final Email email;
     private final String phone;
+    private final LocalDate birthDate;
+    private final String address;
     private final ClientType typeClient;
     private final String legalRepresentativeId;
 
     public Client(String identificationId, String name, Email email, String phone) {
-        this(UUID.randomUUID().toString(), identificationId, name, email, phone, ClientType.NATURAL_PERSON_CLIENT, null);
+        this(UUID.randomUUID().toString(), identificationId, name, email, phone, null, null, ClientType.NATURAL_PERSON_CLIENT, null);
     }
 
     public Client(String identificationId,
@@ -25,11 +28,22 @@ public class Client {
                    String phone,
                    ClientType typeClient,
                    String legalRepresentativeId) {
-        this(UUID.randomUUID().toString(), identificationId, name, email, phone, typeClient, legalRepresentativeId);
+        this(UUID.randomUUID().toString(), identificationId, name, email, phone, null, null, typeClient, legalRepresentativeId);
+    }
+
+    public Client(String identificationId,
+                  String name,
+                  Email email,
+                  String phone,
+                  LocalDate birthDate,
+                  String address,
+                  ClientType typeClient,
+                  String legalRepresentativeId) {
+        this(UUID.randomUUID().toString(), identificationId, name, email, phone, birthDate, address, typeClient, legalRepresentativeId);
     }
 
     public Client(String id, String identificationId, String name, Email email, String phone) {
-        this(id, identificationId, name, email, phone, ClientType.NATURAL_PERSON_CLIENT, null);
+        this(id, identificationId, name, email, phone, null, null, ClientType.NATURAL_PERSON_CLIENT, null);
     }
 
     public Client(String id,
@@ -37,6 +51,8 @@ public class Client {
                    String name,
                    Email email,
                    String phone,
+                   LocalDate birthDate,
+                   String address,
                    ClientType typeClient,
                    String legalRepresentativeId) {
         if (id == null || id.isBlank()) {
@@ -63,8 +79,20 @@ public class Client {
         this.name = name;
         this.email = email;
         this.phone = phone;
+        this.birthDate = birthDate;
+        this.address = address;
         this.typeClient = typeClient;
         this.legalRepresentativeId = legalRepresentativeId;
+    }
+
+    public Client(String id,
+                   String identificationId,
+                   String name,
+                   Email email,
+                   String phone,
+                   ClientType typeClient,
+                   String legalRepresentativeId) {
+        this(id, identificationId, name, email, phone, null, null, typeClient, legalRepresentativeId);
     }
 
     public String getId() {
@@ -93,6 +121,14 @@ public class Client {
 
     public String getLegalRepresentativeId() {
         return legalRepresentativeId;
+    }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public String getAddress() {
+        return address;
     }
 
     @Override

@@ -14,17 +14,18 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bank.application.usecases.ApproveTransferUseCase;
-import com.bank.application.usecases.GetBalanceUseCase;
 import com.bank.application.usecases.CreateAccountUseCase;
 import com.bank.application.usecases.CreateBulkPaymentsUseCase;
 import com.bank.application.usecases.DepositMoneyUseCase;
-import com.bank.application.usecases.WithdrawMoneyUseCase;
+import com.bank.application.usecases.GetBalanceUseCase;
+import com.bank.application.usecases.ListAccountsUseCase;
 import com.bank.application.usecases.TransferMoneyUseCase;
+import com.bank.application.usecases.WithdrawMoneyUseCase;
+import com.bank.interfaces.dtos.BalanceResponse;
+import com.bank.interfaces.dtos.BulkPaymentRequest;
 import com.bank.interfaces.dtos.CreateAccountRequest;
 import com.bank.interfaces.dtos.CreateAccountResponse;
 import com.bank.interfaces.dtos.MovementRequest;
-import com.bank.interfaces.dtos.BulkPaymentRequest;
-import com.bank.interfaces.dtos.BalanceResponse;
 import com.bank.interfaces.dtos.TransactionResponse;
 import com.bank.interfaces.dtos.TransferRequest;
 
@@ -40,6 +41,7 @@ public class AccountController {
 
     private final CreateAccountUseCase createAccountUseCase;
     private final GetBalanceUseCase getBalanceUseCase;
+    private final ListAccountsUseCase listAccountsUseCase;
     private final DepositMoneyUseCase depositMoneyUseCase;
     private final WithdrawMoneyUseCase withdrawMoneyUseCase;
     private final TransferMoneyUseCase transferMoneyUseCase;
@@ -48,6 +50,7 @@ public class AccountController {
 
     public AccountController(CreateAccountUseCase createAccountUseCase,
                            GetBalanceUseCase getBalanceUseCase,
+                           ListAccountsUseCase listAccountsUseCase,
                            DepositMoneyUseCase depositMoneyUseCase,
                            WithdrawMoneyUseCase withdrawMoneyUseCase,
                            TransferMoneyUseCase transferMoneyUseCase,
@@ -55,11 +58,27 @@ public class AccountController {
                            ApproveTransferUseCase approveTransferUseCase) {
         this.createAccountUseCase = createAccountUseCase;
         this.getBalanceUseCase = getBalanceUseCase;
+        this.listAccountsUseCase = listAccountsUseCase;
         this.depositMoneyUseCase = depositMoneyUseCase;
         this.withdrawMoneyUseCase = withdrawMoneyUseCase;
         this.transferMoneyUseCase = transferMoneyUseCase;
         this.createBulkPaymentsUseCase = createBulkPaymentsUseCase;
         this.approveTransferUseCase = approveTransferUseCase;
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAnyRole('SALES','COMPANY_SUPERVISOR','COMPANY_EMPLOYEE','NATURAL_CLIENT','BUSINESS_CLIENT')")
+    public List<CreateAccountResponse> list() {
+        return listAccountsUseCase.execute().stream()
+                .map(account -> new CreateAccountResponse(
+                        account.getId(),
+                        account.getAccountNumber().value(),
+                        account.getBalance().value(),
+                        account.getAccountType(),
+                        account.getClientId(),
+                        account.getStatus()
+                ))
+                .toList();
     }
 
     @PostMapping

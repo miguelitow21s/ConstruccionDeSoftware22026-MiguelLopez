@@ -1,5 +1,8 @@
 package com.bank.application.usecases;
 
+import java.time.LocalDate;
+import java.time.Period;
+
 import org.springframework.stereotype.Service;
 
 import com.bank.application.ports.ClientRepositoryPort;
@@ -20,6 +23,8 @@ public class CreateClientUseCase {
                            String name,
                            String email,
                            String phone,
+                           LocalDate birthDate,
+                           String address,
                            String typeClientRaw,
                            String legalRepresentativeId) {
         clientRepository.findByIdIdentification(identificationId).ifPresent(existing -> {
@@ -32,6 +37,20 @@ public class CreateClientUseCase {
         ClientType typeClient = (typeClientRaw == null || typeClientRaw.isBlank())
                 ? ClientType.NATURAL_PERSON_CLIENT
                 : ClientType.valueOf(typeClientRaw);
+
+        if (address == null || address.isBlank()) {
+            throw new IllegalArgumentException("Address is required");
+        }
+
+        if (typeClient == ClientType.NATURAL_PERSON_CLIENT) {
+            if (birthDate == null) {
+                throw new IllegalArgumentException("Birth date is required");
+            }
+            int age = Period.between(birthDate, LocalDate.now()).getYears();
+            if (age < 18) {
+                throw new IllegalArgumentException("Client must be an adult");
+            }
+        }
 
         if (typeClient == ClientType.BUSINESS_CLIENT) {
             if (legalRepresentativeId == null || legalRepresentativeId.isBlank()) {
@@ -46,7 +65,7 @@ public class CreateClientUseCase {
             }
         }
 
-        Client client = new Client(identificationId, name, new Email(email), phone, typeClient, legalRepresentativeId);
+        Client client = new Client(identificationId, name, new Email(email), phone, birthDate, address, typeClient, legalRepresentativeId);
         return clientRepository.save(client);
     }
 }

@@ -11,9 +11,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bank.application.ports.AccountRepositoryPort;
 import com.bank.application.ports.AuditLogEntry;
 import com.bank.application.ports.AuditLogRepositoryPort;
-import com.bank.application.ports.AccountRepositoryPort;
 import com.bank.application.ports.TransactionRepositoryPort;
 import com.bank.application.services.AuthContextService;
 import com.bank.domain.entities.Transaction;
@@ -61,7 +61,9 @@ public class TransferMoneyUseCase {
         }
 
         Money money = Money.positive(amount);
-        boolean requiresApproval = isBusinessOperation && amount.compareTo(approvalThreshold) > 0;
+        // Company employees always operate under business rules and approval threshold checks.
+        boolean effectiveBusinessOperation = isBusinessOperation || authContextService.hasRole("COMPANY_EMPLOYEE");
+        boolean requiresApproval = effectiveBusinessOperation && amount.compareTo(approvalThreshold) > 0;
         Long creatorUserId = currentNumericUser();
 
         Transaction transaction = transferService.transfer(source, destination, money, requiresApproval, creatorUserId);
@@ -71,7 +73,7 @@ public class TransferMoneyUseCase {
 
         auditLogRepository.save(new AuditLogEntry(
                 UUID.randomUUID().toString(),
-                "Transfer_Creada",
+            "Transfer_Created",
                 LocalDateTime.now(),
                 currentUser(),
                 currentRole(),

@@ -60,8 +60,8 @@ class CajaOperacionesUseCaseSecurityTest {
         SecurityException dep = assertThrows(SecurityException.class, () -> deposit.execute("c1", "12345678", BigDecimal.valueOf(10)));
         SecurityException ret = assertThrows(SecurityException.class, () -> withdraw.execute("c1", "12345678", BigDecimal.valueOf(10)));
 
-        assertEquals("Not authorized to realizar deposits", dep.getMessage());
-        assertEquals("Not authorized to realizar withdrawals", ret.getMessage());
+        assertEquals("Not authorized to perform deposits", dep.getMessage());
+        assertEquals("Not authorized to perform withdrawals", ret.getMessage());
     }
 
         @Test
@@ -94,8 +94,8 @@ class CajaOperacionesUseCaseSecurityTest {
         SecurityException dep = assertThrows(SecurityException.class, () -> deposit.execute("c2", "87654321", BigDecimal.valueOf(10)));
         SecurityException ret = assertThrows(SecurityException.class, () -> withdraw.execute("c2", "87654321", BigDecimal.valueOf(10)));
 
-        assertEquals("Not authorized to realizar deposits", dep.getMessage());
-        assertEquals("Not authorized to realizar withdrawals", ret.getMessage());
+        assertEquals("Not authorized to perform deposits", dep.getMessage());
+        assertEquals("Not authorized to perform withdrawals", ret.getMessage());
         }
 
     private Account account(String id, String number, String clientId, BigDecimal balance) {

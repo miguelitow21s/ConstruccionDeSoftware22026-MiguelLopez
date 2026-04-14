@@ -17,6 +17,8 @@ public class ClientMapper {
         entity.setName(domain.getName());
         entity.setEmail(domain.getEmail().value());
         entity.setPhone(domain.getPhone());
+        entity.setBirthDate(domain.getBirthDate());
+        entity.setAddress(domain.getAddress());
         entity.setClientType(domain.getClientType().name());
         entity.setLegalRepresentativeId(domain.getLegalRepresentativeId());
         return entity;
@@ -29,6 +31,8 @@ public class ClientMapper {
                 entity.getName(),
                 new Email(entity.getEmail()),
                 entity.getPhone(),
+                entity.getBirthDate(),
+                entity.getAddress(),
                 ClientType.valueOf(entity.getClientType()),
                 entity.getLegalRepresentativeId()
         );

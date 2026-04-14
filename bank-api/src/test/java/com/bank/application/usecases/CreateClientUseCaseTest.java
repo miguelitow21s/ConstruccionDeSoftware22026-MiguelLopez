@@ -1,5 +1,6 @@
 package com.bank.application.usecases;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +21,7 @@ class CreateClientUseCaseTest {
         FakeClientRepository repo = new FakeClientRepository();
         CreateClientUseCase useCase = new CreateClientUseCase(repo);
 
-        Client creado = useCase.execute("10101010", "Miguel Lopez", "miguel@bank.com", "3001234567", null, null);
+        Client creado = useCase.execute("10101010", "Miguel Lopez", "miguel@bank.com", "3001234567", LocalDate.of(1990, 1, 1), "Street 123", null, null);
 
         assertEquals("10101010", creado.getIdIdentification());
         assertEquals(1, repo.storage.size());
@@ -34,7 +35,7 @@ class CreateClientUseCaseTest {
         CreateClientUseCase useCase = new CreateClientUseCase(repo);
 
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
-                () -> useCase.execute("10101010", "Client Dos", "dos@bank.com", "3002222222", null, null));
+                () -> useCase.execute("10101010", "Client Dos", "dos@bank.com", "3002222222", LocalDate.of(1990, 1, 1), "Street 123", null, null));
         assertEquals("A client with that identification already exists", thrown.getMessage());
     }
 
@@ -46,7 +47,7 @@ class CreateClientUseCaseTest {
         CreateClientUseCase useCase = new CreateClientUseCase(repo);
 
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
-                () -> useCase.execute("20202020", "Client Dos", "uno@bank.com", "3002222222", null, null));
+                () -> useCase.execute("20202020", "Client Dos", "uno@bank.com", "3002222222", LocalDate.of(1990, 1, 1), "Street 123", null, null));
         assertEquals("A client with that email already exists", thrown.getMessage());
     }
 
@@ -57,7 +58,7 @@ class CreateClientUseCaseTest {
 
         CreateClientUseCase useCase = new CreateClientUseCase(repo);
 
-        Client company = useCase.execute("900999888", "Company S.A.S", "company@bank.com", "6011234567", "BUSINESS_CLIENT", "rep-1");
+        Client company = useCase.execute("900999888", "Company S.A.S", "company@bank.com", "6011234567", LocalDate.of(1990, 1, 1), "Avenue 456", "BUSINESS_CLIENT", "rep-1");
 
         assertEquals(ClientType.BUSINESS_CLIENT, company.getClientType());
         assertEquals("rep-1", company.getLegalRepresentativeId());
@@ -70,7 +71,7 @@ class CreateClientUseCaseTest {
 
         IllegalArgumentException thrown = assertThrows(
                 IllegalArgumentException.class,
-                () -> useCase.execute("900999888", "Company S.A.S", "company@bank.com", "6011234567", "BUSINESS_CLIENT", null)
+                () -> useCase.execute("900999888", "Company S.A.S", "company@bank.com", "6011234567", LocalDate.of(1990, 1, 1), "Avenue 456", "BUSINESS_CLIENT", null)
         );
         assertEquals("Legal representative is required for business clients", thrown.getMessage());
     }
@@ -84,9 +85,35 @@ class CreateClientUseCaseTest {
 
         IllegalArgumentException thrown = assertThrows(
                 IllegalArgumentException.class,
-                () -> useCase.execute("900999888", "Company S.A.S", "company@bank.com", "6011234567", "BUSINESS_CLIENT", "rep-2")
+                () -> useCase.execute("900999888", "Company S.A.S", "company@bank.com", "6011234567", LocalDate.of(1990, 1, 1), "Avenue 456", "BUSINESS_CLIENT", "rep-2")
         );
         assertEquals("The legal representative must be a natural person client", thrown.getMessage());
+    }
+
+    @Test
+    void debeCreateClientCompanySinBirthDate() {
+        FakeClientRepository repo = new FakeClientRepository();
+        repo.storage.add(new Client("rep-1", "11111111", "Representante", new Email("rep@bank.com"), "3001111111", ClientType.NATURAL_PERSON_CLIENT, null));
+
+        CreateClientUseCase useCase = new CreateClientUseCase(repo);
+
+        Client company = useCase.execute("900888777", "Company Two", "company2@bank.com", "6012233445", null, "Avenue 123", "BUSINESS_CLIENT", "rep-1");
+
+        assertEquals(ClientType.BUSINESS_CLIENT, company.getClientType());
+        assertEquals("rep-1", company.getLegalRepresentativeId());
+        assertEquals(null, company.getBirthDate());
+    }
+
+    @Test
+    void debeFallarSiClienteNaturalEsMenorDeEdad() {
+        FakeClientRepository repo = new FakeClientRepository();
+        CreateClientUseCase useCase = new CreateClientUseCase(repo);
+
+        IllegalArgumentException thrown = assertThrows(
+                IllegalArgumentException.class,
+                () -> useCase.execute("30303030", "Client Joven", "joven@bank.com", "3007777777", LocalDate.now().minusYears(17), "Street 777", null, null)
+        );
+        assertEquals("Client must be an adult", thrown.getMessage());
     }
 
     private static final class FakeClientRepository implements ClientRepositoryPort {
