@@ -35,7 +35,7 @@ class CreateClientUseCaseTest {
 
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
                 () -> useCase.execute("10101010", "Client Dos", "dos@bank.com", "3002222222", null, null));
-        assertEquals("Ya existe un client con esa identification", thrown.getMessage());
+        assertEquals("A client with that identification already exists", thrown.getMessage());
     }
 
     @Test
@@ -47,7 +47,7 @@ class CreateClientUseCaseTest {
 
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
                 () -> useCase.execute("20202020", "Client Dos", "uno@bank.com", "3002222222", null, null));
-        assertEquals("Ya existe un client con ese email", thrown.getMessage());
+        assertEquals("A client with that email already exists", thrown.getMessage());
     }
 
     @Test
@@ -60,7 +60,7 @@ class CreateClientUseCaseTest {
         Client company = useCase.execute("900999888", "Company S.A.S", "company@bank.com", "6011234567", "BUSINESS_CLIENT", "rep-1");
 
         assertEquals(ClientType.BUSINESS_CLIENT, company.getClientType());
-        assertEquals("rep-1", company.getRepresentanteLegalId());
+        assertEquals("rep-1", company.getLegalRepresentativeId());
     }
 
     @Test

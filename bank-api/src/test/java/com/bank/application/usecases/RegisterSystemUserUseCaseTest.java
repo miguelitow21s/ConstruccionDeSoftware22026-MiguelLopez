@@ -7,9 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import com.bank.application.ports.SystemUserRepositoryPort;
-import com.bank.domain.entities.UserStatus;
 import com.bank.domain.entities.SystemRole;
 import com.bank.domain.entities.SystemUser;
+import com.bank.domain.entities.UserStatus;
 
 class RegisterSystemUserUseCaseTest {
 
@@ -65,7 +65,7 @@ class RegisterSystemUserUseCaseTest {
                 SystemRole.NATURAL_PERSON_CLIENT,
                 UserStatus.ACTIVE
         ));
-        assertEquals("Ya existe un user con ese ID", thrown.getMessage());
+        assertEquals("A user with that ID already exists", thrown.getMessage());
     }
 
     @Test
@@ -98,7 +98,7 @@ class RegisterSystemUserUseCaseTest {
                 SystemRole.NATURAL_PERSON_CLIENT,
                 UserStatus.ACTIVE
         ));
-        assertEquals("Ya existe un user con esa identification", thrown.getMessage());
+        assertEquals("A user with that identification already exists", thrown.getMessage());
     }
 
     private static final class InMemoryRepo extends com.bank.infrastructure.persistence.adapters.InMemorySystemUserRepositoryAdapter {

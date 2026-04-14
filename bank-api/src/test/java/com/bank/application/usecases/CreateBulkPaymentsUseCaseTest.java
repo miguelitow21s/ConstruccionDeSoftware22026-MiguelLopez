@@ -6,26 +6,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.bank.application.ports.AccountRepositoryPort;
 import com.bank.application.ports.AuditLogEntry;
 import com.bank.application.ports.AuditLogRepositoryPort;
-import com.bank.application.ports.AccountRepositoryPort;
 import com.bank.application.ports.TransactionRepositoryPort;
 import com.bank.application.services.AuthContextService;
 import com.bank.domain.entities.Account;
 import com.bank.domain.entities.AccountStatus;
-import com.bank.domain.entities.TransactionStatus;
 import com.bank.domain.entities.AccountType;
 import com.bank.domain.entities.Transaction;
+import com.bank.domain.entities.TransactionStatus;
 import com.bank.domain.services.TransferService;
-import com.bank.domain.valueobjects.Money;
 import com.bank.domain.valueobjects.AccountNumber;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import com.bank.domain.valueobjects.Money;
 
 class CreateBulkPaymentsUseCaseTest {
 
@@ -92,7 +91,7 @@ class CreateBulkPaymentsUseCaseTest {
                 SecurityException.class,
                 () -> useCase.execute("source", List.of(new CreateBulkPaymentsUseCase.BulkPaymentItem("destination", BigDecimal.ONE)))
         );
-        assertEquals("Not authorized to create bulk payments", thrown.getMessage());
+        assertEquals("Not authorized to create payments bulk", thrown.getMessage());
     }
 
     private Account account(String id, String number, String clientId, BigDecimal balance) {

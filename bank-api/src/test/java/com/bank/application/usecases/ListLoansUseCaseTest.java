@@ -13,8 +13,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.bank.application.ports.LoanRepositoryPort;
 import com.bank.application.services.AuthContextService;
-import com.bank.domain.entities.LoanStatus;
 import com.bank.domain.entities.Loan;
+import com.bank.domain.entities.LoanStatus;
 import com.bank.domain.entities.LoanType;
 
 class ListLoansUseCaseTest {
@@ -124,7 +124,7 @@ class ListLoansUseCaseTest {
         }
 
         @Override
-        public List<Loan> findByClientSolicitanteId(String applicantClientId) {
+        public List<Loan> findByClientApplicantId(String applicantClientId) {
             return storage.stream().filter(p -> p.getApplicantClientId().equals(applicantClientId)).toList();
         }
     }

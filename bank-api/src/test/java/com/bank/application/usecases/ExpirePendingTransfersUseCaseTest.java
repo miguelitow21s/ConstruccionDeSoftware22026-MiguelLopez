@@ -6,17 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import com.bank.application.ports.AuditLogEntry;
 import com.bank.application.ports.AuditLogRepositoryPort;
 import com.bank.application.ports.TransactionRepositoryPort;
+import com.bank.domain.entities.Transaction;
 import com.bank.domain.entities.TransactionStatus;
 import com.bank.domain.entities.TransactionType;
-import com.bank.domain.entities.Transaction;
 import com.bank.domain.valueobjects.Money;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ExpirePendingTransfersUseCaseTest {
 
@@ -49,7 +48,7 @@ class ExpirePendingTransfersUseCaseTest {
         assertEquals(TransactionStatus.EXPIRED, updated.getStatus());
         assertEquals(1, auditLogRepo.storage.size());
         assertEquals("Expired_Transfer", auditLogRepo.storage.getFirst().typeOperacion());
-        assertEquals("expired due to missing approval within the allowed time",
+        assertEquals("Expired due to missing approval within the allowed time",
                 auditLogRepo.storage.getFirst().datosDetalle().get("reason"));
     }
 

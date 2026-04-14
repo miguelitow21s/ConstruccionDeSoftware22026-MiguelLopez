@@ -102,7 +102,7 @@ class DecisionLoanUseCasesSecurityTest {
         }
 
         @Override
-        public List<Loan> findByClientSolicitanteId(String applicantClientId) {
+        public List<Loan> findByClientApplicantId(String applicantClientId) {
             return storage.stream().filter(p -> p.getApplicantClientId().equals(applicantClientId)).toList();
         }
     }

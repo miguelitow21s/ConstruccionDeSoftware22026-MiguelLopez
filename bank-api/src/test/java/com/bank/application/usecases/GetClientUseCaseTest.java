@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,9 +14,6 @@ import com.bank.application.ports.ClientRepositoryPort;
 import com.bank.application.services.AuthContextService;
 import com.bank.domain.entities.Client;
 import com.bank.domain.valueobjects.Email;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class GetClientUseCaseTest {
 
@@ -42,7 +41,7 @@ class GetClientUseCaseTest {
         );
 
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> useCase.execute("no-existe"));
-        assertEquals("Client no encontrado", thrown.getMessage());
+        assertEquals("Client not found", thrown.getMessage());
     }
 
     @Test

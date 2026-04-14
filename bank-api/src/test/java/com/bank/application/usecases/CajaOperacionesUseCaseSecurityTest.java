@@ -12,21 +12,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.bank.application.ports.ClientRepositoryPort;
 import com.bank.application.ports.AccountRepositoryPort;
+import com.bank.application.ports.ClientRepositoryPort;
 import com.bank.application.ports.TransactionRepositoryPort;
 import com.bank.application.services.AuthContextService;
-import com.bank.domain.entities.Client;
 import com.bank.domain.entities.Account;
 import com.bank.domain.entities.AccountStatus;
-import com.bank.domain.entities.TransactionStatus;
-import com.bank.domain.entities.ClientType;
 import com.bank.domain.entities.AccountType;
+import com.bank.domain.entities.Client;
+import com.bank.domain.entities.ClientType;
 import com.bank.domain.entities.Transaction;
+import com.bank.domain.entities.TransactionStatus;
 import com.bank.domain.services.AccountService;
-import com.bank.domain.valueobjects.Money;
-import com.bank.domain.valueobjects.Email;
 import com.bank.domain.valueobjects.AccountNumber;
+import com.bank.domain.valueobjects.Email;
+import com.bank.domain.valueobjects.Money;
 
 class CajaOperacionesUseCaseSecurityTest {
 
@@ -60,8 +60,8 @@ class CajaOperacionesUseCaseSecurityTest {
         SecurityException dep = assertThrows(SecurityException.class, () -> deposit.execute("c1", "12345678", BigDecimal.valueOf(10)));
         SecurityException ret = assertThrows(SecurityException.class, () -> withdraw.execute("c1", "12345678", BigDecimal.valueOf(10)));
 
-        assertEquals("Not authorized to realizar depositos", dep.getMessage());
-        assertEquals("Not authorized to realizar retiros", ret.getMessage());
+        assertEquals("Not authorized to realizar deposits", dep.getMessage());
+        assertEquals("Not authorized to realizar withdrawals", ret.getMessage());
     }
 
         @Test
@@ -94,8 +94,8 @@ class CajaOperacionesUseCaseSecurityTest {
         SecurityException dep = assertThrows(SecurityException.class, () -> deposit.execute("c2", "87654321", BigDecimal.valueOf(10)));
         SecurityException ret = assertThrows(SecurityException.class, () -> withdraw.execute("c2", "87654321", BigDecimal.valueOf(10)));
 
-        assertEquals("Not authorized to realizar depositos", dep.getMessage());
-        assertEquals("Not authorized to realizar retiros", ret.getMessage());
+        assertEquals("Not authorized to realizar deposits", dep.getMessage());
+        assertEquals("Not authorized to realizar withdrawals", ret.getMessage());
         }
 
     private Account account(String id, String number, String clientId, BigDecimal balance) {

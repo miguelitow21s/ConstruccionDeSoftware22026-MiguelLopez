@@ -11,20 +11,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.bank.application.ports.ClientRepositoryPort;
 import com.bank.application.ports.AccountRepositoryPort;
 import com.bank.application.ports.BankingProductRepositoryPort;
+import com.bank.application.ports.ClientRepositoryPort;
 import com.bank.application.ports.SystemUserRepositoryPort;
 import com.bank.application.services.AuthContextService;
-import com.bank.domain.entities.Client;
-import com.bank.domain.entities.ProductCategory;
 import com.bank.domain.entities.Account;
-import com.bank.domain.entities.UserStatus;
-import com.bank.domain.entities.BankingProduct;
-import com.bank.domain.entities.SystemRole;
-import com.bank.domain.entities.ClientType;
 import com.bank.domain.entities.AccountType;
+import com.bank.domain.entities.BankingProduct;
+import com.bank.domain.entities.Client;
+import com.bank.domain.entities.ClientType;
+import com.bank.domain.entities.ProductCategory;
+import com.bank.domain.entities.SystemRole;
 import com.bank.domain.entities.SystemUser;
+import com.bank.domain.entities.UserStatus;
 import com.bank.domain.valueobjects.Email;
 
 class CreateAccountUseCaseTest {
@@ -78,7 +78,7 @@ class CreateAccountUseCaseTest {
                 SecurityException.class,
                 () -> useCase.execute("12345679", BigDecimal.valueOf(1000), AccountType.SAVINGS, "id-2")
         );
-        assertEquals("Not authorized to abrir accounts para clients fuera de su management", thrown.getMessage());
+        assertEquals("Not authorized to open accounts for clients outside their scope", thrown.getMessage());
     }
 
         @Test
@@ -116,7 +116,7 @@ class CreateAccountUseCaseTest {
             IllegalStateException.class,
             () -> useCase.execute("12345680", BigDecimal.valueOf(1000), AccountType.SAVINGS, "id-1")
         );
-        assertEquals("No se puede abrir account para un client inactive o bloqueado", thrown.getMessage());
+        assertEquals("Cannot open an account for an inactive or blocked client", thrown.getMessage());
         }
 
         @Test
@@ -125,7 +125,7 @@ class CreateAccountUseCaseTest {
         clientRepo.storage.add(new Client("id-1", "10101010", "Client Uno", new Email("uno@bank.com"), "3001111111", ClientType.NATURAL_PERSON_CLIENT, null));
 
         FakeBankingProductRepository productoRepo = new FakeBankingProductRepository();
-        productoRepo.storage.removeIf(producto -> producto.getCodigoProducto().equals(AccountType.SAVINGS.name()));
+        productoRepo.storage.removeIf(producto -> producto.getProductCode().equals(AccountType.SAVINGS.name()));
 
         CreateAccountUseCase useCase = new CreateAccountUseCase(
             new FakeAccountRepository(),
@@ -250,14 +250,14 @@ class CreateAccountUseCaseTest {
 
         @Override
         public BankingProduct save(BankingProduct bankingProduct) {
-            storage.removeIf(existing -> existing.getCodigoProducto().equals(bankingProduct.getCodigoProducto()));
+            storage.removeIf(existing -> existing.getProductCode().equals(bankingProduct.getProductCode()));
             storage.add(bankingProduct);
             return bankingProduct;
         }
 
         @Override
-        public Optional<BankingProduct> findByCodigoProducto(String codigoProducto) {
-            return storage.stream().filter(p -> p.getCodigoProducto().equals(codigoProducto)).findFirst();
+        public Optional<BankingProduct> findByProductCode(String productCode) {
+            return storage.stream().filter(p -> p.getProductCode().equals(productCode)).findFirst();
         }
 
         @Override

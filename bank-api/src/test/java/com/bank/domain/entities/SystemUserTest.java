@@ -44,7 +44,7 @@ class SystemUserTest {
                 SystemRole.NATURAL_PERSON_CLIENT,
                 UserStatus.ACTIVE
         ));
-        assertEquals("Invalid user ido", thrown.getMessage());
+        assertEquals("Invalid user id", thrown.getMessage());
     }
 
     @Test
@@ -63,7 +63,7 @@ class SystemUserTest {
                 SystemRole.NATURAL_PERSON_CLIENT,
                 UserStatus.ACTIVE
         ));
-        assertEquals("Identification obligatoria", thrown.getMessage());
+        assertEquals("Identification required", thrown.getMessage());
     }
 
     @Test
@@ -80,7 +80,7 @@ class SystemUserTest {
                 SystemRole.NATURAL_PERSON_CLIENT,
                 UserStatus.ACTIVE
         ));
-        assertEquals("Invalid phoneo", thrown.getMessage());
+        assertEquals("Invalid phone", thrown.getMessage());
     }
 
     @Test
