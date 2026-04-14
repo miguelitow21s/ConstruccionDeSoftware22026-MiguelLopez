@@ -158,7 +158,7 @@ class ListAuditLogUseCaseTest {
         private AuditLogEntry entry(String userId, String idAuditLog, String idProducto) {
         return new AuditLogEntry(
                 idAuditLog,
-                "Transfer_Creada",
+            "Transfer_Created",
                 LocalDateTime.now(),
                 userId,
                 "ROLE_NATURAL_CLIENT",
@@ -210,6 +210,11 @@ class ListAuditLogUseCaseTest {
         @Override
         public java.util.Optional<Account> findByAccountNumber(String accountNumber) {
             return storage.stream().filter(c -> c.getAccountNumber().value().equals(accountNumber)).findFirst();
+        }
+
+        @Override
+        public List<Account> findAll() {
+            return List.copyOf(storage);
         }
 
         @Override

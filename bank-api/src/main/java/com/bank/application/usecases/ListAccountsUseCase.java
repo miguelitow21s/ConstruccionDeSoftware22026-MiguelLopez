@@ -21,6 +21,10 @@ public class ListAccountsUseCase {
     }
 
     public List<Account> execute() {
+        if (authContextService.hasRole("ANALYST")) {
+            return accountRepository.findAll();
+        }
+
         if (!authContextService.hasAnyRole("NATURAL_CLIENT", "BUSINESS_CLIENT", "COMPANY_EMPLOYEE", "COMPANY_SUPERVISOR", "SALES")) {
             throw new SecurityException("Not authorized to list accounts");
         }

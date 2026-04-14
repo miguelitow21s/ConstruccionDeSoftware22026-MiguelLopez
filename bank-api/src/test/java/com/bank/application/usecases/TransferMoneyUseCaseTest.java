@@ -13,16 +13,16 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.bank.application.ports.AccountRepositoryPort;
-import com.bank.application.ports.AccountRepositoryPort;
 import com.bank.application.ports.AuditLogEntry;
+import com.bank.application.ports.AuditLogRepositoryPort;
 import com.bank.application.ports.TransactionRepositoryPort;
 import com.bank.application.services.AuthContextService;
 import com.bank.domain.entities.Account;
+import com.bank.domain.entities.AccountType;
 import com.bank.domain.entities.Transaction;
 import com.bank.domain.entities.TransactionStatus;
-import com.bank.domain.entities.TransactionStatus;
 import com.bank.domain.services.TransferService;
-import com.bank.domain.valueobjects.Money;
+import com.bank.domain.valueobjects.AccountNumber;
 import com.bank.domain.valueobjects.Money;
 
 class TransferMoneyUseCaseTest {
@@ -187,6 +187,11 @@ class TransferMoneyUseCaseTest {
         @Override
         public Optional<Account> findByAccountNumber(String accountNumber) {
             return storage.stream().filter(c -> c.getAccountNumber().value().equals(accountNumber)).findFirst();
+        }
+
+        @Override
+        public List<Account> findAll() {
+            return List.copyOf(storage);
         }
 
         @Override

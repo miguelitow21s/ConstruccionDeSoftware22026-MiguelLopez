@@ -1,9 +1,9 @@
 package com.bank.application.ports;
 
-import com.bank.domain.entities.Account;
-
 import java.util.List;
 import java.util.Optional;
+
+import com.bank.domain.entities.Account;
 
 public interface AccountRepositoryPort {
 
@@ -12,6 +12,8 @@ public interface AccountRepositoryPort {
     Optional<Account> findById(String id);
 
     Optional<Account> findByAccountNumber(String accountNumber);
+
+    List<Account> findAll();
 
     List<Account> findByClientId(String clientId);
 }

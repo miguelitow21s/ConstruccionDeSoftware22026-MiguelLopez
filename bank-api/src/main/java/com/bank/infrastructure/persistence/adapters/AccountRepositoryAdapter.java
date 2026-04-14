@@ -1,14 +1,15 @@
 package com.bank.infrastructure.persistence.adapters;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import org.springframework.stereotype.Component;
+
 import com.bank.application.ports.AccountRepositoryPort;
 import com.bank.domain.entities.Account;
 import com.bank.infrastructure.persistence.mappers.AccountMapper;
 import com.bank.infrastructure.persistence.repositories.SpringDataAccountRepository;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Component
 public class AccountRepositoryAdapter implements AccountRepositoryPort {
@@ -35,6 +36,11 @@ public class AccountRepositoryAdapter implements AccountRepositoryPort {
     @Override
     public Optional<Account> findByAccountNumber(String accountNumber) {
         return repository.findByAccountNumber(accountNumber).map(mapper::toDomain);
+    }
+
+    @Override
+    public List<Account> findAll() {
+        return repository.findAll().stream().map(mapper::toDomain).toList();
     }
 
     @Override

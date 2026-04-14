@@ -22,6 +22,26 @@ import com.bank.domain.valueobjects.Money;
 class ListAccountsUseCaseTest {
 
     @Test
+    void analystPuedeListarTodasLasAccounts() {
+        FakeAccountRepository accountRepo = new FakeAccountRepository();
+        accountRepo.storage.add(account("a1", "10000555", "client-1"));
+        accountRepo.storage.add(account("a2", "10000666", "client-2"));
+
+        ListAccountsUseCase useCase = new ListAccountsUseCase(
+                accountRepo,
+                new AuthContextService("")
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new TestingAuthenticationToken("analyst", "123456", "ROLE_ANALYST")
+        );
+
+        List<Account> resultado = useCase.execute();
+
+        assertEquals(2, resultado.size());
+    }
+
+    @Test
     void supervisorSoloVeAccountsDeSuCompany() {
         FakeAccountRepository accountRepo = new FakeAccountRepository();
         accountRepo.storage.add(account("a1", "10000333", "company-1"));
@@ -100,6 +120,11 @@ class ListAccountsUseCaseTest {
         @Override
         public Optional<Account> findByAccountNumber(String accountNumber) {
             return storage.stream().filter(c -> c.getAccountNumber().value().equals(accountNumber)).findFirst();
+        }
+
+        @Override
+        public List<Account> findAll() {
+            return List.copyOf(storage);
         }
 
         @Override

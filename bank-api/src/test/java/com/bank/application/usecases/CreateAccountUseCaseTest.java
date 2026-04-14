@@ -188,6 +188,11 @@ class CreateAccountUseCaseTest {
         }
 
         @Override
+        public List<Account> findAll() {
+            return List.copyOf(storage);
+        }
+
+        @Override
         public List<Account> findByClientId(String clientId) {
             return storage.stream().filter(c -> c.getClientId().equals(clientId)).toList();
         }

@@ -67,7 +67,7 @@ public class AccountController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('SALES','COMPANY_SUPERVISOR','COMPANY_EMPLOYEE','NATURAL_CLIENT','BUSINESS_CLIENT')")
+    @PreAuthorize("hasAnyRole('ANALYST','SALES','COMPANY_SUPERVISOR','COMPANY_EMPLOYEE','NATURAL_CLIENT','BUSINESS_CLIENT')")
     public List<CreateAccountResponse> list() {
         return listAccountsUseCase.execute().stream()
                 .map(account -> new CreateAccountResponse(

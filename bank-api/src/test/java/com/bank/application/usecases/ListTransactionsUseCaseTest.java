@@ -17,11 +17,11 @@ import com.bank.application.ports.TransactionRepositoryPort;
 import com.bank.application.services.AuthContextService;
 import com.bank.domain.entities.Account;
 import com.bank.domain.entities.AccountStatus;
+import com.bank.domain.entities.AccountType;
 import com.bank.domain.entities.Transaction;
+import com.bank.domain.entities.TransactionStatus;
 import com.bank.domain.entities.TransactionType;
-import com.bank.domain.entities.TransactionStatusntNumber;
-import com.bank.domain.entities.TransactionType;
-import com.bank.domain.valueobjects.Money;
+import com.bank.domain.valueobjects.AccountNumber;
 import com.bank.domain.valueobjects.Money;
 
 class ListTransactionsUseCaseTest {
@@ -151,6 +151,11 @@ class ListTransactionsUseCaseTest {
         @Override
         public Optional<Account> findByAccountNumber(String accountNumber) {
             return storage.stream().filter(c -> c.getAccountNumber().value().equals(accountNumber)).findFirst();
+        }
+
+        @Override
+        public List<Account> findAll() {
+            return List.copyOf(storage);
         }
 
         @Override
