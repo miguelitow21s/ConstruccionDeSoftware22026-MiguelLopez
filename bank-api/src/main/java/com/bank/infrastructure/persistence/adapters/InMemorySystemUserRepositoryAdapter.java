@@ -12,35 +12,35 @@ import com.bank.domain.entities.SystemUser;
 @Component
 public class InMemorySystemUserRepositoryAdapter implements SystemUserRepositoryPort {
 
-    private final Map<Long, SystemUser> usersPorId = new ConcurrentHashMap<>();
-    private final Map<String, Long> userIdPorIdentification = new ConcurrentHashMap<>();
+    private final Map<Long, SystemUser> usersById = new ConcurrentHashMap<>();
+    private final Map<String, Long> userIdByIdentification = new ConcurrentHashMap<>();
 
     @Override
     public synchronized SystemUser save(SystemUser systemUser) {
         Long userId = systemUser.getUserId();
         String identificationId = systemUser.getIdIdentification();
 
-        Long idExistentePorIdentification = userIdPorIdentification.get(identificationId);
-        if (idExistentePorIdentification != null && !idExistentePorIdentification.equals(userId)) {
+        Long existingIdByIdentification = userIdByIdentification.get(identificationId);
+        if (existingIdByIdentification != null && !existingIdByIdentification.equals(userId)) {
             throw new IllegalArgumentException("A user with that identification already exists");
         }
 
-        usersPorId.put(userId, systemUser);
-        userIdPorIdentification.put(identificationId, userId);
+        usersById.put(userId, systemUser);
+        userIdByIdentification.put(identificationId, userId);
         return systemUser;
     }
 
     @Override
     public Optional<SystemUser> findByUserId(Long userId) {
-        return Optional.ofNullable(usersPorId.get(userId));
+        return Optional.ofNullable(usersById.get(userId));
     }
 
     @Override
     public Optional<SystemUser> findByIdIdentification(String identificationId) {
-        Long userId = userIdPorIdentification.get(identificationId);
+        Long userId = userIdByIdentification.get(identificationId);
         if (userId == null) {
             return Optional.empty();
         }
-        return Optional.ofNullable(usersPorId.get(userId));
+        return Optional.ofNullable(usersById.get(userId));
     }
 }

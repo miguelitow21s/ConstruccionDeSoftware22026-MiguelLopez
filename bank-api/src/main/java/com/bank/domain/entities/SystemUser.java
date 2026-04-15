@@ -29,16 +29,16 @@ public class SystemUser {
     private UserStatus userStatus;
 
     public SystemUser(Long userId,
-                          String idRelated,
-                          String fullName,
-                          String identificationId,
-                          Email emailElectronico,
-                          String phone,
-                          LocalDate birthDate,
-                          String address,
-                          SystemRole systemRole,
-                          UserStatus userStatus) {
-                validateFields(userId, idRelated, fullName, identificationId, emailElectronico, phone, birthDate, address, systemRole, userStatus);
+                      String idRelated,
+                      String fullName,
+                      String identificationId,
+                      Email emailElectronico,
+                      String phone,
+                      LocalDate birthDate,
+                      String address,
+                      SystemRole systemRole,
+                      UserStatus userStatus) {
+        validateFields(userId, idRelated, fullName, identificationId, emailElectronico, phone, birthDate, address, systemRole, userStatus);
         this.userId = userId;
         this.idRelated = idRelated;
         this.fullName = fullName;
@@ -106,15 +106,15 @@ public class SystemUser {
             if (birthDate == null) {
                 throw new IllegalArgumentException("Birth date is required for natural person users");
             }
-            int edad = Period.between(birthDate, LocalDate.now()).getYears();
-            if (edad < 18) {
+            int age = Period.between(birthDate, LocalDate.now()).getYears();
+            if (age < 18) {
                 throw new IllegalArgumentException("User must be an adult");
             }
         }
     }
 
     private boolean isNaturalPerson(SystemRole systemRole) {
-        return systemRole == SystemRole.NATURAL_PERSON_CLIENT;
+        return systemRole != SystemRole.BUSINESS_CLIENT;
     }
 
     private boolean requiresRelatedId(SystemRole systemRole) {

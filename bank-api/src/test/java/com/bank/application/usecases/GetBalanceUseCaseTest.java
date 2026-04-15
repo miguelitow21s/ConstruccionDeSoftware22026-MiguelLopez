@@ -11,16 +11,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.bank.application.ports.AccountRepositoryPort;
+import com.bank.application.ports.ClientRepositoryPort;
 import com.bank.application.ports.ClientRepositoryPort;
 import com.bank.application.services.AuthContextService;
-import com.bank.domain.entities.Account;
 import com.bank.domain.entities.AccountStatus;
 import com.bank.domain.entities.AccountType;
+import com.bank.domain.entities.ClientType;
 import com.bank.domain.entities.Client;
 import com.bank.domain.entities.ClientType;
 import com.bank.domain.services.AccountService;
-import com.bank.domain.valueobjects.AccountNumber;
+import com.bank.domain.valueobjects.Money;
 import com.bank.domain.valueobjects.Email;
 import com.bank.domain.valueobjects.Money;
 

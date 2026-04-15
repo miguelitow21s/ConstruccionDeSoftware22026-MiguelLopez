@@ -116,4 +116,39 @@ class SystemUserTest {
         ));
         assertEquals("Related ID is required for role COMPANY_SUPERVISOR", thrown.getMessage());
     }
+
+    @Test
+    void debeFallarSiEmpleadoNoRegistraFechaNacimiento() {
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> new SystemUser(
+                6L,
+                null,
+                "Teller User",
+                "99999111",
+                new Email("teller@bank.com"),
+                "3001234567",
+                null,
+                "Address 123",
+                SystemRole.TELLER_EMPLOYEE,
+                UserStatus.ACTIVE
+        ));
+        assertEquals("Birth date is required for natural person users", thrown.getMessage());
+    }
+
+    @Test
+    void debePermitirClienteEmpresaSinFechaNacimiento() {
+        SystemUser user = new SystemUser(
+                7L,
+                "company-1",
+                "Company User",
+                "NIT-123456",
+                new Email("company@bank.com"),
+                "3001234567",
+                null,
+                "Corporate Address",
+                SystemRole.BUSINESS_CLIENT,
+                UserStatus.ACTIVE
+        );
+
+        assertEquals(SystemRole.BUSINESS_CLIENT, user.getSystemRole());
+    }
 }

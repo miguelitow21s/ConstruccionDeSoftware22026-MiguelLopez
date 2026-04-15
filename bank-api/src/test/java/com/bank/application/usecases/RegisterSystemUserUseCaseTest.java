@@ -101,6 +101,49 @@ class RegisterSystemUserUseCaseTest {
         assertEquals("A user with that identification already exists", thrown.getMessage());
     }
 
+        @Test
+        void debePermitirAnalistaSinIdRelated() {
+                SystemUserRepositoryPort repository = new InMemoryRepo();
+                RegisterSystemUserUseCase useCase = new RegisterSystemUserUseCase(repository);
+
+                SystemUser user = useCase.execute(
+                                40L,
+                                null,
+                                "Internal Analyst",
+                                "40404040",
+                                "analyst@bank.com",
+                                "3001112222",
+                                LocalDate.now().minusYears(29),
+                                "Address Analyst",
+                                SystemRole.INTERNAL_ANALYST,
+                                UserStatus.ACTIVE
+                );
+
+                assertEquals(SystemRole.INTERNAL_ANALYST, user.getSystemRole());
+                assertEquals(null, user.getIdRelated());
+        }
+
+        @Test
+        void debeFallarSupervisorSinIdRelated() {
+                SystemUserRepositoryPort repository = new InMemoryRepo();
+                RegisterSystemUserUseCase useCase = new RegisterSystemUserUseCase(repository);
+
+                IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> useCase.execute(
+                                41L,
+                                null,
+                                "Company Supervisor",
+                                "41414141",
+                                "supervisor@bank.com",
+                                "3001113333",
+                                LocalDate.now().minusYears(35),
+                                "Address Supervisor",
+                                SystemRole.COMPANY_SUPERVISOR,
+                                UserStatus.ACTIVE
+                ));
+
+                assertEquals("Related ID is required for role COMPANY_SUPERVISOR", thrown.getMessage());
+        }
+
     private static final class InMemoryRepo extends com.bank.infrastructure.persistence.adapters.InMemorySystemUserRepositoryAdapter {
     }
 }
