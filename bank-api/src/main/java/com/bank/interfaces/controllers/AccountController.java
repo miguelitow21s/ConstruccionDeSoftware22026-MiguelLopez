@@ -17,6 +17,7 @@ import com.bank.application.usecases.ApproveTransferUseCase;
 import com.bank.application.usecases.CreateAccountUseCase;
 import com.bank.application.usecases.CreateBulkPaymentsUseCase;
 import com.bank.application.usecases.DepositMoneyUseCase;
+import com.bank.application.usecases.GetAccountUseCase;
 import com.bank.application.usecases.GetBalanceUseCase;
 import com.bank.application.usecases.ListAccountsUseCase;
 import com.bank.application.usecases.TransferMoneyUseCase;
@@ -40,6 +41,7 @@ import jakarta.validation.Valid;
 public class AccountController {
 
     private final CreateAccountUseCase createAccountUseCase;
+    private final GetAccountUseCase getAccountUseCase;
     private final GetBalanceUseCase getBalanceUseCase;
     private final ListAccountsUseCase listAccountsUseCase;
     private final DepositMoneyUseCase depositMoneyUseCase;
@@ -49,6 +51,7 @@ public class AccountController {
     private final ApproveTransferUseCase approveTransferUseCase;
 
     public AccountController(CreateAccountUseCase createAccountUseCase,
+                           GetAccountUseCase getAccountUseCase,
                            GetBalanceUseCase getBalanceUseCase,
                            ListAccountsUseCase listAccountsUseCase,
                            DepositMoneyUseCase depositMoneyUseCase,
@@ -57,6 +60,7 @@ public class AccountController {
                            CreateBulkPaymentsUseCase createBulkPaymentsUseCase,
                            ApproveTransferUseCase approveTransferUseCase) {
         this.createAccountUseCase = createAccountUseCase;
+        this.getAccountUseCase = getAccountUseCase;
         this.getBalanceUseCase = getBalanceUseCase;
         this.listAccountsUseCase = listAccountsUseCase;
         this.depositMoneyUseCase = depositMoneyUseCase;
@@ -92,6 +96,20 @@ public class AccountController {
                 request.clientId()
         );
 
+        return new CreateAccountResponse(
+                account.getId(),
+                account.getAccountNumber().value(),
+                account.getBalance().value(),
+                account.getAccountType(),
+                account.getClientId(),
+                account.getStatus()
+        );
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ANALYST','TELLER','SALES','COMPANY_SUPERVISOR','COMPANY_EMPLOYEE','NATURAL_CLIENT','BUSINESS_CLIENT')")
+    public CreateAccountResponse getById(@PathVariable String id) {
+        var account = getAccountUseCase.execute(id);
         return new CreateAccountResponse(
                 account.getId(),
                 account.getAccountNumber().value(),

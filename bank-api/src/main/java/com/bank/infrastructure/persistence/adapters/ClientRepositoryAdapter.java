@@ -1,5 +1,6 @@
 package com.bank.infrastructure.persistence.adapters;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -40,5 +41,10 @@ public class ClientRepositoryAdapter implements ClientRepositoryPort {
     @Override
     public Optional<Client> findByIdIdentification(String identificationId) {
         return repository.findByIdIdentification(identificationId).map(mapper::toDomain);
+    }
+
+    @Override
+    public List<Client> findAll() {
+        return repository.findAll().stream().map(mapper::toDomain).toList();
     }
 }

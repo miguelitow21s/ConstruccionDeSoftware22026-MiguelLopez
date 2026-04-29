@@ -11,16 +11,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.bank.application.ports.ClientRepositoryPort;
+import com.bank.application.ports.AccountRepositoryPort;
 import com.bank.application.ports.ClientRepositoryPort;
 import com.bank.application.services.AuthContextService;
+import com.bank.domain.entities.Account;
 import com.bank.domain.entities.AccountStatus;
 import com.bank.domain.entities.AccountType;
-import com.bank.domain.entities.ClientType;
 import com.bank.domain.entities.Client;
 import com.bank.domain.entities.ClientType;
 import com.bank.domain.services.AccountService;
-import com.bank.domain.valueobjects.Money;
+import com.bank.domain.valueobjects.AccountNumber;
 import com.bank.domain.valueobjects.Email;
 import com.bank.domain.valueobjects.Money;
 
@@ -70,8 +70,8 @@ class GetBalanceUseCaseTest {
         assertEquals("Not authorized to access this account", thrown.getMessage());
     }
 
-        @Test
-        void tellerDebeValidateIdentificationClientParaGetBalance() {
+    @Test
+    void tellerDebeValidateIdentificationClientParaGetBalance() {
         FakeAccountRepository accountRepo = new FakeAccountRepository();
         accountRepo.storage.add(account("c3", "10000013", "client-3", BigDecimal.valueOf(1200)));
         FakeClientRepository clientRepo = new FakeClientRepository();
@@ -90,10 +90,10 @@ class GetBalanceUseCaseTest {
 
         Money balance = useCase.execute("c3", "30303030");
         assertEquals(BigDecimal.valueOf(1200).setScale(2), balance.value());
-        }
+    }
 
-        @Test
-        void tellerDebeFallarSiIdentificationNoCoincide() {
+    @Test
+    void tellerDebeFallarSiIdentificationNoCoincide() {
         FakeAccountRepository accountRepo = new FakeAccountRepository();
         accountRepo.storage.add(account("c4", "10000014", "client-4", BigDecimal.valueOf(1500)));
         FakeClientRepository clientRepo = new FakeClientRepository();
@@ -112,10 +112,10 @@ class GetBalanceUseCaseTest {
 
         SecurityException thrown = assertThrows(SecurityException.class, () -> useCase.execute("c4", "00000000"));
         assertEquals("Client identification does not match the account", thrown.getMessage());
-        }
+    }
 
-        @Test
-        void salesSoloPuedeGetBalanceDeClientBajoManagement() {
+    @Test
+    void salesSoloPuedeGetBalanceDeClientBajoManagement() {
         FakeAccountRepository accountRepo = new FakeAccountRepository();
         accountRepo.storage.add(account("c5", "10000015", "client-5", BigDecimal.valueOf(2100)));
         FakeClientRepository clientRepo = new FakeClientRepository();
@@ -134,10 +134,10 @@ class GetBalanceUseCaseTest {
 
         Money balance = useCase.execute("c5", null);
         assertEquals(BigDecimal.valueOf(2100).setScale(2), balance.value());
-        }
+    }
 
-        @Test
-        void salesNoPuedeGetBalanceDeClientFueraDeManagement() {
+    @Test
+    void salesNoPuedeGetBalanceDeClientFueraDeManagement() {
         FakeAccountRepository accountRepo = new FakeAccountRepository();
         accountRepo.storage.add(account("c6", "10000016", "client-6", BigDecimal.valueOf(1800)));
         FakeClientRepository clientRepo = new FakeClientRepository();
@@ -156,7 +156,7 @@ class GetBalanceUseCaseTest {
 
         SecurityException thrown = assertThrows(SecurityException.class, () -> useCase.execute("c6", null));
         assertEquals("Not authorized to access this account", thrown.getMessage());
-        }
+    }
 
     private Account account(String id, String number, String clientId, BigDecimal balance) {
         return new Account(id, new AccountNumber(number), new Money(balance), AccountType.SAVINGS, clientId, AccountStatus.ACTIVE);
@@ -221,6 +221,10 @@ class GetBalanceUseCaseTest {
         public Optional<Client> findByIdIdentification(String identificationId) {
             return storage.stream().filter(c -> c.getIdIdentification().equals(identificationId)).findFirst();
         }
+
+        @Override
+        public List<Client> findAll() {
+            return List.copyOf(storage);
+        }
     }
 }
-

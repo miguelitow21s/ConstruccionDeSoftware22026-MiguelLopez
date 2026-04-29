@@ -51,7 +51,7 @@ public class SystemUser {
         this.userStatus = userStatus;
     }
 
-    public void bloquear() {
+    public void block() {
         this.userStatus = UserStatus.BLOCKED;
     }
 

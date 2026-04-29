@@ -1,5 +1,7 @@
 package com.bank.interfaces.controllers;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bank.application.usecases.CreateClientUseCase;
 import com.bank.application.usecases.GetClientUseCase;
+import com.bank.application.usecases.ListClientsUseCase;
 import com.bank.interfaces.dtos.CreateClientRequest;
 import com.bank.interfaces.dtos.CreateClientResponse;
 
@@ -28,11 +31,34 @@ public class ClientController {
 
     private final CreateClientUseCase createClientUseCase;
     private final GetClientUseCase getClientUseCase;
+    private final ListClientsUseCase listClientsUseCase;
 
     public ClientController(CreateClientUseCase createClientUseCase,
-                             GetClientUseCase getClientUseCase) {
+                             GetClientUseCase getClientUseCase,
+                             ListClientsUseCase listClientsUseCase) {
         this.createClientUseCase = createClientUseCase;
         this.getClientUseCase = getClientUseCase;
+        this.listClientsUseCase = listClientsUseCase;
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('ANALYST')")
+    @io.swagger.v3.oas.annotations.Operation(summary = "List all clients",
+               description = "Returns all registered clients. Only available to analysts.")
+    public List<CreateClientResponse> list() {
+        return listClientsUseCase.execute().stream()
+                .map(c -> new CreateClientResponse(
+                        c.getId(),
+                        c.getIdIdentification(),
+                        c.getName(),
+                        c.getEmail().value(),
+                        c.getPhone(),
+                        c.getBirthDate(),
+                        c.getAddress(),
+                        c.getClientType().name(),
+                        c.getLegalRepresentativeId()
+                ))
+                .toList();
     }
 
     @GetMapping("/{id}")

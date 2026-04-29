@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bank.application.usecases.ApproveLoanUseCase;
 import com.bank.application.usecases.DisburseLoanUseCase;
+import com.bank.application.usecases.GetLoanUseCase;
 import com.bank.application.usecases.ListLoansUseCase;
 import com.bank.application.usecases.RejectLoanUseCase;
 import com.bank.application.usecases.RequestLoanUseCase;
@@ -35,17 +36,20 @@ import jakarta.validation.Valid;
 public class LoanController {
 
     private final RequestLoanUseCase requestLoanUseCase;
+    private final GetLoanUseCase getLoanUseCase;
     private final ApproveLoanUseCase approveLoanUseCase;
     private final RejectLoanUseCase rejectLoanUseCase;
     private final DisburseLoanUseCase disburseLoanUseCase;
     private final ListLoansUseCase listLoansUseCase;
 
     public LoanController(RequestLoanUseCase requestLoanUseCase,
+                              GetLoanUseCase getLoanUseCase,
                               ApproveLoanUseCase approveLoanUseCase,
                               RejectLoanUseCase rejectLoanUseCase,
                               DisburseLoanUseCase disburseLoanUseCase,
                               ListLoansUseCase listLoansUseCase) {
         this.requestLoanUseCase = requestLoanUseCase;
+        this.getLoanUseCase = getLoanUseCase;
         this.approveLoanUseCase = approveLoanUseCase;
         this.rejectLoanUseCase = rejectLoanUseCase;
         this.disburseLoanUseCase = disburseLoanUseCase;
@@ -73,6 +77,14 @@ public class LoanController {
     @PreAuthorize("hasAnyRole('ANALYST','SALES','COMPANY_SUPERVISOR','COMPANY_EMPLOYEE','NATURAL_CLIENT','BUSINESS_CLIENT')")
     public List<LoanResponse> list() {
         return listLoansUseCase.execute().stream().map(this::toResponse).toList();
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ANALYST','SALES','COMPANY_SUPERVISOR','COMPANY_EMPLOYEE','NATURAL_CLIENT','BUSINESS_CLIENT')")
+    @Operation(summary = "Get loan by ID",
+               description = "Returns a specific loan. Clients can only access their own loans.")
+    public LoanResponse getById(@PathVariable String id) {
+        return toResponse(getLoanUseCase.execute(id));
     }
 
     @PostMapping("/{id}/approve")

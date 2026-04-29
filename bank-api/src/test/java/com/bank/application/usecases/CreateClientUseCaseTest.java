@@ -140,5 +140,10 @@ class CreateClientUseCaseTest {
         public Optional<Client> findByIdIdentification(String identificationId) {
             return storage.stream().filter(c -> c.getIdIdentification().equals(identificationId)).findFirst();
         }
+
+        @Override
+        public List<Client> findAll() {
+            return List.copyOf(storage);
+        }
     }
 }

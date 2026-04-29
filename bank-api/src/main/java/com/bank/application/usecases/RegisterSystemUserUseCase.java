@@ -52,4 +52,9 @@ public class RegisterSystemUserUseCase {
 
         return systemUserRepository.save(systemUser);
     }
+
+    public SystemUser findById(Long userId) {
+        return systemUserRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    }
 }
