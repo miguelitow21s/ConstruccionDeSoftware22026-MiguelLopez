@@ -21,7 +21,7 @@ public class SystemUser {
     private final String idRelated;
     private final String fullName;
     private final String identificationId;
-    private final Email emailElectronico;
+    private final Email email;
     private final String phone;
     private final LocalDate birthDate;
     private final String address;
@@ -32,18 +32,18 @@ public class SystemUser {
                       String idRelated,
                       String fullName,
                       String identificationId,
-                      Email emailElectronico,
+                      Email email,
                       String phone,
                       LocalDate birthDate,
                       String address,
                       SystemRole systemRole,
                       UserStatus userStatus) {
-        validateFields(userId, idRelated, fullName, identificationId, emailElectronico, phone, birthDate, address, systemRole, userStatus);
+        validateFields(userId, idRelated, fullName, identificationId, email, phone, birthDate, address, systemRole, userStatus);
         this.userId = userId;
         this.idRelated = idRelated;
         this.fullName = fullName;
         this.identificationId = identificationId;
-        this.emailElectronico = emailElectronico;
+        this.email = email;
         this.phone = phone;
         this.birthDate = birthDate;
         this.address = address;
@@ -67,7 +67,7 @@ public class SystemUser {
                                String idRelated,
                                String fullName,
                                String identificationId,
-                               Email emailElectronico,
+                               Email email,
                                String phone,
                                LocalDate birthDate,
                                String address,
@@ -82,7 +82,7 @@ public class SystemUser {
         if (identificationId == null || identificationId.isBlank() || identificationId.length() > MAX_IDENTIFICATION) {
             throw new IllegalArgumentException("Identification required");
         }
-        if (emailElectronico == null || emailElectronico.value().length() > MAX_EMAIL) {
+        if (email == null || email.value().length() > MAX_EMAIL) {
             throw new IllegalArgumentException("Email is required and must be valid");
         }
         if (phone == null || phone.length() < MIN_PHONE || phone.length() > MAX_PHONE || !PHONE_PATTERN.matcher(phone).matches()) {
@@ -141,7 +141,7 @@ public class SystemUser {
     }
 
     public Email getEmail() {
-        return emailElectronico;
+        return email;
     }
 
     public String getPhone() {
