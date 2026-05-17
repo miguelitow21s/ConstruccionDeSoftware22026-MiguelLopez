@@ -41,7 +41,7 @@ public class LoanRepositoryAdapter implements LoanRepositoryPort {
 
     @Override
     public List<Loan> findByClientApplicantId(String applicantClientId) {
-        return repository.findByClientApplicantId(Objects.requireNonNull(applicantClientId))
+        return repository.findByApplicantClientId(Objects.requireNonNull(applicantClientId))
                 .stream()
                 .map(mapper::toDomain)
                 .toList();

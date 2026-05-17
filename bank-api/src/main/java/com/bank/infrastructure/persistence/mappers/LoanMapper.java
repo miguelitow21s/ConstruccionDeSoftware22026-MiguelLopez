@@ -12,16 +12,16 @@ public class LoanMapper {
         LoanJpaEntity entity = new LoanJpaEntity();
         entity.setId(domain.getId());
         entity.setLoanType(domain.getLoanType());
-        entity.setClientApplicantId(domain.getApplicantClientId());
-        entity.setClientApplicantIdentification(domain.getApplicantClientIdentification());
+        entity.setApplicantClientId(domain.getApplicantClientId());
+        entity.setApplicantClientIdentification(domain.getApplicantClientIdentification());
         entity.setRequestedAmount(domain.getRequestedAmount());
         entity.setApprovedAmount(domain.getApprovedAmount());
         entity.setInterestRate(domain.getInterestRate());
-        entity.setTermMeses(domain.getTermMonths());
+        entity.setTermMonths(domain.getTermMonths());
         entity.setStatus(domain.getStatus());
         entity.setApprovalDate(domain.getApprovalDate());
         entity.setDisbursementDate(domain.getDisbursementDate());
-        entity.setAccountDestinationDisbursement(domain.getDisbursementDestinationAccount());
+        entity.setDisbursementDestinationAccount(domain.getDisbursementDestinationAccount());
         return entity;
     }
 

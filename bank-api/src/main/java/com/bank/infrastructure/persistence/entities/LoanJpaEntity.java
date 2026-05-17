@@ -73,7 +73,7 @@ public class LoanJpaEntity {
         return applicantClientId;
     }
 
-    public void setClientApplicantId(String applicantClientId) {
+    public void setApplicantClientId(String applicantClientId) {
         this.applicantClientId = applicantClientId;
     }
 
@@ -81,7 +81,7 @@ public class LoanJpaEntity {
         return applicantClientIdentification;
     }
 
-    public void setClientApplicantIdentification(String applicantClientIdentification) {
+    public void setApplicantClientIdentification(String applicantClientIdentification) {
         this.applicantClientIdentification = applicantClientIdentification;
     }
 
@@ -113,7 +113,7 @@ public class LoanJpaEntity {
         return termMonths;
     }
 
-    public void setTermMeses(Integer termMonths) {
+    public void setTermMonths(Integer termMonths) {
         this.termMonths = termMonths;
     }
 
@@ -145,7 +145,7 @@ public class LoanJpaEntity {
         return disbursementDestinationAccount;
     }
 
-    public void setAccountDestinationDisbursement(String disbursementDestinationAccount) {
+    public void setDisbursementDestinationAccount(String disbursementDestinationAccount) {
         this.disbursementDestinationAccount = disbursementDestinationAccount;
     }
 }

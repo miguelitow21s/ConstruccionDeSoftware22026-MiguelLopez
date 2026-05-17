@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface SpringDataLoanRepository extends JpaRepository<LoanJpaEntity, String> {
 
-	List<LoanJpaEntity> findByClientApplicantId(String applicantClientId);
+	List<LoanJpaEntity> findByApplicantClientId(String applicantClientId);
 }
