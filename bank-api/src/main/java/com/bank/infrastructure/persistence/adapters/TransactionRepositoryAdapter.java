@@ -41,7 +41,7 @@ public class TransactionRepositoryAdapter implements TransactionRepositoryPort {
 
     @Override
     public List<Transaction> findByAccountSourceInOrAccountDestinationIn(List<String> accountsSource, List<String> accountsDestination) {
-        return repository.findByAccountSourceInOrAccountDestinationIn(accountsSource, accountsDestination)
+        return repository.findBySourceAccountInOrDestinationAccountIn(accountsSource, accountsDestination)
                 .stream()
                 .map(mapper::toDomain)
                 .toList();

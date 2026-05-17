@@ -17,9 +17,9 @@ public class AccountMapper {
         entity.setBalance(domain.getBalance().value());
         entity.setAccountType(domain.getAccountType());
         entity.setClientId(domain.getClientId());
-        entity.setIdTitular(domain.getOwnerId());
-        entity.setMoneda(domain.getCurrency());
-        entity.setDateApertura(domain.getOpeningDate());
+        entity.setOwnerId(domain.getOwnerId());
+        entity.setCurrency(domain.getCurrency());
+        entity.setOpeningDate(domain.getOpeningDate());
         entity.setStatus(domain.getStatus());
         return entity;
     }

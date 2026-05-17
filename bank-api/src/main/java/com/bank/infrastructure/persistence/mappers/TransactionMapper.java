@@ -16,8 +16,8 @@ public class TransactionMapper {
         entity.setAmount(domain.getAmount().value());
         entity.setDate(domain.getDate());
         entity.setApprovalDate(domain.getApprovalDate());
-        entity.setAccountSource(domain.getSourceAccount());
-        entity.setAccountDestination(domain.getDestinationAccount());
+        entity.setSourceAccount(domain.getSourceAccount());
+        entity.setDestinationAccount(domain.getDestinationAccount());
         entity.setCreatorUserId(domain.getCreatorUserId());
         entity.setApproverUserId(domain.getApproverUserId());
         entity.setStatus(domain.getStatus());

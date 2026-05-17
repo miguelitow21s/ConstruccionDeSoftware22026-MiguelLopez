@@ -98,7 +98,7 @@ public class AccountJpaEntity {
         return ownerId;
     }
 
-    public void setIdTitular(String ownerId) {
+    public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
     }
 
@@ -106,7 +106,7 @@ public class AccountJpaEntity {
         return currency;
     }
 
-    public void setMoneda(String currency) {
+    public void setCurrency(String currency) {
         this.currency = currency;
     }
 
@@ -114,7 +114,7 @@ public class AccountJpaEntity {
         return openingDate;
     }
 
-    public void setDateApertura(LocalDate openingDate) {
+    public void setOpeningDate(LocalDate openingDate) {
         this.openingDate = openingDate;
     }
 }

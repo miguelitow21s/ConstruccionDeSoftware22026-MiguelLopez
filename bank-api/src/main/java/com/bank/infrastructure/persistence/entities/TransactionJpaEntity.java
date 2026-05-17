@@ -91,7 +91,7 @@ public class TransactionJpaEntity {
         return sourceAccount;
     }
 
-    public void setAccountSource(String sourceAccount) {
+    public void setSourceAccount(String sourceAccount) {
         this.sourceAccount = sourceAccount;
     }
 
@@ -99,7 +99,7 @@ public class TransactionJpaEntity {
         return destinationAccount;
     }
 
-    public void setAccountDestination(String destinationAccount) {
+    public void setDestinationAccount(String destinationAccount) {
         this.destinationAccount = destinationAccount;
     }
 

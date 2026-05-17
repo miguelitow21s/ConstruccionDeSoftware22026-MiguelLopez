@@ -11,5 +11,5 @@ public interface SpringDataTransactionRepository extends JpaRepository<Transacti
 
     List<TransactionJpaEntity> findByStatusAndDateBefore(TransactionStatus status, LocalDateTime date);
 
-    List<TransactionJpaEntity> findByAccountSourceInOrAccountDestinationIn(List<String> accountsSource, List<String> accountsDestination);
+    List<TransactionJpaEntity> findBySourceAccountInOrDestinationAccountIn(List<String> accountsSource, List<String> accountsDestination);
 }
