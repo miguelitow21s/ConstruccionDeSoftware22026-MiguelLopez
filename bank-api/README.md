@@ -84,10 +84,22 @@ Flujo ejemplo (transferencia):
 ## 6) Ejecucion del Proyecto
 Requisitos:
 - Java 21+
-- Maven 3.9+
+- Maven 3.9+ (opcional si usas el wrapper incluido)
 - MongoDB (opcional, solo si `bank.bitacora.storage=mongodb`)
 
 Comandos:
+```bash
+cd bank-api
+./mvnw spring-boot:run
+```
+
+En Windows PowerShell:
+```powershell
+cd bank-api
+.\mvnw.cmd spring-boot:run
+```
+
+Si prefieres usar Maven instalado globalmente:
 ```bash
 cd bank-api
 mvn spring-boot:run
@@ -100,10 +112,13 @@ URLs:
 - **OpenAPI Docs**: `http://localhost:8080/v3/api-docs`
 
 Credenciales basicas (Spring Security en memoria):
-- `analista / 123456`
-- `ventanilla / 123456`
-- `comercial / 123456`
+- `analyst / 123456`
+- `teller / 123456`
+- `sales / 123456`
 - `supervisor / 123456`
+- `company_employee / 123456`
+- `client_natural / 123456`
+- `client_company / 123456`
 
 ## 7) Endpoints Principales
 - `POST /clientes`

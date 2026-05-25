@@ -13,7 +13,7 @@ public class ClientMapper {
     public ClientJpaEntity toJpa(Client domain) {
         ClientJpaEntity entity = new ClientJpaEntity();
         entity.setId(domain.getId());
-        entity.setIdIdentification(domain.getIdIdentification());
+        entity.setIdentificationId(domain.getIdIdentification());
         entity.setName(domain.getName());
         entity.setEmail(domain.getEmail().value());
         entity.setPhone(domain.getPhone());
@@ -27,7 +27,7 @@ public class ClientMapper {
     public Client toDomain(ClientJpaEntity entity) {
         return new Client(
                 entity.getId(),
-                entity.getIdIdentification(),
+                entity.getIdentificationId(),
                 entity.getName(),
                 new Email(entity.getEmail()),
                 entity.getPhone(),

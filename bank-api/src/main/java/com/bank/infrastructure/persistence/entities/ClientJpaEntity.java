@@ -50,11 +50,11 @@ public class ClientJpaEntity {
         return name;
     }
 
-    public String getIdIdentification() {
+    public String getIdentificationId() {
         return identificationId;
     }
 
-    public void setIdIdentification(String identificationId) {
+    public void setIdentificationId(String identificationId) {
         this.identificationId = identificationId;
     }
 

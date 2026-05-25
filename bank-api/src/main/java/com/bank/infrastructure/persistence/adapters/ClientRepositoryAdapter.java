@@ -40,7 +40,7 @@ public class ClientRepositoryAdapter implements ClientRepositoryPort {
 
     @Override
     public Optional<Client> findByIdIdentification(String identificationId) {
-        return repository.findByIdIdentification(identificationId).map(mapper::toDomain);
+        return repository.findByIdentificationId(identificationId).map(mapper::toDomain);
     }
 
     @Override
