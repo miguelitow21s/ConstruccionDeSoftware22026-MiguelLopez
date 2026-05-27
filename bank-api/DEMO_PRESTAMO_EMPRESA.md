@@ -212,17 +212,30 @@ El saldo de la cuenta `10000001` ahora tiene **$30,000,000 COP**.
 
 ---
 
-## Verificaciones opcionales
+## Verificar el desembolso — 3 formas
 
-### Ver el estado de un préstamo
+### Opción A — Ver el préstamo con estado DISBURSED
 
 **Swagger:** sección **Loans** → `GET /loans/{id}` → **Try it out**
 
-Puedes usar cualquier usuario autenticado.
+**Campo `id`:** pega el `<loan-id-2>`
+
+Cualquier usuario autenticado sirve.
+
+**Respuesta esperada:**
+```json
+{
+  "id": "<loan-id-2>",
+  "status": "DISBURSED",
+  "approvedAmount": 30000000,
+  "disbursementDate": "2026-05-27T...",
+  "disbursementDestinationAccount": "10000001"
+}
+```
 
 ---
 
-### Ver el saldo de la cuenta después del desembolso
+### Opción B — Ver que el dinero llegó a la cuenta
 
 **Swagger:** sección **Accounts** → `GET /accounts/{id}/balance` → **Try it out**
 
@@ -230,13 +243,34 @@ Puedes usar cualquier usuario autenticado.
 
 **Campo `id`:** `empresa_account_001`
 
+**Respuesta esperada:**
+```json
+{
+  "accountId": "empresa_account_001",
+  "balance": 30000000,
+  "status": "ACTIVE"
+}
+```
+
+> Aquí se demuestra que el desembolso no es solo un cambio de estado en el préstamo — el dinero realmente se acreditó en la cuenta bancaria de la empresa.
+
 ---
 
-### Ver la bitácora de auditoría
+### Opción C — Ver la bitácora completa del proceso
 
 **Swagger:** sección **Audit Log** → `GET /auditLog` → **Try it out**
 
-Muestra todas las operaciones registradas: solicitud, rechazo, aprobación y desembolso del préstamo.
+Cualquier usuario autenticado sirve.
+
+Muestra las 5 operaciones registradas en orden cronológico:
+
+| Operación | Quién | Estado resultante |
+|-----------|-------|-------------------|
+| `LOAN_REQUEST` | client_company | UNDER_REVIEW |
+| `Rejection_Loan` | analyst | REJECTED |
+| `LOAN_REQUEST` | client_company | UNDER_REVIEW |
+| `Approval_Loan` | analyst | APPROVED |
+| `Disbursement_Loan` | analyst | DISBURSED |
 
 ---
 
