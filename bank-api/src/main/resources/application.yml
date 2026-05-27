@@ -41,7 +41,7 @@ bank:
     storage: memory
   security:
     # Formato: usuario:idCliente,usuario2:idCliente2
-    user-client-map: cliente_natural:cliente_natural_id,cliente_empresa:cliente_empresa_id,empleado_empresa:empresa_demo_id,supervisor:empresa_demo_id
+    user-client-map: client_company:empresa_demo_id,client_natural:cliente_natural_id,cliente_natural:cliente_natural_id,cliente_empresa:cliente_empresa_id,empleado_empresa:empresa_demo_id,supervisor:empresa_demo_id
   transfer:
     approval-threshold: 10000
     approval-expiration-minutes: 60
