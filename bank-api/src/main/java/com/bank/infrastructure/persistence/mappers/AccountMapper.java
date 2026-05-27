@@ -7,6 +7,9 @@ import com.bank.domain.valueobjects.Money;
 import com.bank.domain.valueobjects.AccountNumber;
 import com.bank.infrastructure.persistence.entities.AccountJpaEntity;
 
+// Convierte entre Account (dominio) y AccountJpaEntity (base de datos).
+// Existe porque el dominio no puede depender de anotaciones JPA ni de Jakarta Persistence.
+// Si el dominio usara @Entity directamente, estaría acoplado a la infraestructura.
 @Component
 public class AccountMapper {
 

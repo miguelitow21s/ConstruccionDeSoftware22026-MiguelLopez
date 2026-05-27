@@ -29,6 +29,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
+// Controlador de préstamos. El flujo completo es: solicitar → aprobar/rechazar → desembolsar.
+// Cada paso lo puede hacer un rol distinto y el dominio valida que el orden sea correcto.
 @RestController
 @RequestMapping("/loans")
 @Tag(name = "Loans", description = "Loan management")
@@ -109,6 +111,7 @@ public class LoanController {
         return toResponse(disburseLoanUseCase.execute(id, request.destinationAccountNumber()));
     }
 
+    // Método auxiliar para no repetir el mapeo de Loan → LoanResponse en cada endpoint
     private LoanResponse toResponse(Loan loan) {
         return new LoanResponse(
                 loan.getId(),

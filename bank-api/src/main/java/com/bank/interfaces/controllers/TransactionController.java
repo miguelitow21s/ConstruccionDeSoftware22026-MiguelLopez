@@ -18,6 +18,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+// Controlador de solo lectura para transacciones.
+// Las transacciones se crean desde AccountController (depósito, retiro, transferencia),
+// aquí solo se consultan. El parámetro ?status filtra por estado.
 @RestController
 @RequestMapping("/transactions")
 @Tag(name = "Transactions", description = "Transaction history queries")

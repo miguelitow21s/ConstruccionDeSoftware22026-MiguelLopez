@@ -7,14 +7,17 @@ import java.util.UUID;
 import com.bank.domain.valueobjects.Money;
 import com.bank.domain.valueobjects.AccountNumber;
 
+// Entidad principal del dominio bancario. Representa una cuenta real con sus reglas de negocio.
+// Los campos final no cambian nunca después de crearse (número, tipo, cliente, moneda).
+// Solo el saldo y el estado pueden modificarse durante la vida de la cuenta.
 public class Account {
 
     private final String id;
     private final AccountNumber accountNumber;
     private Money balance;
     private final AccountType accountType;
-    private final String clientId;
-    private final String ownerId;
+    private final String clientId;   // ID del cliente propietario en el sistema
+    private final String ownerId;    // ID del titular específico (puede ser representante legal)
     private final String currency;
     private final LocalDate openingDate;
     private AccountStatus status;
@@ -78,10 +81,13 @@ public class Account {
     }
 
     public void withdraw(Money amount) {
+        // Money.subtract ya lanza excepción si el resultado es negativo (saldo insuficiente)
         validateOperationalAccount();
         this.balance = this.balance.subtract(amount);
     }
 
+    // Antes de cualquier operación verificamos que la cuenta esté activa.
+    // Una cuenta bloqueada o inactiva no debe mover dinero bajo ninguna circunstancia.
     public void validateOperationalAccount() {
         if (status != AccountStatus.ACTIVE) {
             throw new IllegalStateException("Account is not active");

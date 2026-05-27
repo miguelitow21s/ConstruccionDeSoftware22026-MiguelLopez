@@ -6,6 +6,9 @@ import com.bank.domain.entities.Transaction;
 import com.bank.domain.valueobjects.Money;
 import com.bank.infrastructure.persistence.entities.TransactionJpaEntity;
 
+// Mapper de transacciones. El campo typeTransaction en la entidad JPA es el nombre en base de datos,
+// mientras que en el dominio se llama igual pero el getter se llama getTransactionType().
+// El mapper es el puente que absorbe esas diferencias de nombre.
 @Component
 public class TransactionMapper {
 

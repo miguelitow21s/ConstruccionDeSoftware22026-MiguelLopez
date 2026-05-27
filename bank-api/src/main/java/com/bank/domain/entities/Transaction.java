@@ -6,17 +6,20 @@ import java.util.UUID;
 
 import com.bank.domain.valueobjects.Money;
 
+// Representa cualquier movimiento de dinero: depósito, retiro o transferencia.
+// Los depósitos y retiros se ejecutan de inmediato (EXECUTED).
+// Las transferencias pueden quedar en AWAITING_APPROVAL si superan el umbral empresarial.
 public class Transaction {
 
     private final String id;
     private final TransactionType typeTransaction;
     private final Money amount;
-    private final LocalDateTime date;
-    private LocalDateTime approvalDate;
+    private final LocalDateTime date;       // Momento en que se creó la transacción
+    private LocalDateTime approvalDate;     // Solo aplica para transferencias que necesitan aprobación
     private final String sourceAccount;
     private final String destinationAccount;
     private final Long creatorUserId;
-    private Long approverUserId;
+    private Long approverUserId;            // Quien la aprobó o rechazó (null si aún no fue procesada)
     private TransactionStatus status;
 
     public Transaction(TransactionType typeTransaction, Money amount, String sourceAccount, String destinationAccount, TransactionStatus status) {

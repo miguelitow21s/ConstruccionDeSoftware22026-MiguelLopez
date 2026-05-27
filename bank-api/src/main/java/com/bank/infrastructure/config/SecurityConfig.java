@@ -10,24 +10,30 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+// Configuración de seguridad. Aquí se define quién puede acceder a qué.
+// @EnableMethodSecurity permite usar @PreAuthorize en los use cases para un control más fino.
+// Los usuarios están en memoria porque el enunciado no pedía persistencia de autenticación.
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        // CSRF deshabilitado porque la API es stateless (no usa sesiones ni cookies)
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/clients/**").hasAnyRole("ANALYST", "TELLER", "SALES")
                         .requestMatchers("/users/**").hasRole("ANALYST")
+                        // /auditLog queda como authenticated() para que los clientes puedan ver su propio historial
                         .requestMatchers("/auditLog/**").authenticated()
                         .requestMatchers("/loans/**").authenticated()
                         .requestMatchers("/accounts/**", "/transactions/**").authenticated()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults());
 
+        // Necesario para que la consola H2 (iframe) funcione en el navegador
         http.headers(headers -> headers.frameOptions(frame -> frame.disable()));
         return http.build();
     }

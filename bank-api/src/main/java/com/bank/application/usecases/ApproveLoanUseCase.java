@@ -14,6 +14,8 @@ import com.bank.application.ports.LoanRepositoryPort;
 import com.bank.application.services.AuthContextService;
 import com.bank.domain.entities.Loan;
 
+// Caso de uso: un analista aprueba un préstamo que está en revisión.
+// La lógica de cambio de estado está en el dominio (Loan.approve()), aquí solo se orquesta.
 @Service
 public class ApproveLoanUseCase {
 

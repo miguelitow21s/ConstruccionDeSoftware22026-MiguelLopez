@@ -34,6 +34,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
+// Controlador REST para todo lo relacionado con cuentas bancarias.
+// Aquí conviven operaciones de consulta (GET) y de movimiento (POST).
+// Cada endpoint tiene su propio @PreAuthorize con los roles que pueden ejecutarlo.
 @RestController
 @RequestMapping("/accounts")
 @Tag(name = "Accounts", description = "Bank account management and transactional operations")
@@ -129,6 +132,7 @@ public class AccountController {
         return new BalanceResponse(id, balance.value(), account.getStatus());
     }
 
+    // Solo TELLER puede depositar y retirar — son operaciones de caja física
     @PostMapping("/deposit")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('TELLER')")
@@ -143,6 +147,7 @@ public class AccountController {
         withdrawMoneyUseCase.execute(request.accountId(), request.identificationIdClient(), request.amount());
     }
 
+    // Las transferencias las inician los clientes o empleados de empresa, no el banco directamente
     @PostMapping("/transfer")
     @PreAuthorize("hasAnyRole('COMPANY_EMPLOYEE','NATURAL_CLIENT','BUSINESS_CLIENT')")
     public TransactionResponse transfer(@Valid @RequestBody TransferRequest request) {
@@ -184,6 +189,7 @@ public class AccountController {
                 .toList();
     }
 
+    // El supervisor de empresa es el único que puede aprobar o rechazar transferencias pendientes
     @PostMapping("/transfers/{id}/approve")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('COMPANY_SUPERVISOR')")

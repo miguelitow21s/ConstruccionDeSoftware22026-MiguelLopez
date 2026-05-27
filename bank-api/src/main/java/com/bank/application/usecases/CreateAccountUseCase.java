@@ -17,6 +17,9 @@ import com.bank.domain.entities.UserStatus;
 import com.bank.domain.valueobjects.AccountNumber;
 import com.bank.domain.valueobjects.Money;
 
+// Caso de uso: abrir una nueva cuenta bancaria para un cliente existente.
+// Valida que el cliente tenga un usuario activo en el sistema y que el tipo
+// de cuenta exista en el catálogo de productos del banco.
 @Service
 public class CreateAccountUseCase {
 
@@ -79,6 +82,7 @@ public class CreateAccountUseCase {
         return accountRepository.save(account);
     }
 
+    // No se puede abrir una cuenta para un cliente bloqueado o inactivo
     private void validateActiveClient(String identificationIdClient) {
         var systemUser = systemUserRepository.findByIdIdentification(identificationIdClient)
                 .orElseThrow(() -> new IllegalStateException("No system user is associated with the client"));
@@ -88,6 +92,8 @@ public class CreateAccountUseCase {
         }
     }
 
+    // Los tipos de cuenta válidos están en la tabla banking_products,
+    // así el catálogo controla qué productos están disponibles sin tocar el código
     private void validateAccountTypeInCatalog(AccountType accountType) {
         var productAccount = bankingProductRepository.findByProductCode(accountType.name())
                 .orElseThrow(() -> new IllegalArgumentException("Account type does not exist in the banking catalog"));

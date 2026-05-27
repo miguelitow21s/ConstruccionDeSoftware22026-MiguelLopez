@@ -18,6 +18,9 @@ import com.bank.domain.entities.UserStatus;
 import com.bank.domain.entities.Loan;
 import com.bank.domain.entities.LoanType;
 
+// Caso de uso: un cliente o asesor de ventas solicita un préstamo.
+// Verificamos que el cliente exista, que su usuario del sistema esté activo,
+// y que el solicitante sea el mismo cliente autenticado (no puede pedir en nombre de otro).
 @Service
 public class RequestLoanUseCase {
 

@@ -11,6 +11,9 @@ import com.bank.domain.entities.Client;
 import com.bank.infrastructure.persistence.mappers.ClientMapper;
 import com.bank.infrastructure.persistence.repositories.SpringDataClientRepository;
 
+// Adaptador que conecta el puerto del dominio con Spring Data JPA.
+// El dominio conoce ClientRepositoryPort (la interfaz), nunca esta clase directamente.
+// Así si cambiamos de H2 a PostgreSQL, solo tocamos este archivo y el mapper.
 @Component
 public class ClientRepositoryAdapter implements ClientRepositoryPort {
 

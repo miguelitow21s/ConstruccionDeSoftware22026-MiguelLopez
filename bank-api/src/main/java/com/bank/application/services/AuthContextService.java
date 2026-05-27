@@ -12,9 +12,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+// Servicio auxiliar para acceder al usuario autenticado desde cualquier use case.
+// También maneja el mapa usuario → cliente: algunos usuarios del sistema (client_natural,
+// client_company) están vinculados a un ID de cliente en application.properties.
+// Esto permite validar que un cliente solo opere sus propias cuentas.
 @Component
 public class AuthContextService {
 
+    // Mapa de usuario de sistema → ID de cliente del banco (viene de application.properties)
     private final Map<String, String> userClientMap;
 
     public AuthContextService(@Value("${bank.security.user-client-map:}") String rawUserClientMap) {
@@ -49,6 +54,9 @@ public class AuthContextService {
         return Arrays.stream(roles).anyMatch(currentRoles::contains);
     }
 
+    // Devuelve el ID del cliente vinculado al usuario autenticado.
+    // Si no tiene cliente vinculado, falla — esto protege que un empleado interno
+    // no pueda operar como si fuera un cliente.
     public String currentRelatedClientIdOrThrow() {
         String relatedId = userClientMap.get(currentUserId());
         if (relatedId == null || relatedId.isBlank()) {
@@ -57,6 +65,7 @@ public class AuthContextService {
         return relatedId;
     }
 
+    // El mapa viene como string "usuario1:clienteId1,usuario2:clienteId2" desde properties
     private Map<String, String> parseUserClientMap(String rawMap) {
         if (rawMap == null || rawMap.isBlank()) {
             return Collections.emptyMap();

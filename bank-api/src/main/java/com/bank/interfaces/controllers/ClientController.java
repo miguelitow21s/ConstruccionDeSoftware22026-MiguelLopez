@@ -23,6 +23,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
+// Controlador de clientes. Un cliente del banco (persona o empresa) es diferente
+// a un usuario del sistema. El cliente es el que tiene cuentas y préstamos;
+// el usuario del sistema es quien se autentica para operar.
 @RestController
 @RequestMapping("/clients")
 @Tag(name = "Clients", description = "Client management")

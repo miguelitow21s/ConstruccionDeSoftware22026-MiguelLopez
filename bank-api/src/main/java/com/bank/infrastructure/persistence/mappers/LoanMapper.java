@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 import com.bank.domain.entities.Loan;
 import com.bank.infrastructure.persistence.entities.LoanJpaEntity;
 
+// Mapper de préstamos. Convierte en ambas direcciones: dominio → JPA para guardar,
+// JPA → dominio para devolver al use case después de leer de la base de datos.
 @Component
 public class LoanMapper {
 

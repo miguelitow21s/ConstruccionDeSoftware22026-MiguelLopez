@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+// Proceso automático que corre en background cada 60 segundos.
+// Busca transferencias que llevan más de X minutos esperando aprobación y las vence.
+// El tiempo de expiración viene de application.properties: bank.transfer.approval-expiration-minutes
 @Service
 public class ExpirePendingTransfersUseCase {
 

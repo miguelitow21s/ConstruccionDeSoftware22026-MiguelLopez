@@ -20,6 +20,9 @@ import com.bank.domain.entities.Transaction;
 import com.bank.domain.services.TransferService;
 import com.bank.domain.valueobjects.Money;
 
+// Caso de uso: iniciar una transferencia entre dos cuentas.
+// Si la operación es empresarial y supera el umbral configurado, queda en AWAITING_APPROVAL
+// en lugar de ejecutarse de inmediato. Un analista debe aprobarla manualmente.
 @Service
 public class TransferMoneyUseCase {
 
@@ -28,6 +31,7 @@ public class TransferMoneyUseCase {
     private final TransferService transferService;
     private final AuditLogRepositoryPort auditLogRepository;
     private final AuthContextService authContextService;
+    // El umbral viene de application.properties: bank.transfer.approval-threshold
     private final BigDecimal approvalThreshold;
 
     public TransferMoneyUseCase(AccountRepositoryPort accountRepository,

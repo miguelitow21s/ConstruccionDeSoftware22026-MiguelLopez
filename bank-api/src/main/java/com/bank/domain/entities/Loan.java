@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
+// Representa un préstamo bancario. Su ciclo de vida es estricto:
+// UNDER_REVIEW → APPROVED o REJECTED → (si approved) DISBURSED
+// No hay reversa posible en ningún paso.
 public class Loan {
 
     private final String id;
@@ -12,7 +15,7 @@ public class Loan {
     private final String applicantClientId;
     private final String applicantClientIdentification;
     private final BigDecimal requestedAmount;
-    private BigDecimal approvedAmount;
+    private BigDecimal approvedAmount;       // Se asigna al aprobar, puede ser diferente al solicitado
     private final BigDecimal interestRate;
     private final int termMonths;
     private LoanStatus status;
@@ -125,6 +128,7 @@ public class Loan {
         validateStatusConsistency();
     }
 
+    // El analista puede aprobar un monto diferente al que pidió el cliente
     public void approve(BigDecimal approvedAmount) {
         if (status != LoanStatus.UNDER_REVIEW) {
             throw new IllegalStateException("Only loans under review can be approved");
@@ -144,6 +148,7 @@ public class Loan {
         this.status = LoanStatus.REJECTED;
     }
 
+    // Al desembolsar se registra la cuenta destino donde se enviará el dinero
     public void disburse(String accountNumberDestination) {
         if (status != LoanStatus.APPROVED) {
             throw new IllegalStateException("Only approved loans can be disbursed");
