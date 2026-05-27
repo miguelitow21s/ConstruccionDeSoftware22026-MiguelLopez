@@ -99,6 +99,9 @@ public class LoanController {
 
     @PostMapping("/{id}/reject")
     @PreAuthorize("hasRole('ANALYST')")
+    @Operation(summary = "Reject loan",
+               description = "Only an internal analyst can reject loans in UNDER_REVIEW status. " +
+                           "A rejected loan cannot be reactivated — the client must submit a new request.")
     public LoanResponse reject(@PathVariable String id) {
         return toResponse(rejectLoanUseCase.execute(id));
     }

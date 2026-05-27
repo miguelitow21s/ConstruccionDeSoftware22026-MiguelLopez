@@ -2,14 +2,32 @@
 
 Este documento explica paso a paso cómo ejecutar el flujo completo de solicitud de préstamo empresarial usando la API del banco.
 
-## Contexto del escenario
+## Herramienta: Swagger UI
 
-| Rol | Usuario HTTP | Contraseña |
-|-----|-------------|------------|
-| Empresa (solicitante) | `client_company` | `123456` |
-| Analista de banco | `analyst` | `123456` |
+Abre `http://localhost:8080/swagger-ui.html` en tu navegador.
 
-**Datos pre-cargados al iniciar la app** (creados automáticamente por `DemoDataInitializer`):
+En la parte superior de Swagger verás la descripción completa de la API con los usuarios demo, los datos pre-cargados y el resumen del flujo. Cada sección de endpoints tiene su propia descripción.
+
+---
+
+## Cómo autenticarse en Swagger
+
+1. Haz clic en el botón **Authorize** (candado) en la esquina superior derecha
+2. Ingresa el usuario y contraseña del rol que necesitas para ese paso
+3. Haz clic en **Authorize** y luego **Close**
+
+| Paso | Usuario | Contraseña |
+|------|---------|------------|
+| Solicitar préstamo | `client_company` | `123456` |
+| Rechazar préstamo | `analyst` | `123456` |
+| Aprobar préstamo | `analyst` | `123456` |
+| Desembolsar préstamo | `analyst` | `123456` |
+
+> Para cambiar de usuario en Swagger: clic en **Authorize** → **Logout** → ingresa las nuevas credenciales.
+
+---
+
+## Datos pre-cargados al iniciar la app
 
 | Dato | Valor |
 |------|-------|
@@ -21,15 +39,7 @@ Este documento explica paso a paso cómo ejecutar el flujo completo de solicitud
 | Nombre empresa | Tech Solutions Corp |
 | Número de cuenta destino | `10000001` |
 
-> **Por qué existe el representante legal:** `CreateClientUseCase` valida que el `legalRepresentativeId` de un `BUSINESS_CLIENT` apunte a un `NATURAL_PERSON_CLIENT` real. El representante se crea primero, y su ID se usa al registrar la empresa. En el préstamo el firmante es la empresa (NIT), pero el representante legal es quien tiene la responsabilidad civil.
-
----
-
-## Herramienta recomendada
-
-Abre Swagger UI en tu navegador: `http://localhost:8080/swagger-ui.html`
-
-En cada endpoint, usa el botón **Authorize** (candado) e ingresa las credenciales del rol indicado.
+> El representante legal debe existir antes que la empresa. `CreateClientUseCase` valida que el `legalRepresentativeId` apunte a un `NATURAL_PERSON_CLIENT` real.
 
 ---
 
@@ -43,22 +53,17 @@ En cada endpoint, usa el botón **Authorize** (candado) e ingresa las credencial
 ./mvnw spring-boot:run
 ```
 
-Al arrancar, `DemoDataInitializer` registra automáticamente el cliente empresa, su usuario de sistema activo y su cuenta bancaria. No necesitas crear nada manualmente.
-
 ---
 
 ## Primera interacción: la empresa solicita → el analista rechaza
 
 ### Paso 1 — La empresa solicita el préstamo
 
+**Swagger:** sección **Loans** → `POST /loans` → botón **Try it out**
+
 **Autenticarse como:** `client_company` / `123456`
 
-```http
-POST /loans
-Content-Type: application/json
-Authorization: Basic Y2xpZW50X2NvbXBhbnk6MTIzNDU2
-```
-
+**Body:**
 ```json
 {
   "typeLoan": "BUSINESS",
@@ -69,8 +74,7 @@ Authorization: Basic Y2xpZW50X2NvbXBhbnk6MTIzNDU2
 }
 ```
 
-**Respuesta esperada (201 Created):**
-
+**Respuesta esperada — 201 Created:**
 ```json
 {
   "id": "<loan-id-1>",
@@ -87,23 +91,21 @@ Authorization: Basic Y2xpZW50X2NvbXBhbnk6MTIzNDU2
 }
 ```
 
-> Guarda el valor del campo `"id"` — lo necesitarás en el siguiente paso.
+> Copia el valor del campo `"id"` — lo necesitas en el siguiente paso.
 
 ---
 
 ### Paso 2 — El analista rechaza el préstamo
 
+**Swagger:** sección **Loans** → `POST /loans/{id}/reject` → botón **Try it out**
+
 **Autenticarse como:** `analyst` / `123456`
 
-```http
-POST /loans/{loan-id-1}/reject
-Authorization: Basic YW5hbHlzdDoxMjM0NTY=
-```
+**Campo `id`:** pega el `<loan-id-1>` del paso anterior
 
-*(Sin cuerpo en la petición)*
+*(Sin body — este endpoint no requiere cuerpo)*
 
-**Respuesta esperada (200 OK):**
-
+**Respuesta esperada — 200 OK:**
 ```json
 {
   "id": "<loan-id-1>",
@@ -112,7 +114,7 @@ Authorization: Basic YW5hbHlzdDoxMjM0NTY=
 }
 ```
 
-> El préstamo queda en estado `REJECTED`. Un préstamo rechazado **no puede reactivarse**, por eso la empresa debe hacer una nueva solicitud.
+> Un préstamo rechazado **no puede reactivarse**. La empresa debe hacer una nueva solicitud.
 
 ---
 
@@ -120,14 +122,11 @@ Authorization: Basic YW5hbHlzdDoxMjM0NTY=
 
 ### Paso 3 — La empresa solicita un nuevo préstamo
 
+**Swagger:** sección **Loans** → `POST /loans` → botón **Try it out**
+
 **Autenticarse como:** `client_company` / `123456`
 
-```http
-POST /loans
-Content-Type: application/json
-Authorization: Basic Y2xpZW50X2NvbXBhbnk6MTIzNDU2
-```
-
+**Body:**
 ```json
 {
   "typeLoan": "BUSINESS",
@@ -138,8 +137,7 @@ Authorization: Basic Y2xpZW50X2NvbXBhbnk6MTIzNDU2
 }
 ```
 
-**Respuesta esperada (201 Created):**
-
+**Respuesta esperada — 201 Created:**
 ```json
 {
   "id": "<loan-id-2>",
@@ -148,30 +146,28 @@ Authorization: Basic Y2xpZW50X2NvbXBhbnk6MTIzNDU2
 }
 ```
 
-> Guarda el nuevo `"id"` para los siguientes pasos.
+> Copia el nuevo `"id"` — lo necesitas en los pasos 4 y 5.
 
 ---
 
 ### Paso 4 — El analista aprueba el préstamo
 
+**Swagger:** sección **Loans** → `POST /loans/{id}/approve` → botón **Try it out**
+
 **Autenticarse como:** `analyst` / `123456`
 
-```http
-POST /loans/{loan-id-2}/approve
-Content-Type: application/json
-Authorization: Basic YW5hbHlzdDoxMjM0NTY=
-```
+**Campo `id`:** pega el `<loan-id-2>`
 
+**Body:**
 ```json
 {
   "approvedAmount": 30000000
 }
 ```
 
-> El analista puede aprobar un monto diferente al solicitado. En este caso aprobamos el monto completo.
+> El analista puede aprobar un monto diferente al solicitado.
 
-**Respuesta esperada (200 OK):**
-
+**Respuesta esperada — 200 OK:**
 ```json
 {
   "id": "<loan-id-2>",
@@ -186,24 +182,22 @@ Authorization: Basic YW5hbHlzdDoxMjM0NTY=
 
 ### Paso 5 — El analista desembolsa el préstamo
 
+**Swagger:** sección **Loans** → `POST /loans/{id}/disburse` → botón **Try it out**
+
 **Autenticarse como:** `analyst` / `123456`
 
-```http
-POST /loans/{loan-id-2}/disburse
-Content-Type: application/json
-Authorization: Basic YW5hbHlzdDoxMjM0NTY=
-```
+**Campo `id`:** pega el `<loan-id-2>`
 
+**Body:**
 ```json
 {
   "destinationAccountNumber": "10000001"
 }
 ```
 
-> La cuenta `10000001` pertenece a `empresa_demo_id`. El sistema valida que la cuenta destino sea del mismo cliente del préstamo.
+> El sistema valida que la cuenta `10000001` pertenezca a `empresa_demo_id`.
 
-**Respuesta esperada (200 OK):**
-
+**Respuesta esperada — 200 OK:**
 ```json
 {
   "id": "<loan-id-2>",
@@ -218,42 +212,50 @@ El saldo de la cuenta `10000001` ahora tiene **$30,000,000 COP**.
 
 ---
 
-## Resumen del flujo
+## Verificaciones opcionales
 
-```
-[Empresa]               [Analista]
-    |                       |
-    |-- POST /loans -------> |  (UNDER_REVIEW)
-    |                       |
-    |          <-- reject --|  (REJECTED)
-    |                       |
-    |-- POST /loans -------> |  (UNDER_REVIEW)
-    |                       |
-    |          <-- approve--|  (APPROVED)
-    |                       |
-    |          <-- disburse-|  (DISBURSED)
-    |                       |
-    [Saldo +$30M en cuenta 10000001]
-```
+### Ver el estado de un préstamo
+
+**Swagger:** sección **Loans** → `GET /loans/{id}` → **Try it out**
+
+Puedes usar cualquier usuario autenticado.
 
 ---
 
-## Verificar el estado del préstamo en cualquier momento
+### Ver el saldo de la cuenta después del desembolso
 
-```http
-GET /loans/{loan-id}
+**Swagger:** sección **Accounts** → `GET /accounts/{id}/balance` → **Try it out**
+
+**Autenticarse como:** `analyst` / `123456`
+
+**Campo `id`:** `empresa_account_001`
+
+---
+
+### Ver la bitácora de auditoría
+
+**Swagger:** sección **Audit Log** → `GET /auditLog` → **Try it out**
+
+Muestra todas las operaciones registradas: solicitud, rechazo, aprobación y desembolso del préstamo.
+
+---
+
+## Resumen del flujo
+
 ```
-
-## Verificar el saldo de la cuenta después del desembolso
-
-```http
-GET /accounts/empresa_account_001/balance
-```
-
-## Ver la bitácora de auditoría
-
-```http
-GET /auditLog
+[Empresa: client_company]        [Analista: analyst]
+         |                               |
+         |-- POST /loans (50M) --------> |  status: UNDER_REVIEW
+         |                               |
+         |     POST /loans/{id}/reject --|  status: REJECTED
+         |                               |
+         |-- POST /loans (30M) --------> |  status: UNDER_REVIEW
+         |                               |
+         |    POST /loans/{id}/approve --|  status: APPROVED
+         |                               |
+         |   POST /loans/{id}/disburse --|  status: DISBURSED
+         |                               |
+         [cuenta 10000001: +$30,000,000 COP]
 ```
 
 ---
@@ -262,8 +264,8 @@ GET /auditLog
 
 | Error | Causa | Solución |
 |-------|-------|----------|
-| `403 Forbidden` | Rol incorrecto para el endpoint | Revisa que usas el usuario correcto (`client_company` para solicitar, `analyst` para aprobar/rechazar/desembolsar) |
-| `Applicant client not found` | El `applicantClientId` no existe | Usa exactamente `"empresa_demo_id"` |
-| `Not authorized to request loans for another client` | El usuario logueado no coincide con el cliente del préstamo | El usuario `client_company` solo puede pedir préstamos para `empresa_demo_id` |
-| `Destination account does not belong to the loan client` | La cuenta de destino es de otro cliente | Usa la cuenta `10000001` que pertenece a `empresa_demo_id` |
+| `403 Forbidden` | Rol incorrecto para el endpoint | Revisa el usuario activo en Swagger (Authorize) |
+| `Applicant client not found` | El `applicantClientId` no existe en BD | Usa exactamente `"empresa_demo_id"` |
+| `Not authorized to request loans for another client` | El usuario no coincide con el cliente | `client_company` solo puede pedir préstamos para `empresa_demo_id` |
+| `Destination account does not belong to the loan client` | La cuenta destino es de otro cliente | Usa `"10000001"` que pertenece a `empresa_demo_id` |
 | `Loan cannot be rejected` | El préstamo no está en `UNDER_REVIEW` | Solo se puede rechazar cuando está en revisión |
