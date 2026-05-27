@@ -26,7 +26,7 @@ public class ClientJpaEntity {
     @Column(nullable = false)
     private String phone;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDate birthDate;
 
     @Column(nullable = false, length = 200)
